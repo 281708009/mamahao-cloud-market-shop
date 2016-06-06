@@ -1,12 +1,12 @@
 ## mamahao-cloud-market-shop
 
-### 概述
+### 一、概述
 
 妈妈好微商城系统（微信端），使用`nodejs`开发
 
-### 目录及文件说明
+### 二、目录及文件说明
 
-#### 服务器端
+#### 1.服务器端
 
 + 服务器端相关的文件夹和文件
 + app目录,主要包括MVC三大部分
@@ -39,17 +39,17 @@ users目录包含注册登陆的页面代码。
 在views根目录，除了index.html还有404和500的页面。
 
 
-#### 客户端
+#### 2.客户端
 客户端的文件都在public目录下，css和img目录分别包含项目的样式文件和图片文件。   
 lib目录中可以放jquery、AngularJS等库文件的代码。
 
 
-#### 测试
+#### 3.测试
 test目录包含了项目的测试代码，待定
 
 
 
-### 开发工具相关
+### 三、开发工具相关
 
 1. IDE：webstorm，抛弃其他
 2. 版本控制系统： git，抛弃svn
@@ -58,7 +58,7 @@ test目录包含了项目的测试代码，待定
 5. 服务端： jade + REST
 6. 异步流程控制：Promise是唯一选择，而且从一开始就要强制使用，绝不可忽略，这关系到设计思维的巨大差异，甚至关系到我们是否真正能够在node.js方向坚持下来。我们用Q.js，和前端Angular.js使用的微缩版Q.js保持一致，减少学习周期。
 
-### git常用命令
+### 四、git常用命令
 
 ```bash
 git clone git@github.com:mmrxia/mamahao-cloud-market-shop.git
@@ -76,7 +76,7 @@ git commit -m 'update file'
 git push -u origin master
 ```
 
-### 历史版本 
+### 五、历史版本 
 
 + v1.0(160602)
 
