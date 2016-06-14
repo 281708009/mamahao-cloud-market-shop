@@ -5,6 +5,7 @@
 
 (function () {
     var MMH = {
+        config: {},
         init: function () {
             /*FastClick 解决click事件移动端300ms延迟的问题*/
             if ('addEventListener' in document) {
@@ -15,6 +16,18 @@
         },
         /*ajax请求*/
         ajax: function (params) {
+            var c = MMH.config;
+
+            /*超时显示loading*/
+            var $loading = $('.loading');
+            if (c.isAjax) return false;
+            c.isAjax = true;  //正在ajax请求
+            var timer = setTimeout(function () {
+                clearTimeout(timer);
+                c.isAjax && $loading.show();  //200ms之后显示loading遮罩
+            }, 200);
+
+            /*do ajax*/
             $.ajax({
                 type: params.type || "POST",
                 url: params.url || "/",
@@ -25,9 +38,18 @@
                     params.success && params.success.call(this, res);
                 },
                 error: function (res) {
-                    params.error && params.error.call(this, res);
+                    //console.log('error--->',res)
+                    if (params.error) {
+                        params.error.call(this, res);
+                    } else {
+                        var errorMsg = res.msg || res.statusText;
+                        MMH.tips(errorMsg);
+                    }
                 },
                 complete: function (res) {
+                    //console.log('complete--->',res)
+                    c.isAjax = false;
+                    $loading.hide();
                     params.complete && params.complete.call(this, res);
                 }
             });
@@ -43,7 +65,7 @@
                 delay: 2000,
                 callback: null
             };
-            typeof args === 'string' ? params.body = args : $.extend(params, args || {});
+            Object.prototype.toString.call(args) !== '[object Object]' ? params.body = ('' + args) : $.extend(params, args || {});
             params.body && container.show().find('.ui-tips-bd').html(params.body);
             var timer = setTimeout(function () {
                 clearTimeout(timer);
@@ -115,6 +137,19 @@
     };
 
     MMH.init(); //初始化
+
+    /*重新alert和confirm方法*/
+    window.alert = function (args) {
+        MMH.tips(args);
+    };
+    window.confirm = function (args, callback) {
+        var params = {};
+        Object.prototype.toString.call(args) !== '[object Object]' ? params.body = ('' + args) : params = args;
+        callback && (params.confirm = callback);
+        MMH.dialog(params)
+    };
+
+
     window.M = MMH;
 })();
 

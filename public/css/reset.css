@@ -17,10 +17,10 @@ a,del,ins,s,u{ text-decoration:none;}
 fieldset,img,addr,acronym{ border:0;}
 img,addr,acronym,input,textarea,iframe,button{ vertical-align:middle;}
 input,button,textarea,select,optgroup,option{ resize:none; outline:none;}
-a,button,input{ -webkit-tap-highlight-color:transparent;} /* ç§»é™¤ç³»ç»Ÿè‡ªå¸¦ç‚¹å‡»é«˜äº®çš„çŠ¶æ€ */
+a,button,input{ -webkit-tap-highlight-color:transparent;} /* ÒÆ³ıÏµÍ³×Ô´øµã»÷¸ßÁÁµÄ×´Ì¬ */
 img{ max-width:100%;}
-a,img{ -webkit-touch-callout: none;}   /* ç¦æ­¢é•¿æŒ‰é“¾æ¥ä¸å›¾ç‰‡å¼¹å‡ºèœå• */
+a,img{ -webkit-touch-callout: none;}   /* ½ûÖ¹³¤°´Á´½ÓÓëÍ¼Æ¬µ¯³ö²Ëµ¥ */
 a,button{ cursor:pointer;}
-input:-webkit-autofill{-webkit-box-shadow: 0 0 0 200px white inset;} /* å»é™¤é»„è‰²èƒŒæ™¯ */
+input:-webkit-autofill{-webkit-box-shadow: 0 0 0 200px white inset;} /* È¥³ı»ÆÉ«±³¾° */
 ::-webkit-input-placeholder{ color:#CCC;}
-::-webkit-scrollbar{opacity:0;height: 0;width: 0;} /*éšè—åŸç”Ÿæ»šåŠ¨æ¡*/
+::-webkit-scrollbar{opacity:0;height: 0;width: 0;} /*Òş²ØÔ­Éú¹ö¶¯Ìõ*/
