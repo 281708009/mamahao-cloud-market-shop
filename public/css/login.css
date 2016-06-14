@@ -1,0 +1,10 @@
+body{background-color: #f0f0f0}
+form{overflow: hidden;}
+form ul li{background-color: #FFF;margin: 8px 0;height: 40px;}
+form ul li{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items: center;align-items: center;-webkit-box-align: center;}
+form ul li label{padding: 0 .8em;color: #333;}
+form ul li input{-webkit-box-flex:1;-webkit-flex:1;-ms-flex:1;flex:1;min-width: 10px;}
+.btn-vcode{color: #ff4d61;background: #fff;border-left: 1px solid #DCDCDC;-webkit-border-radius: 0;border-radius: 0;}
+
+.form-action{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items: center;align-items: center;-webkit-box-align: center;padding: 0 .8em;margin-top: 1.5em;}
+.form-action .btn{-webkit-box-flex:1;-webkit-flex:1;-ms-flex:1;flex:1;font-size:16px;}

@@ -1,5 +1,5 @@
 /*
-* Ó¦ÓÃÈë¿ÚÎÄ¼ş
+* åº”ç”¨å…¥å£æ–‡ä»¶
 * */
 
 var express = require('express');
@@ -11,11 +11,11 @@ var bodyParser = require('body-parser');
 
 var app = express();
 
-// Ä£°åÒıÇæÉèÖÃ
+// æ¨¡æ¿å¼•æ“è®¾ç½®
 app.set('views', path.join(__dirname, 'app/views'));
 app.set('view engine', 'jade');
 
-// ÉèÖÃfavicon
+// è®¾ç½®favicon
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -24,14 +24,14 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-/*Â·ÓÉ*/
+/*è·¯ç”±*/
 var routes = require('./app/routes');
 var users = require('./app/routes/users');
 
 app.use('/', routes);
 app.use('/users', users);
 
-//404´¦Àí
+//404å¤„ç†
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
@@ -40,7 +40,7 @@ app.use(function(req, res, next) {
 
 
 
-// ¿ª·¢»·¾³´íÎó´¦Àí£¬²¶»ñ500
+// å¼€å‘ç¯å¢ƒé”™è¯¯å¤„ç†ï¼Œæ•è·500
 if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
         res.status(err.status || 500);
@@ -51,7 +51,7 @@ if (app.get('env') === 'development') {
     });
 }
 
-//Éú²ú»·¾³´íÎó´¦Àí£¬²¶»ñ500
+//ç”Ÿäº§ç¯å¢ƒé”™è¯¯å¤„ç†ï¼Œæ•è·500
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
