@@ -1,5 +1,5 @@
 meta(charset='utf-8')
-title #{title}
+block title
 link(rel='dns-prefetch', href='//s.mamhao.cn')
 link(rel='dns-prefetch', href='//image.mamhao.cn')
 link(rel='dns-prefetch', href='//api.mamhao.cn')
@@ -8,10 +8,13 @@ meta(name='apple-mobile-web-app-status-bar-style', content='white')
 meta(name='apple-mobile-web-app-capable', content='yes')
 meta(name='format-detection', content='telephone=no; email=no')
 meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+block meta
 link(rel='stylesheet', href='css/reset.css')
-link(rel='stylesheet', href='css/style.css')
+link(rel='stylesheet', href='css/common.css')
 block css
 script(type='text/javascript', src='lib/jq.2.1.min.js')
 script(type='text/javascript', src='lib/fastclick.min.js')
+script(type='text/javascript', src='lib/router.min.js')
+script(type='text/javascript', src='lib/drop.min.js')
 script(type='text/javascript', src='js/common.js')
 script(type='text/javascript', src='js/api.js')
