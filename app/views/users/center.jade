@@ -1,19 +1,20 @@
 extends ../layouts/layout
 block title
-    title 个人中心
-block css
-    link(rel='stylesheet', href='css/center.css')
+    title= (title ? title : '个人中心')
 block js
     script(src='js/center.js')
 block meta
     meta(name='toTop')
 block content
-    .container
+    #spa
 
-    include components/index
-    include components/address
-    include components/address_add
-    include components/address_edit
+    //首页模板
+    script#tpl_home(type='text/html')
+        include components/index
+
+    //添加地址模板
+    script#tpl_address_add(type='text/html')
+        include components/address_add
 
 
 

@@ -1,21 +1,20 @@
-script#tpl_address_edit(type='text/html')
-    link(rel='stylesheet', href='css/address.css')
-    ul
-        li
-            label 收货人
-            input.name(name='name',type='text', placeholder='请输入收货人的姓名',maxlength='64')
-        li
-            label 手机号
-            input.mobile(name='mobile',type='tel',data-type='mobile', placeholder='请输入收货人的手机号码',maxlength='11')
-        li
-            label 地&nbsp;&nbsp;&nbsp;区
-            input.district(name='district',type='text', placeholder='请选择省份 城市 区域',maxlength='255')
-        li
-            label 街&nbsp;&nbsp;&nbsp;道
-            input.street(name='street',type='text', placeholder='请选择小区/写字楼等',maxlength='255')
-        li
-            label 门牌号
-            input.house-number(name='house_number',type='text', placeholder='请填写具体单元号 楼层等',maxlength='255')
+link(rel='stylesheet', href='css/address.css')
+ul
+    li
+        label 收货人
+        input.name(name='name',type='text', placeholder='请输入收货人的姓名',maxlength='64',value='#{name}')
+    li
+        label 手机号
+        input.mobile(name='mobile',type='tel',data-type='mobile', placeholder='请输入收货人的手机号码',maxlength='11',value='#{mobile}')
+    li
+        label 地&nbsp;&nbsp;&nbsp;区
+        input.district(name='district',type='text', placeholder='请选择省份 城市 区域',maxlength='255',value='#{district}')
+    li
+        label 街&nbsp;&nbsp;&nbsp;道
+        input.street(name='street',type='text', placeholder='请选择小区/写字楼等',maxlength='255',value='#{street}')
+    li
+        label 门牌号
+        input.house-number(name='house_number',type='text', placeholder='请填写具体单元号 楼层等',maxlength='255',value='#{house_number}')
 
-    .footer
-        a.btn.btn-primary.js-submit(href='javascript:;') 保存
+.footer
+    a.btn.btn-primary.js-submit(href='javascript:;') 保存

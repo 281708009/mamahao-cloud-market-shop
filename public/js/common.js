@@ -3,22 +3,56 @@
  * by xqs 160613
  * */
 ;
-(function () {
-    /*jquery扩展*/
-    $.extend({
-        /*节流*/
-        throttle: function (fn, delay) {
-            var timer = null;
-            return function () {
-                var context = this, args = arguments;
-                clearTimeout(timer);
-                timer = setTimeout(function () {
-                    fn.apply(context, args);
-                }, delay ? delay : 200);
-            };
-        }
-    });
 
+/*
+* jquery扩展方法
+* $.fn.
+* */
+(function () {
+    "use strict";
+
+    /*节流*/
+    $.throttle = function (fn, delay) {
+        var timer = null;
+        return function () {
+            var context = this, args = arguments;
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+                fn.apply(context, args);
+            }, typeof delay !== 'number' ? delay : 200);
+        };
+    };
+
+    /*监听动画结束事件*/
+    $.fn.transitionEnd = function (callback) {
+        var events = ['webkitTransitionEnd', 'transitionend', 'oTransitionEnd', 'MSTransitionEnd', 'msTransitionEnd'],
+            i, dom = this;
+
+        function fireCallBack(e) {
+            if (e.target !== this) return;
+            callback.call(this, e);
+            for (i = 0; i < events.length; i++) {
+                dom.off(events[i], fireCallBack);
+            }
+        }
+
+        if (callback) {
+            for (i = 0; i < events.length; i++) {
+                dom.on(events[i], fireCallBack);
+            }
+        }
+        return this;
+    };
+
+
+})();
+
+
+/*
+* 其他常用方法封装
+* Date等
+* */
+(function () {
     //时间对象的格式化 Date.format("yyyy-MM-dd hh:mm:ss");
     Date.prototype.format = function (b) {
         var c = {
@@ -44,6 +78,10 @@
 
 
 ;
+/*
+* 妈妈好项目内部方法封装
+* Object: MMH
+* */
 (function () {
     var MMH = {
         config: {},
@@ -62,17 +100,29 @@
                 MMH.nav.init();
             });
         },
+        /*显示loading*/
+        showLoading: function () {
+            var $loading = $('.loading');
+            if (!$loading[0]) {
+                $loading = $('<div class="loading"><span><s></s></span></div>').appendTo(document.body);
+            }
+            $loading.show();
+        },
+        /*隐藏loading*/
+        hideLoading: function () {
+            var $loading = $('.loading');
+            $loading[0] && $loading.hide();
+        },
         /*ajax请求*/
         ajax: function (params) {
             var c = MMH.config;
 
             /*超时显示loading*/
-            var $loading = $('.loading');
             if (c.isAjax) return false;
             c.isAjax = true;  //正在ajax请求
             var timer = setTimeout(function () {
                 clearTimeout(timer);
-                c.isAjax && $loading.show();  //200ms之后显示loading遮罩
+                c.isAjax && MMH.showLoading();  //200ms之后显示loading遮罩
             }, 200);
 
             /*do ajax*/
@@ -97,41 +147,79 @@
                 complete: function (res) {
                     //console.log('complete--->',res)
                     c.isAjax = false;
-                    $loading.hide();
+                    MMH.hideLoading();
                     params.complete && params.complete.call(this, res);
                 }
             });
         },
         /*tips提示框*/
         tips: function (args) {
-            if (!$('.ui-tips-wrap')[0]) {
-                var dom = ['<div class="ui-tips-wrap">', '<div class="ui-mask ui-mask-transparent"></div>', '<div class="ui-tips">', '<div class="ui-tips-bd"></div></div></div>'];
-                $('body').append(dom.join(''));
-            }
-            var container = $('.ui-tips-wrap');
-            var params = {
-                delay: 2000,
-                callback: null
+            var fun = {
+                elements: {},
+                init: function () {
+                    var o = fun.elements;
+
+                    var tpl = ['<div class="ui-mask ui-mask-transparent ui-tips-mask"></div>', '<div class="ui-tips-wrap">', '<div class="ui-tips">', '<div class="ui-tips-bd"></div></div></div>'];
+                    $(document.body).append(tpl.join(''));
+
+                    o.mask = $('.ui-tips-mask');
+                    o.wrapper = $('.ui-tips-wrap');
+                    o.inner = $('.ui-tips');
+                    o.bd = $('.ui-tips-bd');
+
+                    var defaults = {
+                        delay: 2000,
+                        callback: null  //消失后的回调函数
+                    };
+                    if (Object.prototype.toString.call(args) !== '[object Object]') {
+                        defaults.body = '' + args;
+                        fun.params = defaults;
+                    } else {
+                        fun.params = $.extend({}, defaults, args || {});
+                    }
+                    var params = fun.params;
+                    params.body && o.bd.html(params.body);
+
+                    fun.show();
+                    var timer = setTimeout(function () {
+                        clearTimeout(timer);
+                        fun.hide();
+                    }, params.delay || 2000);
+
+                },
+                show: function () {
+                    var o = fun.elements;
+                    o.mask.add(o.inner).addClass('visible');
+                },
+                hide: function () {
+                    var o = fun.elements, params = fun.params;
+                    o.mask.removeClass('visible').transitionEnd(function () {
+                        o.mask.remove();
+                    });
+                    o.inner.removeClass('visible').transitionEnd(function () {
+                        o.wrapper.remove();
+                    });
+                    params.callback && params.callback.call(this);
+                }
             };
-            Object.prototype.toString.call(args) !== '[object Object]' ? params.body = ('' + args) : $.extend(params, args || {});
-            params.body && container.show().find('.ui-tips-bd').html(params.body);
-            var timer = setTimeout(function () {
-                clearTimeout(timer);
-                container.hide();
-                params.callback && params.callback.call(this);
-            }, params.delay || 2000);
+            fun.init();
         },
-        /*dialog对话框*/
+        /*dialog对话框
+         * 父级元素如果有transform属性，会导致子元素的fixed失效。
+         * 故：移动端设计时避免使用fixed，或者二者不放在父子容器中。
+         * */
         dialog: function (args) {
             var fun = {
                 elements: {},
                 init: function () {
                     var o = fun.elements;
-                    if (!$('.ui-dialog-wrap')[0]) {
-                        var dom = ['<div class="ui-dialog-wrap">', '<div class="ui-mask"></div>', '<div class="ui-dialog">', '<div class="ui-dialog-hd"></div>', '<div class="ui-dialog-bd"></div>', '<div class="ui-dialog-ft"></div>', '</div></div>'];
-                        $('body').append(dom.join(''));
-                    }
-                    o.container = $('.ui-dialog-wrap');
+
+                    var tpl = ['<div class="ui-mask ui-dialog-mask"></div>', '<div class="ui-dialog-wrap">', '<div class="ui-dialog">', '<div class="ui-dialog-hd"></div>', '<div class="ui-dialog-bd"></div>', '<div class="ui-dialog-ft"></div>', '</div></div>'];
+                    $(document.body).append(tpl.join(''));
+
+                    o.mask = $('.ui-dialog-mask');
+                    o.wrapper = $('.ui-dialog-wrap');
+                    o.inner = $('.ui-dialog');
                     o.hd = $('.ui-dialog-hd');
                     o.bd = $('.ui-dialog-bd');
                     o.ft = $('.ui-dialog-ft');
@@ -144,7 +232,7 @@
                     };
                     var params = fun.params = $.extend({}, defaults, args || {});
                     o.bd.html(params.body);
-                    params.className && o.container.find('.ui-dialog').attr('class', 'ui-dialog ' + params.className);
+                    params.className && o.wrapper.find('.ui-dialog').attr('class', 'ui-dialog ' + params.className);
                     params.title && o.hd.html(params.title);
                     o.ft.empty().append(function () {
                         return $.map(params.buttons, function (item, index) {
@@ -157,7 +245,7 @@
                 },
                 show: function () {
                     var o = fun.elements, params = fun.params;
-                    o.container.addClass('show').removeClass('hide');
+                    o.mask.add(o.inner).show().addClass('visible');
 
                     /*bind events*/
                     o.ft.on('click', '.btn:eq(0)', function () {
@@ -169,46 +257,25 @@
                 },
                 hide: function () {
                     var o = fun.elements;
-                    o.container.removeClass('show').addClass('hide');
+                    o.mask.removeClass('visible').transitionEnd(function () {
+                        o.mask.remove();
+                    });
+                    o.inner.removeClass('visible').transitionEnd(function () {
+                        o.wrapper.remove();
+                    });
                     o.ft.find('.btn').off('click');
                 }
             };
             fun.init();
         },
         /*下拉刷新，上拉加载数据*/
-        dropload: function (args) {
-            /*
-             *  无数据 me.noData();  //可传参数true或false，默认值true
-             *  重置 me.resetload();  //每次数据加载完，必须重置
-             *  锁定 lock(); //参数up、down，不传则锁定上一次加载的方向
-             *  解锁 unlock();
-             * */
-            var container = args.container ? $(args.container) : $('.dropload');
-            container.dropload({
-                scrollArea: args.scrollArea || window,  //滑动区域，默认值绑定元素自身
-                threshold: 100, //提前加载距离,默认值为加载区高度2/3
-                domUp: {
-                    domClass: 'dropload-up',
-                    domRefresh: '<div class="dropload-refresh">↓下拉刷新</div>',
-                    domUpdate: '<div class="dropload-update">↑释放更新</div>',
-                    domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
-                },
-                domDown: {
-                    domClass: 'dropload-down',
-                    domRefresh: '<div class="dropload-refresh"></div>',
-                    domLoad: '<div class="dropload-load"><span class="icon"></span>正在加载更多的数据...</div>',
-                    domNoData: '<div class="dropload-noData">数据已全部加载完成!</div>'
-                },
-                /*下拉刷新*/
-                loadUpFn: args.loadUpFn ? function (me) {
-                    console.log('loadUpFn');
-                    args.loadUpFn.call(this, me);
-                } : null,
-                /*上拉加载更多*/
-                loadDownFn: args.loadDownFn ? function (me) {
-                    console.log('loadDownFn');
-                    args.loadDownFn.call(this, me);
-                } : null
+        dropLoad: function () {
+            var $target = $('.dropload');
+            $target[0] && $target.pullToRefresh().on("pull-to-refresh", function() {
+                setTimeout(function() {
+                    console.log('end');
+                    $target.pullToRefreshDone();
+                }, 2000);
             });
         },
         calc: function () {
@@ -299,31 +366,36 @@
         /*一些页面组件*/
         toTop: function () {
             /*这种回到顶部按钮组件*/
-            var util = {
+            var fun = {
                 tools: {
                     isWebkit: /webkit/gi.test(navigator.userAgent)
                 },
                 init: function () {
-                    var self = util;
-                    var win = $(window), _flex = 60;
                     /*回到顶部按钮*/
-                    if ($("meta[name=toTop]")[0]) {
-                        var toTop = $("<div class='btn-to-top'></div>").appendTo('body');
-                        win.scrollTop() <= _flex && toTop.fadeOut();
-                        win.on("resize scroll", $.throttle(function () {
-                            if (win.scrollTop() > _flex) toTop.fadeIn();
-                            else toTop.fadeOut();
+                    var $meta = $("meta[name=toTop]");
+                    if ($meta[0]) {
+                        var $area = $($meta.attr('content') || window), _flex = 60;
+                        var $toTop = $("<div class='btn-to-top'></div>").appendTo(document.body);
+                        $area.scrollTop() <= _flex && $toTop.fadeOut();
+                        $(window).on("resize", $.throttle(function () {
+                            if ($area.scrollTop() > _flex) $toTop.fadeIn();
+                            else $toTop.fadeOut();
                         }));
-                        toTop.on("click.top", function (e) {
+                        $area.on("scroll touchmove", $.throttle(function () {
+                            if ($area.scrollTop() > _flex) $toTop.fadeIn();
+                            else $toTop.fadeOut();
+                        }));
+
+                        $toTop.on("click.top", function (e) {
                             e.stopPropagation();
-                            var _target = self.tools.isWebkit ? 'body' : 'html';
-                            $(_target).animate({scrollTop: 0}, 400);
+                            var $target = $area || (fun.tools.isWebkit ? $('body') : $('html'));
+                            $target.animate({scrollTop: 0}, 400);
                         });
                     }
                 }
             };
             return {
-                init: util.init
+                init: fun.init
             }
         }(),
         nav: function () {
@@ -339,30 +411,38 @@
             var util = {
                 elements: {},
                 config: {
-                    fixTopClass: 'affix'
+                    placeholderHeader: '.placeholder-hd', //顶部固定使用的占位div
+                    autoScroll: '.auto-scroll',  //点击可自动滑动居中nav对象
+                    autoFix: '.auto-fix', //页面滚动可固定在顶部nav对象
+                    fixTopClass: 'affix affix-top' //添加固定class
                 },
                 init: function () {
                     /*点击分类导航*/
                     var c = util.config, o = util.elements;
 
                     o.body = $('body');
-                    o.nav = $('.auto-scroll');
-                    o.placeholder_hd = $('.placeholder-hd');
+                    o.nav = $(c.autoScroll);
+                    o.autoFixNav = $(c.autoFix);
+                    o.placeholder_hd = $(c.placeholderHeader);
 
                     if (o.nav[0]) {
-                        if (!o.placeholder_hd[0]) {
-                            o.placeholder_hd = $('<div class="placeholder-hd"></div>').prependTo(o.body);
-                        }
                         c.navTop = o.nav.offset().top; //nav距离顶部的距离
                         c.navHeight = o.nav.outerHeight(true); //nav的高度
-                        o.placeholder_hd.css({"height": c.navHeight, "display": "none"});
                         o.nav.on('click', 'ul li', function () {
                             var _this = $(this), _index = o.nav.find('ul li').index(this);
                             _this.addClass('active').siblings('li').removeClass('active');
                             util.setNavCenter(_index); //设置该item居中显示
                         });
+                    }
+
+                    if (o.autoFixNav[0]) {
+                        if (!o.placeholder_hd[0]) {
+                            o.placeholder_hd = $('<div class="placeholder-hd"></div>').prependTo(o.body);
+                        }
+                        o.placeholder_hd.css({"height": c.navHeight, "display": "none"});
+
                         /*绑定touchmove和scroll事件*/
-                        $(window).on('scroll touchmove', function () {
+                        $("#nav").on('scroll touchmove', function () {
                             util.fixNav();//固定导航
                         });
                     }
@@ -373,7 +453,7 @@
                     if (o.nav[0]) {
                         var nav = o.nav,
                             holder = o.placeholder_hd,
-                            scrollTop = $(document).scrollTop();
+                            scrollTop = $("#nav").scrollTop();
                         if (scrollTop > c.navTop) {
                             holder.show();
                             nav.addClass(c.fixTopClass);

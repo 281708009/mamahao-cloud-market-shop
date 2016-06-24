@@ -1,0 +1,10 @@
+//可重用的代码块
+mixin footer_nav(name)
+    .footer-nav
+        .placeholder-ft
+        ul.affix.affix-bottom
+            li(class={active: name === 'index',index: true}): a(href='/') 首页
+            li(class={active: name === 'store',store: true}): a(href='/store') 门店
+            li(class={active: name === 'category',category: true}): a(href='/category') 分类
+            li(class={active: name === 'cart',cart: true}): a(href='/cart') 购物车
+            li(class={active: name === 'account',account: true}): a(href='/center#/') 我

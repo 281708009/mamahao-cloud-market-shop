@@ -26,10 +26,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 /*路由*/
 var routes = require('./app/routes');
-var users = require('./app/routes/users');
 
 app.use('/', routes);
-app.use('/users', users);
 
 //404处理
 app.use(function(req, res, next) {

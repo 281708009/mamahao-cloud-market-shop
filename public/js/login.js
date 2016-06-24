@@ -44,8 +44,8 @@ var page = {
             }
         }
 
-        API.async({
-            name: 'vcode',
+        M.ajax({
+            url: '/sendMessage',
             data: {mobile: mobile_val},
             success: function (res) {
                 if (res.success_code) {
@@ -59,8 +59,8 @@ var page = {
     /*登录*/
     login: function () {
         if (!page.validate($('form'))) return false;
-        API.async({
-            name: 'login',
+        M.ajax({
+            url: '/login',
             data: $('form').serialize(),
             success: function (res) {
                 if (res.success) {

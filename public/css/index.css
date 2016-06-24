@@ -1,12 +1,19 @@
+/*中间主要容器*/
+.main{height: 100%;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-orient: vertical;-webkit-flex-direction: column;flex-direction: column;}
+.main .container{-webkit-box-flex:1;-webkit-flex:1;-ms-flex:1;flex:1;overflow: auto;}
+.main .footer-nav{}
+
 /*banner*/
 .banner{}
 .banner ul{white-space: nowrap;overflow-x: scroll;}
 .banner li{display: inline-block}
 
-/*icons nav*/
-.icons-nav {background: #fff;padding: .5em 0;}
-.icons-nav ul{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;}
+/*横向flex导航布局*/
+.icons-nav ul{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;padding: .5em 0;background: #fff;}
 .icons-nav ul li{-webkit-box-flex:1;-webkit-flex:1;-ms-flex:1;flex:1;text-align: center}
 .icons-nav ul li a{display: inline-block;}
+
+/*icons nav*/
 .icons-nav ul li img{width: 40%;}
-.icons-nav ul li .title{margin-top:.2em;font-size: 10px;;}
+.icons-nav ul li .title{margin-top:.2em;font-size: 10px;}
+

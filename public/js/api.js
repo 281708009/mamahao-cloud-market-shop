@@ -5,6 +5,7 @@
  * */
 
 (function () {
+    /*服务器API接口列表*/
     var config = {
         api: {
             "login": "/login",                                      // 登录

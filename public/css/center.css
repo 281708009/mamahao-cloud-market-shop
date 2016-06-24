@@ -1,59 +1,37 @@
 /*header*/
-header{background: url("http://s.mamhao.cn/wei/v3/images/bg-user.jpg") no-repeat;-webkit-background-size: cover;background-size: cover;padding: 2em 1em;}
+.m-home header{background: url("http://s.mamhao.cn/wei/v3/images/bg-user.jpg") no-repeat;-webkit-background-size: cover;background-size: cover;padding: 2em 1em;}
 
 /*flex布局*/
-.profile,
-.orders dl,
-.wallet dl,
-section h3,
-section ul li
+.m-home .profile,
+.m-home .orders dl,
+.m-home .wallet dl,
+.m-home section h3,
+.m-home section ul li
 {display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;}
 
-section h3,section ul li{-webkit-align-items: center;align-items: center;-webkit-box-align: center;}
+.m-home section h3,section ul li{-webkit-align-items: center;align-items: center;-webkit-box-align: center;}
 
-.profile .info,
-.orders dd,
-.wallet dd,
-section ul li a
+.m-home .profile .info,
+.m-home .orders dd,
+.m-home .wallet dd,
+.m-home section ul li a
 {-webkit-box-flex:1;-webkit-flex:1;-ms-flex:1;flex:1;}
 
 /*profile*/
-.profile{-webkit-align-items: center;align-items: center;-webkit-box-align: center;color: #fff;}
-.profile .avatar{width: 48px;border-radius:50%;overflow: hidden;margin-right: .6em;border: 2px solid rgba(255,255,255,.4);}
-.profile .details{width: 8px;height: 8px;border: 1px solid rgba(255,255,255,.4);border-top: 0;border-left: 0;-webkit-transform: rotate(-45deg);transform: rotate(-45deg);}
+.m-home .profile{-webkit-align-items: center;align-items: center;-webkit-box-align: center;color: #fff;}
+.m-home .profile .avatar{width: 48px;border-radius:50%;overflow: hidden;margin-right: .6em;border: 2px solid rgba(255,255,255,.4);}
+.m-home .profile .details{width: 8px;height: 8px;border: 1px solid rgba(255,255,255,.4);border-top: 0;border-left: 0;-webkit-transform: rotate(-45deg);transform: rotate(-45deg);}
 
 
 /*section*/
-section{background: #fff;margin-bottom: .8em;font-size: 12px;}
-section h3{border-bottom: 1px solid #f0f0f0;padding: 5px;position: relative}
-section dl dd{padding: .6em .5em;}
-section h3:before,section ul li:before{display: inline-block;content:'';width: 20px;height: 20px;background: rgba(255,77,97,.8);margin: 0 .5em;}
-section ul li a{padding: .6em 0;border-bottom: 1px solid #f0f0f0;position: relative}
-section ul li:last-child a{border: 0;}
-section h3:after,section ul li a:after{display: inline-block;content:'';width: 6px;height: 6px;border: 1px solid #ccc;border-top: 0;border-left: 0;position: absolute;top: 50%;right: 10px;margin-top: -4px;-webkit-transform: rotate(-45deg);transform: rotate(-45deg);}
-.orders dd,.wallet dd{text-align: center;}
-
-
-/*单页面路由需要用到的样式*/
-body,html{overflow-x:hidden;height:100%}
-.container{overflow-y:auto;height:100%;-webkit-overflow-scrolling:touch}
-.container>div{background-color: #f0f0f0;}
-@-webkit-keyframes slideIn{
-    from{opacity:0;-webkit-transform:translate3d(100%,0,0);transform:translate3d(100%,0,0)}
-    to{opacity:1;-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
-}
-@keyframes slideIn{
-    from{opacity:0;-webkit-transform:translate3d(100%,0,0);transform:translate3d(100%,0,0)}
-    to{opacity:1;-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
-}
-@-webkit-keyframes slideOut{
-    from{opacity:1;-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
-    to{opacity:0;-webkit-transform:translate3d(100%,0,0);transform:translate3d(100%,0,0)}
-}
-@keyframes slideOut{
-    from{opacity:1;-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
-    to{opacity:0;-webkit-transform:translate3d(100%,0,0);transform:translate3d(100%,0,0)}
-}
-.enter,.leave{position:absolute;top:0;right:0;bottom:0;left:0;z-index:1}
-.enter{-webkit-animation:slideIn .2s forwards;animation:slideIn .2s forwards}
-.leave{-webkit-animation:slideOut .25s forwards;animation:slideOut .25s forwards}
+.m-home section{background: #fff;margin-bottom: .8em;font-size: 12px;}
+.m-home section h3{border-bottom: 1px solid #f0f0f0;padding: 5px;position: relative}
+.m-home section dl dd{padding: .8em .5em;}
+.m-home section h3:before,section ul li:before{display: inline-block;content:'';width: 20px;height: 20px;background: rgba(255,77,97,.8);margin: 0 .5em;}
+.m-home section ul li a{padding: .6em 0;border-bottom: 1px solid #f0f0f0;position: relative}
+.m-home section ul li:last-child a{border: 0;}
+.m-home section h3:after,section ul li a:after{display: inline-block;content:'';width: 6px;height: 6px;border: 1px solid #ccc;border-top: 0;border-left: 0;position: absolute;top: 50%;right: 10px;margin-top: -4px;-webkit-transform: rotate(-45deg);transform: rotate(-45deg);}
+.m-home .orders dd,.wallet dd{text-align: center;}
+.m-home .orders dd .title,.wallet dd .title{margin-top: .2em}
+.m-home .orders dd:before{content: '';display: block;width: 20px;height: 20px;background: rgba(255,77,97,.8);margin: 0 auto;}
+.m-home .wallet dd .count{color: #333}

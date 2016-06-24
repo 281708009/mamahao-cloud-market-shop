@@ -1,27 +1,19 @@
-script#tpl_address(type='text/html')
-    link(rel='stylesheet', href='css/address.css')
+link(rel='stylesheet', href='css/address.css')
+if rows
     ul.smooth
-        li
-            dl.info
-                dt
-                    span.name 夏青松
-                    span 15257182861
-                dd
-                    span 浙江省杭州市上城区中豪望江国际1幢9层 妈妈好网络
+        each item, index in rows
+            li
+                dl.info
+                    dt
+                        if item.default
+                            label.label 默认
+                        span.name #{item.name}
+                        span #{item.mobile}
+                    dd
+                        span #{item.address}
 
-            div.option
-                a.edit(href='#/address/edit') edit
-        li
-            dl.info
-                dt
-                    label.label 默认
-                    span.name 夏青松
-                    span 15257182861
-                dd
-                    span 浙江省杭州市上城区中豪望江国际1幢9层 妈妈好网络
+                div.option
+                    a.edit(href='#/address/edit/:#{item.id}') edit
 
-            div.option
-                a.edit(href='#/address/edit') edit
-
-    .footer
-        a.btn.btn-primary(href='#/address/add') 新增收货地址
+.footer
+    a.btn.btn-primary(href='#/address/add') 新增收货地址
