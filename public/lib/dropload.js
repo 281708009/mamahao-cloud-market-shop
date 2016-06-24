@@ -84,9 +84,9 @@
         if (Math.abs(this.diffY) <= this.distance) {
             this.statusArea.css("height", 0);
         } else {
+            this.statusArea.css("height", 50);
             this.container.addClass("refreshing");
             this.container.trigger("pull-to-refresh");
-            this.statusArea.css("height", 50);
         }
         return false;
     };

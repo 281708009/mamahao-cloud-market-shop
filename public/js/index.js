@@ -9,7 +9,14 @@ var page = {
     },
     bindEvents: function () {
         // dropload 测试
-        M.dropLoad();
+        M.dropLoad({
+            callback: function (me) {
+                setTimeout(function() {
+                    console.log('end');
+                    me.pullToRefreshDone();
+                }, 1000);
+            }
+        });
     }
 };
 

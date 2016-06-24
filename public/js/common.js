@@ -5,9 +5,9 @@
 ;
 
 /*
-* jquery扩展方法
-* $.fn.
-* */
+ * jquery扩展方法
+ * $.fn.
+ * */
 (function () {
     "use strict";
 
@@ -49,9 +49,9 @@
 
 
 /*
-* 其他常用方法封装
-* Date等
-* */
+ * 其他常用方法封装
+ * Date等
+ * */
 (function () {
     //时间对象的格式化 Date.format("yyyy-MM-dd hh:mm:ss");
     Date.prototype.format = function (b) {
@@ -79,9 +79,9 @@
 
 ;
 /*
-* 妈妈好项目内部方法封装
-* Object: MMH
-* */
+ * 妈妈好项目内部方法封装
+ * Object: MMH
+ * */
 (function () {
     var MMH = {
         config: {},
@@ -269,13 +269,15 @@
             fun.init();
         },
         /*下拉刷新，上拉加载数据*/
-        dropLoad: function () {
+        dropLoad: function (args) {
             var $target = $('.dropload');
-            $target[0] && $target.pullToRefresh().on("pull-to-refresh", function() {
-                setTimeout(function() {
-                    console.log('end');
-                    $target.pullToRefreshDone();
-                }, 2000);
+            $target[0] && $target.pullToRefresh().on("pull-to-refresh", function () {
+                args.callback ? args.callback.call(this, $target) : (function () {
+                    var timer = setTimeout(function () {
+                        clearTimeout(timer);
+                        $target.pullToRefreshDone();
+                    }, 500);
+                })()
             });
         },
         calc: function () {

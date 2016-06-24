@@ -36,7 +36,6 @@ var page = {
             className: 'm-home',
             render: function (callback) {
                 var template = $('#tpl_home').html();
-                console.log(template)
                 callback(null, template);
             },
             bind: function () {
