@@ -17,6 +17,17 @@ var page = {
                 }, 1000);
             }
         });
+
+
+        //分页测试
+        $.pagination({
+            scrollBox: '.container',
+            api: '/beans',
+            container: '.container .floor-list',
+            fnLoaded: function (res, ele) {
+                console.log(JSON.stringify(res))
+            }
+        });
     }
 };
 
