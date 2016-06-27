@@ -89,6 +89,7 @@ body,html,#app{overflow-x:hidden;height:100%}
 .footer-nav ul li.active a:before{background: rgba(255,77,97,.8);}
 
 /*===下拉刷新组件===*/
+.dropload{overflow: auto}
 .dropload-layer{height:0;overflow:hidden;line-height:50px;text-align:center;-webkit-transition:.4s;transition:.4s;position: relative}
 .dropload-layer .inner{position: absolute;left: 0;right: 0;bottom: 0;}
 
