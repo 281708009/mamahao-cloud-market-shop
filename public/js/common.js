@@ -87,7 +87,7 @@
         config: {},
         init: function () {
             /*FastClick 解决click事件移动端300ms延迟的问题*/
-            if ('addEventListener' in document) {
+            if ('addEventListener' in document && FastClick) {
                 document.addEventListener('DOMContentLoaded', function () {
                     FastClick.attach(document.body);
                 }, false);
@@ -558,7 +558,8 @@
             "api": null,    //api接口，分页数据请求地址
             "container": ".pagination",    //分页列表填充容器
             "fnLoading": null,   //加载中
-            "fnLoaded": null    //ajax请求后，回调函数res[请求参数和返回的data]、ele[当前容器]
+            "fnSuccess": null,   //加载成功
+            "fnFailed": null    //ajax请求后，回调函数res[请求参数和返回的data]、ele[当前容器]
         },
         init: function (options) {
             var me = this,
@@ -663,11 +664,25 @@
                         data: res
                     };
                     me.$ele.data('page', ajax_info.page); //设置页数
+                    me.$ele.data('locked', false);    //解除锁定
 
-                    o.callback && o.callback.call(this, info, me.$ele);  //将结果返回
+                    o.fnSuccess && o.fnSuccess.call(this, info, me.$ele);  //将结果返回
+                },
+                error: function (res) {
+                    var info = {
+                        params: ajax_info,
+                        data: res
+                    };
+                    me.$ele.data('locked', true);    //锁定
+
+                    if(o.fnFailed){
+                        o.fnFailed.call(this, info, me.$ele);  //将结果返回
+                    }else{
+                        var errorMsg = res.msg || res.statusText;
+                        M.tips(errorMsg);
+                    }
                 },
                 complete: function () {
-                    me.$ele.data('locked', false);    //解除锁定
                     $('.pagination-loading').remove(); //移除loading
                 }
             });

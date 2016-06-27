@@ -20,14 +20,16 @@ var page = {
 
 
         //分页测试
-        $.pagination({
-            scrollBox: '.container',
-            api: '/beans',
-            container: '.container .floor-list',
-            fnLoaded: function (res, ele) {
-                console.log(JSON.stringify(res))
-            }
-        });
+        window.onload = function () {
+            $.pagination({
+                scrollBox: '.container',
+                api: '/beans',
+                container: '.container .floor-list',
+                fnSuccess: function (res, ele) {
+                    console.log(JSON.stringify(res))
+                }
+            });
+        };
     }
 };
 
