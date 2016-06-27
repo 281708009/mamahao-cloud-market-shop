@@ -1,0 +1,72 @@
+extends ../layouts/layout
+block title
+    title= (title ? title : '示例')
+block js
+    script(src='js/demo.js')
+block meta
+    meta(name='toTop')
+block content
+    #spa
+
+    //首页模板
+    script#tpl_home(type='text/html')
+        link(rel='stylesheet', href='css/center.css')
+        header
+            .profile
+                .avatar
+                    img(src='#{avatar}')
+                .info
+                    span.name #{nickName}
+                .details
+        section
+        section
+            ul
+                li
+                    a.js-tips(href='javascript:;') 小提示
+                li
+                    a.js-dialog(href='javascript:;')  模态对话框
+                li
+                    a.js-loading(href='javascript:;')  loading
+
+        include ../includes/mixin
+        +footer_nav()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
