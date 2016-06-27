@@ -27,6 +27,16 @@ body,html,#app{overflow-x:hidden;height:100%}
 .btn-primary{background-color: #ff4d61;color: #FFF;border: 1px solid #ff4d61;}
 .btn-reverse{background-color: #fff;color: #666;border: 1px solid #ccc;}
 
+/*===switch===*/
+.ui_switch{position:relative;box-sizing:border-box;width:50px;height:26px;outline:0;border-radius:14px;background:#dfdfdf;-webkit-appearance:none;appearance:none}
+.ui_switch:before,.ui_switch:after{position:absolute;top:1px;left:1px;height:24px;border-radius:15px;content:" ";-webkit-transition:transform .3s,-webkit-transform .3s;transition:transform .3s,-webkit-transform .3s;}
+.ui_switch:before{width:48px;background-color:#fdfdfd}
+.ui_switch:after{width:24px;background-color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.ui_switch:checked{border-color:#ff4d61;background-color:#ff4d61}
+.ui_switch:checked:before{-webkit-transform:scale(0);transform:scale(0)}
+.ui_switch:checked:after{-webkit-transform:translate3d(24px,0,0);transform:translate3d(24px,0,0)}
+
+
 /*===UI===*/
 .ui-mask{position: absolute;top:0;right:0;bottom:0;left: 0;background: rgba(0, 0, 0, .6);z-index: 70;opacity: 0;-webkit-transition: .3s;transition: .3s;visibility: hidden;}
 .ui-mask-transparent{background: transparent;}
