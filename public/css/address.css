@@ -1,20 +1,47 @@
-/*地址列表*/
-.m-address{height: 100%;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-orient: vertical;-webkit-flex-direction: column;flex-direction: column;}
-.m-address ul{-webkit-box-flex:1;-webkit-flex:1;-ms-flex:1;flex:1;overflow: auto}
-.m-address ul li{background: #fff;padding: 1em .5em;margin: .5em 0;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items: center;align-items: center;-webkit-box-align: center;}
-.m-address ul li .info{-webkit-box-flex:1;-webkit-flex:1;-ms-flex:1;flex:1;}
-.m-address ul li .info .name{margin-right: 1em}
-.m-address ul li .info dt{color: #000;}
-.m-address ul li .info dt .label{margin-right: .5em;}
-.m-address ul li .option .edit{display:block;width: 20px;height: 20px;background: rgba(255,77,97,.8);margin-left: .5em;text-indent: -9999px;}
-
-/*地址详情*/
-.m-address-info{height: 100%;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-orient: vertical;-webkit-flex-direction: column;flex-direction: column;}
-.m-address-info ul{-webkit-box-flex:1;-webkit-flex:1;-ms-flex:1;flex:1;overflow: auto}
-.m-address-info ul li{background-color: #FFF;margin: 8px 0;height: 40px;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items: center;align-items: center;-webkit-box-align: center;}
-.m-address-info ul li label{padding: 0 .8em;color: #333;}
-.m-address-info ul li input{-webkit-box-flex:1;-webkit-flex:1;-ms-flex:1;flex:1;min-width: 10px;}
-
-/*底部操作栏，置底*/
-.footer{text-align: center;padding: .5em;background: #fff;}
-.footer .btn{width: 100%}
+/* 地址管理 */
+.m-address .list{ padding-top: 10px;}
+.m-address .list > li{ padding: 16px 0; background-color: #FFF; margin-bottom: 10px; border-top: 1px solid #DCDCDC; border-bottom: 1px solid #DCDCDC; display:-webkit-box; display:flex; display:-webkit-flex;}
+.m-address .list > li label{ display: none; padding: 0 10px; position: relative;}
+.m-address .list > li a.edit{ padding: 0 15px; width: 50px; position: relative; text-indent: -88em; overflow: hidden;}
+.m-address .list > li a.edit:after{ content: ""; position: absolute;  width: 20px; height: 20px; left: 50%; top: 50%; transform:translate3d(-50%,-50%,0); -webkit-transform:translate3d(-50%,-50%,0); background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoBAMAAAB+0KVeAAAAJ1BMVEUAAACZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmahP7BAAAADHRSTlMAEs8Z2PHErXAm+ciS3RVTAAAAqUlEQVQoz73SsQ2CYBBA4YtGjImFpYWNKxjHsHAAC9zA1tLego4lKBgBSCCEMBR3CfDCUdFwxRG+vOZPTpZM/Gr7qez3luo6mIHbR6h73/xEmHtx0r2rEQuv9jnmPjTM5iFICBKChCAhSAgSgoSgC0FCkDAIQfdq24QgIUjoUEOPhCAhSDjBjYUeg7eA7DUwn+BF0R+Y/J8yO8Vz8pHhaJkyGs8b+8qS6QAbBWQwW5N+SQAAAABJRU5ErkJggg==') no-repeat; background-size: cover;}
+.m-address .list > li dl{ -webkit-box-flex: 1; flex:1; -webkit-flex:1; padding:0 10px;}
+.m-address .list > li dt{ color: #333;}
+.m-address .list > li dt strong{ font-weight: normal;margin-right: 1.5em;}
+.m-address .list > li dd{ font-size: 13px;}
+/* 默认地址 */
+.u-send .default dt,
+.m-address .list > li.default dt{ padding-left:35px; position: relative;}
+.u-send .default dt:after,
+.m-address .list > li.default dt:after{ content: ""; position: absolute; left: 0; top: 4px; width: 28px; height: 14px; background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADkAAAAcCAMAAADsp+cyAAAAP1BMVEX7oQL7oQL7oQIAAAD7oQL7oQL////+9On+6NH8r0P/+fT+7t38vWz90Jz7qCn93Lj9yo3+4sX8w338tln91qpNEHljAAAABXRSTlPxrSYAKAFLLCwAAAFxSURBVDjLpZWLboUgDIY9Z+vflgIK+P7POhSZm7qdzDUxKa1frwaHt+djoL/K8Hi+Dc+B7kjlHnRPHsNwk/wCMjbhehAE9s2eZ9oUCd/QnTTV5bFGFnarORosrtqE8QdScmQpXhpJGak5Epy+IDGxzOgkGWLzjJhfkJZYxD7JUrrLv6p2ZBYEYa9q0Cq++16Qlie2yVvFNxkp6iLthQA5kKetxKXHJV+kcTX0du1M7hV3BfvuOpngrkmvbZ/qa04gnUgD9Pdql7HCuRMJQ7gkY6u2DwP+QGYEx7/0qXkWT4KCdCATfEK5ICdh5wA4lkLOiN2BrAk95IpkmUNRjaOngFCfeSeLtLPBX/XJWdKEYkLreJzTTgpYV5sHX5ATsnDEHFzC/OWTUQASpc11hJxJczQ6YolhCywYW0SXKXVCYPFAZqQakYLP2MrUrd61P97Xbsecc6G4hpM+BT9R11i7qrap92+wf9ya7/eSVu723+EDKjUnGEP/+e8AAAAASUVORK5CYII=') no-repeat; background-size: cover;}
+/* 选择地址 */
+.m-address .list.select > li label{ display:-webkit-box; display:flex; display:-webkit-flex; align-items:center; -webkit-align-items:center; -webkit-box-align:center;}
+.m-address .list.select > li dl{ padding-left: 0;}
+/* 新建、编辑地址 */
+.m-address-edit{ padding-top: 10px;}
+.m-address-edit .u-form{ border-top: 1px solid #dcdcdc; border-bottom: 1px solid #dcdcdc;}
+/* 搜索地址 */
+.m-address-search .header .content{ position: fixed; width: 100%; background-color: #F0F0F0; z-index: 998;}
+.m-address-search .header .f-space{ height: 80px;}
+.m-address-search .search{ padding: 10px;}
+.m-address-search .search .field{ border: 1px solid #DCDCDC; padding:2px 0 4px 20px; border-radius: 5px; background-color: #fff; position: relative;}
+.m-address-search .search .field:after{ content:""; position:absolute; width:11px; height:11px; border-radius:50%; border:1px solid #999; left:5px; top:5px; overflow:hidden;}
+.m-address-search .search .field:before{ content:""; position:absolute; width:7px; height:1px; overflow:hidden; background-color:#999; transform:rotate(45deg); -webkit-transform:rotate(45deg); left:15px; top:17px;}
+.m-address-search .search input{ width: 100%; font-size: 14px; padding: 0 5px; background-color: transparent;}
+/* 搜索历史 */
+.m-address-search .history{ background-color: #FFF;}
+.m-address-search .history h3{ font-size: 15px; color: #333; font-weight: normal; height: 44px; line-height: 42px; padding: 0 10px; border-bottom: 1px solid #DCDCDC;}
+.m-address-search .history ul{ padding: 0 10px;}
+.m-address-search .history li{ padding: 10px 0; border-bottom: 1px solid #DCDCDC;}
+.m-address-search .history li:last-child{ border-bottom: 0;}
+.m-address-search .history .footer{ border-top: 1px solid #DCDCDC; padding: 14px 0; text-align: center; color: #999; font-size: 14px;}
+.m-address-search .history .footer del{ position: relative; display: inline-block; padding-left: 22px;}
+.m-address-search .history .footer del:after{ content: ""; position: absolute; left: 0; top: 1px; width: 18px; height: 18px; background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAAP1BMVEUAAAB8fX18fX18fX18fX18fX18fX18fX18fX18fX18fX18fX18fX18fX18fX18fX18fX18fX18fX18fX18fX29TpPEAAAAFHRSTlMAzDMPm/Im3uWtbcamkx3oz79CPSVczmcAAACOSURBVDjL7c7dDoIwDIbhjtL9CeLPd//XapCwTud2oDEkhPeo655koy/j62SWxrY7ITW0nbt3z24eQ9Od14Mt5GjW/OJUOmOyHzuk/OxUTki5+cEuxRl7v9m8vs+GcqUBOpSrAx5wN/BiSKcKLPoRcs3xCxTEGowQ0gIk8ifGEQikWUE1sZTLIBUWLP2pB4XqFf30aXJ6AAAAAElFTkSuQmCC') no-repeat; background-size: cover;}
+/* 附近地址 */
+.m-address-search .list{ background-color: #FFF; padding: 0 15px;}
+.m-address-search .list li{ padding: 10px 0; display:-webkit-box; display:flex; display:-webkit-flex; border-bottom: 1px solid #DCDCDC;}
+.m-address-search .list li:last-child{ border-bottom: 0;}
+.m-address-search .list dl{ -webkit-box-flex: 1; flex:1; -webkit-flex:1; padding-right: 10px;}
+.m-address-search .list dt{ font-size: 14px; color: #333;}
+.m-address-search .list dt em{ display: inline-block; width: 24px; height: 12px; overflow: hidden; text-indent: -88em; background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAYCAMAAACLI47uAAAAP1BMVEX/TWH/TWH/TWEAAAD/TWH/TWH/////r7b/ipX/7e7/bn3/xcn/2dz/o6v/Xm//usD/4+X/9vf/z9P/fIn/l6CELj42AAAABXRSTlPxrScAJX44OqYAAAE5SURBVDjLpZRtj4QgDIR1dztAgYIv//+3XqWuuO59OHNP4piMnZTWhOH5Ggf6I8P4eg6PgW6g5SM1IkSV4yKZOpJWUlL3xmFv4GC6eHir9RuIXZvf6nsgzEQpNcPjivkWEAusWJm1CzOT8AbmZdPCGz3g0VgC3sSjcVG1SagHOOcZ+rSzoqgsJMUparkDC/QZHLB5sJVwUCZM4aBeAhJcOyucipibglDn2qEI3lgXH+HnuOMugYIJ0mdg+5mOamoEBDkP7SpQhPoMVg/acVOSc4cFKYHoI+ADKt7lU77MwPbjzjNw9eq13SaU77VaYM45I6osuzfZcn9b6+VI5n2+/xNgKi0QdINN6lHIQuU7UIGwBWrcmUlphRlAOAdawudViCR6OuPdZtq3Xj/SLcb7l8DzceeaeTx/ABwsHd5qHcb8AAAAAElFTkSuQmCC') no-repeat; background-size: cover;}
+.m-address-search .list dd{ font-size: 12px;}
+.m-address-search .list > li > span{ color: #999; display:-webkit-box; display:flex; display:-webkit-flex; align-items:center; -webkit-align-items:center; -webkit-box-align:center; font-size: 12px;}

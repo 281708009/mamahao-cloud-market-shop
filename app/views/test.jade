@@ -1,0 +1,15 @@
+extends layouts/layout
+block title
+    title 这是测试页面
+block js
+    script.
+        M.ajax({
+            url: '/test/request',
+            data: {},
+            success: function (res) {
+                console.log('res---->',res)
+            }
+        });
+
+block content
+    h3 这是测试页面 id: #{id}, pid: #{pid}

@@ -17,7 +17,7 @@ var page = {
     getVCode: function () {
         /*手机号必填*/
         var _form = $("form"),
-            _mobile = _form.find(".mobile"),
+            _mobile = _form.find(".js-mobile"),
             mobile_val = $.trim(_mobile.val());
         var mobile_reg = /^1[3,5,7,8]{1}\d{9}$/;
         if (!mobile_val || !mobile_reg.test(mobile_val)) {
@@ -26,15 +26,15 @@ var page = {
         }
         /*读秒操作*/
         var _this = $(this);
-        if (_this.hasClass("disabled")) return false;
-        _this.addClass("disabled");
+        if (_this.hasClass("ban")) return false;
+        _this.addClass("ban");
 
         var wait = 60, //定义等待时长
             context = _this.text();
         timer(_this);
         function timer(obj) {
             if (wait == 0) {
-                obj.removeClass("disabled").text(context);
+                obj.removeClass("ban").text(context);
             } else {
                 obj.text(wait + '秒后重发');
                 wait--;

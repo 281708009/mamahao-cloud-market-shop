@@ -1,23 +1,23 @@
 // 妈豆记录;
-link(rel='stylesheet', href='css/beans.css')
-dl.info
-    dt
-        strong #{sum}
-        em 个
-    dd 100妈豆=1元，购物可抵现金
-.record
-    .title
-        strong 妈豆交易明细
-        a(href='http://h5.mamahao.com/help/beans/') 妈豆说明
-    if rows
-        ul.list
-            each item, index in rows
-                li
-                    dl
-                        dt #{item.title}
-                        dd
-                            time #{item.date}
-                    if item.type
-                        sup #{item.text}
-                    else
-                        sub #{item.text}
+section.m-beans
+    dl.info
+        dt
+            strong #{sum}
+            em 个
+        dd 100妈豆=1元，购物可抵现金
+    .m-record
+        .title
+            strong 妈豆交易明细
+            a(href='http://h5.mamahao.com/help/beans/') 妈豆说明
+        if rows
+            ul.list
+                each item, index in rows
+                    li
+                        dl
+                            dt #{item.title}
+                            dd
+                                time #{item.date}
+                        if item.type
+                            sup #{item.text}
+                        else
+                            sub #{item.text}

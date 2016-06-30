@@ -148,7 +148,7 @@
                     }
                 },
                 complete: function (res) {
-                    console.log('complete--->', res)
+                    //console.log('complete--->', res)
                     c.isAjax = false;
                     MMH.hideLoading();
                     params.complete && params.complete.call(this, res);
@@ -239,8 +239,8 @@
                     params.title && o.hd.html(params.title);
                     o.ft.empty().append(function () {
                         return $.map(params.buttons, function (item, index) {
-                            var btnClass = index === 0 ? 'btn-primary' : 'btn-reverse';
-                            return ['<button class="btn ' + btnClass + '">' + item + '</button>'];
+                            var btnClass = index === 0 ? 'success' : '';
+                            return ['<button class="u-btn ' + btnClass + '">' + item + '</button>'];
                         }).join('');
                     });
 
@@ -251,10 +251,10 @@
                     o.mask.add(o.inner).show().addClass('visible');
 
                     /*bind events*/
-                    o.ft.on('click', '.btn:eq(0)', function () {
+                    o.ft.on('click', '.u-btn:eq(0)', function () {
                         params.confirm ? params.confirm.call(this) : fun.hide();
                     });
-                    o.ft.on('click', '.btn:eq(1)', function () {
+                    o.ft.on('click', '.u-btn:eq(1)', function () {
                         params.cancel ? params.cancel.call(this) : fun.hide();
                     });
                 },
@@ -266,7 +266,7 @@
                     o.inner.removeClass('visible').transitionEnd(function () {
                         o.wrapper.remove();
                     });
-                    o.ft.find('.btn').off('click');
+                    o.ft.find('.u-btn').off('click');
                 }
             };
             fun.init();
@@ -541,6 +541,7 @@
  *  container: '.container .floor-list',
  *  fnLoaded: function (res, ele) {
  *      console.log(JSON.stringify(res))
+ *      ele.data('locked', true);
  *  }
  * });
  * ==============================================================================

@@ -23,10 +23,11 @@ var page = {
         window.onload = function () {
             $.pagination({
                 scrollBox: '.container',
-                api: '/beans',
+                api: '/test/request',
                 container: '.container .floor-list',
                 fnSuccess: function (res, ele) {
                     console.log(JSON.stringify(res))
+                    ele.data('locked', true);
                 }
             });
         };

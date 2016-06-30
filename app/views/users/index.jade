@@ -1,0 +1,59 @@
+extends ../layouts/layout
+block title
+    title= (title ? title : '个人中心')
+block css
+    link(rel='stylesheet', href='css/center.css')
+    link(rel='stylesheet', href='css/orders.css')
+    link(rel='stylesheet', href='css/address.css')
+block js
+    script(src='/js/center.js')
+block meta
+    meta(name='toTop')
+block content
+    #spa
+
+    //首页模板
+    script#tpl_home(type='text/html')
+        include components/center
+
+    //添加地址模板
+    script#tpl_address_add(type='text/html')
+        include components/address_add
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

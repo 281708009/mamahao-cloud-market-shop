@@ -1,48 +1,78 @@
+/**
+ * 路由控制器
+ */
 
-var express = require('express');
 var router = express.Router();
-var users = require('../controllers/users');
+var auth = require("../middleware/auth");
+
+var indexCtrl = require("../controller/index");
+var storeCtrl = require("../controller/store");
+var categoryCtrl = require("../controller/category");
+var cartCtrl = require("../controller/cart");
+var usersCtrl = require("../controller/users");
+var wechateCtrl = require("../controller/wechat");
 
 
-/*
-* 首页
-* */
-router.get('/',users.index)
-    .get('/index',users.index);
-
-
-/*
-* 登录
-* */
-router.get('/login', users.login);
-
+/**
+ * 网站主页
+ */
+router
+    .get("/",indexCtrl.index)
+    .get("/index",indexCtrl.index);
 
 /**
  * 门店
  */
 router
-    .get("/store", users.store);
+    .get("/store", storeCtrl.index);
 
 /**
  * 分类
  */
 router
-    .get("/category", users.category);
+    .get("/category", categoryCtrl.index);
 
 /**
  * 购物车
  */
 router
-    .get("/cart", users.cart);
+    .get("/cart", cartCtrl.index);
 
-/*
- * 个人中心
- * */
-router.get('/center', users.center.index);
+
+/**
+ * 用户登录
+ */
 router
-    .post('/address', users.center.address)
-    .post('/address/edit', users.center.addressEdit)
-    .post('/beans', users.center.beans)
-    .post('/integral', users.center.integral)
+    .get("/login", usersCtrl.toLogin)
+    .post("/login", usersCtrl.doLogin)
+    .all("/logout", usersCtrl.logout)
+    .all("/sendMessage", usersCtrl.sendMessage);
+
+
+/*用户个人中心*/
+//router.get('/center',auth.requiredAuthentication,usersCtrl.center);
+router
+    .get('/center',auth.requiredAuthentication, usersCtrl.center.index);
+router
+    .post('/orders', usersCtrl.center.orders)
+    .post('/address', usersCtrl.center.address)
+    .post('/address/edit', usersCtrl.center.addressEdit)
+    .post('/beans', usersCtrl.center.beans)
+    .post('/integral', usersCtrl.center.integral)
+    .post('/coupons', usersCtrl.center.coupons)
+;
+
+
+/**
+ * 微信相关
+ */
+router
+    .get("/wechat", wechateCtrl.toWechat)
+    .get("/weixin/callback", wechateCtrl.wechatCallBack);
+
+
+/*demo*/
+router
+    .get("/demo", usersCtrl.demo);
 
 module.exports = router;

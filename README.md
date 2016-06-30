@@ -11,12 +11,12 @@
 + 服务器端相关的文件夹和文件
 + app目录,主要包括MVC三大部分
 + config目录，包括应用的配置信息，控制服务器的行为
-+ app.js 应用入口
++ server.js 应用入口
 
-**app.js**
+**server.js**
 
-应用的入口文件，启动文件在bin目录下，可以使用`node ./bin/www`来启动。      
-app.js的主要功能   
+应用的入口文件，启动文件在bin目录下，可以使用`node ./bin/www`来启动。
+server.js的主要功能
 
 + 加载配置信息. 主要是应用本身的配置，认证和数据库连接的配置加载。
 + 加载模型. 遍历models目录下(包括子目录)中模型定义文件，并且加载。
@@ -52,11 +52,11 @@ test目录包含了项目的测试代码，待定
 ### 三、开发工具相关
 
 1. IDE：webstorm，抛弃其他
-2. 版本控制系统： git，抛弃svn
-3. 单元测试： jsamine，前后端共用
-4. 前端框架： angular、vue、backbone、react、react-native
-5. 服务端： jade + REST
-6. 异步流程控制：Promise是唯一选择，而且从一开始就要强制使用，绝不可忽略，这关系到设计思维的巨大差异，甚至关系到我们是否真正能够在node.js方向坚持下来。我们用Q.js，和前端Angular.js使用的微缩版Q.js保持一致，减少学习周期。
+2. 版本控制系统： ~~git，抛弃~~svn
+3. 单元测试： ~~jsamine，前后端共用~~
+4. 前端框架： ~~angular、vue、backbone、react、react-native~~
+5. 服务端： jade ~~+ REST~~
+6. 异步流程控制：Promise是唯一选择，而且从一开始就要强制使用，绝不可忽略，这关系到设计思维的巨大差异，甚至关系到我们是否真正能够在node.js方向坚持下来。~~我们用Q.js，和前端Angular.js使用的微缩版Q.js保持一致，减少学习周期。~~
 
 ### 四、git常用命令
 
@@ -80,4 +80,10 @@ git push -u origin master
 
 + v1.0(160602)
 
+### 六、发布
+根目录下 **run.sh** 为生产环境应用的启动脚本，在终端执行
+```
+sh run.sh
+```
+即可启动应用。
 

@@ -7,9 +7,11 @@ var page = {
         // ajax向node请求的url;
         api: {
             home: "/home",
+            orders: "/orders",
             address: "/address",
             addressEdit: "/address/edit",
             beans: "/beans",
+            coupons: "/coupons",
             integral: "/integral"
         }
     },
@@ -33,7 +35,6 @@ var page = {
 
         var home = {
             url: '/',
-            className: 'm-home',
             render: function (callback) {
                 var template = $('#tpl_home').html();
                 callback(null, template);
@@ -43,10 +44,16 @@ var page = {
             }
         };
 
+        /*订单列表*/
+        var orders = {
+            url: '/orders',
+            render: function (callback) {
+                page.renderModule('orders', callback);
+            }
+        };
         /*地址列表*/
         var address = {
             url: '/address',
-            className: 'm-address',
             render: function (callback) {
                 page.renderModule('address', callback);
             }
@@ -55,7 +62,6 @@ var page = {
         /*新增地址*/
         var address_add = {
             url: '/address/add',
-            className: 'm-address-info',
             render: function () {
                 return $('#tpl_address_add').html();
             }
@@ -64,7 +70,6 @@ var page = {
         /*编辑地址*/
         var address_edit = {
             url: '/address/edit/:id',
-            className: 'm-address-info',
             render: function (callback) {
                 var params = this.params;
                 page.renderModule('addressEdit', callback, params);
@@ -74,7 +79,6 @@ var page = {
         // 妈豆列表；
         var beans = {
             url: '/beans',
-            className: 'm-beans',
             render: function (callback) {
                 page.renderModule('beans', callback);
             }
@@ -83,27 +87,31 @@ var page = {
         // 分员积分；
         var integral = {
             url: '/integral/:type',
-            className: 'm-integral',
             render: function (callback) {
                 var params = this.params;
                 page.renderModule('integral', callback, params);
             }
         };
+        // 优惠券；
+        var coupons = {
+            url: '/coupons',
+            render: function (callback) {
+                page.renderModule('coupons', callback);
+            }
+        };
 
         router.push(home)
+            .push(orders)
             .push(address)
             .push(address_add)
             .push(address_edit)
             .push(beans)
             .push(integral)
+            .push(coupons)
             .setDefault('/').init();
     },
     /*渲染模块*/
     renderModule: function (module, callback, params) {
-        params && $.each(params, function(key, val){
-            params[key] = val.replace(/^:/g,'');
-        });
-        // console.log(hash)
         M.ajax({
             url: page.config.api[module],
             dataType: "html",

@@ -1,19 +1,16 @@
-link(rel='stylesheet', href='css/address.css')
-if rows
-    ul.smooth
-        each item, index in rows
-            li
-                dl.info
-                    dt
-                        if item.default
-                            label.label 默认
-                        span.name #{item.name}
-                        span #{item.mobile}
-                    dd
-                        span #{item.address}
-
-                div.option
-                    a.edit(href='#/address/edit/:#{item.id}') edit
-
-.footer
-    a.btn.btn-primary(href='#/address/add') 新增收货地址
+section.m-address
+    if rows
+        ul.list
+            each item, index in rows
+                li(class={default : item.isDefault == true})
+                    dl
+                        dt
+                            strong #{item.consignee}
+                            em #{item.phone}
+                        dd #{item.prv}#{item.city}#{item.area}#{item.gpsAddr}#{item.addrDetail}
+                    a.edit(href='#/address/edit/#{item.deliveryAddrId}') 编辑
+        section.u-footer-button.fixed
+            ul
+                li
+                    a.u-btn.max.success.alone(href='#/address/add') + 新增收货地址
+            .f-space

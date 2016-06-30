@@ -1,0 +1,40 @@
+section.m-order
+    .u-tab.fixed
+        ul
+            li.active 全部
+            li 待付款
+            li 待发货
+            li 待收货
+            li 待评价
+        .f-space
+    if rows
+        .list
+            each order, index in rows
+                // .wait待付款
+                .item.wait
+                    dl.header
+                        dt 订单号：#{order.orderNo}
+                        dd 已完成
+                    .content(class={ditto:order.goodsList.length>1})
+                        ul.pic
+                            each goods in order.goodsList
+                                li
+                                    img(src='#{goods.itemPic}@1e_400w_400h_0c_0i_0o_100q_1x.jpg')
+
+                        if(order.goodsList.length===1)
+                            each goods in order.goodsList
+                                dl
+                                    dt #{goods.itemName}
+                                    dd
+                                        each spec in goods.spec
+                                            | #{spec.value} &nbsp;
+
+                        .u-arrow.right.number 共#{order.itemCount}件
+                    .footer
+                        dl
+                            dt 实付：￥1542.00
+                            dd 14分58秒后订单失效
+                        ul
+                            li
+                                button.u-btn.checked 立即付款
+

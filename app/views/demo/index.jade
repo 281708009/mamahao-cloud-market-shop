@@ -2,11 +2,11 @@ extends ../layouts/layout
 block title
     title= (title ? title : '示例')
 block css
-    link(rel='stylesheet', href='css/animate.css')
+    link(rel='stylesheet', href='/css/animate.css')
 block js
-    script(src='lib/dropload.min.js')
-    script(src='lib/headroom.js')
-    script(src='js/demo.js')
+    script(src='/lib/dropload.min.js')
+    script(src='/lib/headroom.js')
+    script(src='/js/demo.js')
 block meta
     meta(name='toTop')
 block content
@@ -37,7 +37,7 @@ block content
             h3 Form
             ul
                 li 开关 &nbsp;&nbsp;
-                    input.fr.ui_switch(type='checkbox')
+                    input.u-switch(type='checkbox')
 
         section
             h3 Scroller
