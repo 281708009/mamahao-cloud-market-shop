@@ -64,6 +64,18 @@ var page = {
             url: '/address/add',
             render: function () {
                 return $('#tpl_address_add').html();
+            },
+            bind: function () {
+                $('.js-add').on('click', function () {
+                    var data = page.getAddressData($('.u-form'));
+                    M.ajax({
+                        url: '/',
+                        data: data,
+                        success: function (res) {
+                            console.log(res)
+                        }
+                    });
+                });
             }
         };
 
@@ -110,14 +122,29 @@ var page = {
             .push(coupons)
             .setDefault('/').init();
     },
+    /*拼接地址表单数据*/
+    getAddressData: function (form) {
+        var data = {
+            addrDetail: form.find('.name').val(),
+            areaId: "",
+            consignee: "",
+            deliveryAddrId: "",
+            gpsAddr: "",
+            isDefault: "",
+            lat: "",
+            lng: "",
+            memberId: "",
+            phone: ""
+        };
+    },
     /*渲染模块*/
     renderModule: function (module, callback, params) {
         M.ajax({
             url: page.config.api[module],
-            dataType: "html",
             data: params || {},
             success: function (res) {
-                var template = res;
+                //console.log(res)
+                var template = res.template;
                 callback(null, template);
             }
         });

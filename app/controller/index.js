@@ -8,7 +8,7 @@ var logger = require("../utils/log").logger;
  */
 
 exports.index = function (req, res, next) {
-    HttpClient.request(req,{
+    HttpClient.request(arguments,{
         type:'get',
         url:'/V2/member/acct/anonymous/user.htm',
         data:{

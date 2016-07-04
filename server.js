@@ -6,17 +6,16 @@
 global.express = require('express');
 global.AppConfig = require('./app/config');
 global.log = require('./app/utils/log');
+global.jade = require('jade');
 
 /*依赖模块*/
-var express = require('express')
-    , path = require('path')
+var path = require('path')
     , fs = require('fs')
     , bodyParser = require('body-parser')
     , cookieParser = require('cookie-parser')
     , favicon = require('serve-favicon')
     , methodOverride = require('method-override')
     , flash = require('connect-flash')
-    , jade = require('jade')
     , domain = require("domain")
     , session = require('express-session')
     , MemcachedStore = require('connect-memcached')(session);
@@ -29,6 +28,7 @@ var routes = require('./app/routes')
 
 var app = express();  //创建express实例
 
+/*读取配置文件*/
 process.env.PORT = AppConfig.site.port;
 log.use(app);
 
@@ -58,11 +58,10 @@ app.use(function (req, res, next) {
         console.error(err.stack);
         console.error("====================异常捕获A-结束====================");
 
-        if (req.xhr || (req.headers['accept'] && req.headers['accept'].toLowerCase() == 'application/json')) {
-            res.writeHead(500, {'Content-Type': 'application/json'});
-            res.end(JSON.stringify({error_code: 500, msg: '出错啦'}));
+        if (req.is('json')) {
+            res.status(500).json({error_code: 500, msg: '出错啦'});
         } else {
-            res.render("error", {title: "出错啦", message: "出错啦"});
+            res.render("error", {title: 500, message: "出错啦"});
         }
     });
     reqDomain.run(next);
@@ -92,10 +91,9 @@ app.use('/test', testRouter);  //配置测试路由
 /**
  * 处理404
  */
-app.all('*', function (req, res) {
-    if (req.xhr || (req.headers['accept'] && req.headers['accept'].toLowerCase() == 'application/json')) {
-        res.writeHead(404, {'Content-Type': 'application/json'});
-        res.end(JSON.stringify({error_code: 404, msg: '迷路了'}));
+app.all('*', function (req, res, next) {
+    if (req.is('json')) {
+        res.status(404).json({error_code: 404, msg: '迷路了'});
     } else {
         res.render("404", {title: "404"});
     }

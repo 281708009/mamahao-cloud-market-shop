@@ -9,7 +9,11 @@ var test = {
             id: req.params.id,
             pid: req.params.pid
         };
-        res.render('test',data);
+        res.render('test',data, function (err,html) {
+            res.write(html);
+            res.write('<script>console.log("bigPipe test...")</script>');
+            res.end();
+        });
     },
     request: function (req, res, next) {
         var data = {

@@ -19,7 +19,7 @@
     "express-flash": "0.0.2",
     "express-logger": "0.0.3",
     "express-session": "^1.13.0",
-    "jade": "^1.11.0",
+    "jade": "latest",
     "log4js": "~0.6.36",
     "lru-cache": "^4.0.1",
     "method-override": "^2.3.6",

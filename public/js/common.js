@@ -136,6 +136,19 @@
                 dataType: params.dataType || "json",
                 timeout: 2e4,  //20s
                 success: function (res) {
+                    if (res.error_code) {
+                        var errorMsg = res.msg;
+                        if (res.error_code === -10000) {
+                            //未登录
+                            return MMH.tips({
+                                body: "您还未登录，请登录后再试！",
+                                callback: function () {
+                                    location.href = '/login';
+                                }
+                            });
+                        }
+                        return MMH.tips(errorMsg);
+                    }
                     params.success && params.success.call(this, res);
                 },
                 error: function (res) {
@@ -144,6 +157,7 @@
                         params.error.call(this, res);
                     } else {
                         var errorMsg = res.msg || res.statusText;
+                        console.log('xxx', res)
                         MMH.tips(errorMsg);
                     }
                 },
@@ -171,7 +185,7 @@
                     o.bd = $('.ui-tips-bd');
 
                     var defaults = {
-                        delay: 2000,
+                        delay: 1500,
                         callback: null  //消失后的回调函数
                     };
                     if (Object.prototype.toString.call(args) !== '[object Object]') {
@@ -187,7 +201,7 @@
                     var timer = setTimeout(function () {
                         clearTimeout(timer);
                         fun.hide();
-                    }, params.delay || 2000);
+                    }, params.delay);
 
                 },
                 show: function () {
@@ -676,9 +690,9 @@
                     };
                     me.$ele.data('locked', true);    //锁定
 
-                    if(o.fnFailed){
+                    if (o.fnFailed) {
                         o.fnFailed.call(this, info, me.$ele);  //将结果返回
-                    }else{
+                    } else {
                         var errorMsg = res.msg || res.statusText;
                         M.tips(errorMsg);
                     }

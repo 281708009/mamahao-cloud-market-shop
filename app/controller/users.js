@@ -84,7 +84,7 @@ var users = {
     /*请求登录*/
     doLogin: function (req, res, next) {
         var mobile = req.body.mobile, vcode = req.body.vcode;
-        HttpClient.request(req, {
+        HttpClient.request(arguments, {
             url: API.login,
             data: {
                 phone: mobile,
@@ -103,10 +103,6 @@ var users = {
                 };
                 req.session.user = user;//设置当前用户到session
                 res.json({success: true, msg: "登录成功！"});
-            },
-            error: function (data) {
-                console.log('error---->', data);
-                res.json({error_code: data.error_code, msg: data.error});
             }
         });
     },
@@ -119,7 +115,7 @@ var users = {
     /*发送验证码*/
     sendMessage: function (req, res, next) {
         var mobile = req.body.mobile;
-        HttpClient.request(req, {
+        HttpClient.request(arguments, {
             url: API.vcode,
             data: {
                 phone: mobile
@@ -132,21 +128,20 @@ var users = {
     /*到个人主页*/
     center: {
         index: function (req, res, next) {
-            var data = {
-                avatar: 'http://cmi.mamhao.cn/member-head-images/32/aef701b886df7222dc4ff984709c283a.jpg',
-                nickName: '夏青松',
-                wallet: {
-                    beans: 9166,
-                    coupons: 10,
-                    gb: 105,
-                    mc: 0
+            HttpClient.request(arguments, {
+                url: API.center,
+                success: function (data) {
+                    var session_user = req.session.user || {};  // 用户基本信息数据;
+                    data.avatar = session_user.avatar; //头像
+                    data.nickName = session_user.nickname; // 用户名
+
+                    res.render('users/index', data);
                 }
-            };
-            res.render('users/index', data);
+            });
         },
         /*订单列表*/
         orders: function (req, res, next) {
-            HttpClient.request(req, {
+            HttpClient.request(arguments, {
                 url: API.orderList,
                 data: {
                     page: 1,
@@ -156,28 +151,32 @@ var users = {
                     var json = {
                         rows: data.rows
                     };
-                    res.render('users/orders', json);
+                    res.render('users/orders', json, function (err, html) {
+                        res.json({template: html});
+                    });
                 }
             });
 
         },
         /*地址列表*/
         address: function (req, res, next) {
-            HttpClient.request(req, {
+            //列表
+            HttpClient.request(arguments, {
                 url: API.addressList,
                 success: function (data) {
                     var json = {
                         rows: data.data
                     };
-                    res.render('users/components/address', json);
+                    res.render('users/components/address', json, function (err, html) {
+                        res.json({template: html});
+                    });
                 }
             });
 
         },
         /*编辑地址*/
         addressEdit: function (req, res, next) {
-            /*取地址列表*/
-            HttpClient.request(req, {
+            HttpClient.request(arguments, {
                 url: API.addressList,
                 success: function (data) {
                     var json = {}, list = data.data, len = list.length;
@@ -187,15 +186,16 @@ var users = {
                             break;
                         }
                     }
-                    res.render('users/components/address_edit', json);
+                    res.render('users/components/address_edit', json, function (err, html) {
+                        res.json({template: html});
+                    });
                 }
             });
         },
         // 妈豆记录;
         beans: function (req, res, next) {
             //console.log(req)
-            var userInfo = req.session.user; // 用户基本信息数据;
-            HttpClient.request(req, {
+            HttpClient.request(arguments, {
                 url: API.MBeanList,
                 data: {
                     page: 1,
@@ -204,27 +204,29 @@ var users = {
                 success: function (data) {
                     //console.log(data)
                     // 重组数据;
-                    var d = {
+                    var json = {
                         name: "beans",
                         sum: data.mbeanCount, // 总妈豆数;
                         rows: []
                     }, i = 0, mbeans = data.mbeans, l = mbeans.length;
                     for (; i < l; i++) {
-                        d.rows.push({
+                        json.rows.push({
                             type: mbeans[i].mathOperator,       // 记录类型 0扣妈豆 1加妈豆;
                             title: mbeans[i].titleShow,         // 描述;
                             text: mbeans[i].mbeanNumShow,       // 数值;
                             date: mbeans[i].createDate          // 时间;
                         });
                     }
-                    res.render('users/components/beans', d);
+                    res.render('users/components/beans', json, function (err, html) {
+                        res.json({template: html});
+                    });
                 }
             });
         },
         // 我的积分;
         integral: function (req, res, next) {
             var params = req.body; // 请求参数值;
-            HttpClient.request(req, {
+            HttpClient.request(arguments, {
                 url: API.MemberPoint,
                 data: {
                     type: +params.type, // 积分类型 0：GB,1:MC
@@ -232,13 +234,15 @@ var users = {
                     pageSize: 20
                 },
                 success: function (data) {
-                    res.render('users/components/integral', data);
+                    res.render('users/components/integral', data, function (err, html) {
+                        res.json({template: html});
+                    });
                 }
             });
         },
         // 我的优惠券;
         coupons: function (req, res, next) {
-            HttpClient.request(req, {
+            HttpClient.request(arguments, {
                 url: API.coupons,
                 data: {
                     page: 1,
@@ -246,7 +250,9 @@ var users = {
                     status: 4
                 },
                 success: function (data) {
-                    res.render('users/components/coupons', data);
+                    res.render('users/components/coupons', data, function (err, html) {
+                        res.json({template: html});
+                    });
                 }
             });
         }

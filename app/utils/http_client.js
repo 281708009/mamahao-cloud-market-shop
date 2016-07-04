@@ -1,6 +1,7 @@
 /*
  *  HttpClient
  *  封装request请求，使用方式和ajax的调用类似，以后可以在此对象上进行扩展其他方法
+ *  error callback对象不设置时，会统一错误处理
  *  req参数必传
  *  by xqs 16/06/07
  *
@@ -14,13 +15,14 @@ var HttpClient = {
 
     /*
      * request
-     * @req [Object] 必需
+     * @args [Object] 必需，包含request和response
      * @params [Object] 必需
      * */
-    request: function (req, params) {
+    request: function (args, params) {
         var request = require("request");
+        var req = args[0],res = args[1];  //取参数
 
-        //console.log('req---->',req);
+        console.log('req---->',req);
 
         /*根据配置文件取api地址*/
         var config_api = AppConfig.site.api;  //config api
@@ -30,51 +32,51 @@ var HttpClient = {
         /*参数*/
         var options = {
             method: params.type || 'POST',
-            baseUrl: baseUrl,
-            url: params.url || '/',
+            uri: baseUrl + params.url || '/',
             headers: params.headers || session.user
                 ? {
                 memberId: session.user.id,
                 token: session.user.token
             }
                 : {},
-            form: params.data || {}
+            body: querystring.stringify(params.data || {})
         };
-
-        /*区分request方式*/
-        if (options.method.toLowerCase() === 'get') {
-            if (params.data) {
-                //options.qs = true;
-                options.url += '?' + querystring.stringify(params.data);
-            }
-        }
-
 
         // API请求日志打印;
         console.log("\r\n\r\nAPI请求日志打印开始");
         console.log("session:" + JSON.stringify(session));
-        console.log("url:" + options.url);
+        console.log("url:" + options.uri);
         console.log("headers:" + JSON.stringify(options.headers));
-        console.log("form:" + JSON.stringify(options.form));
+        console.log("body:" + options.body);
         console.log("\r\nAPI请求日志打印结束\r\n\r\n");
 
 
         /*callback*/
         function callback(error, response, body) {
 
-            //console.log('response--->' + JSON.stringify(response));
+            console.log('response--->' + JSON.stringify(response));
             console.log('response body--->' + body);
 
+            //  成功 {success: true, msg: 'success'}
+            //  失败 {error_code: 1001, msg: '404 error'}
             if (!error && response.statusCode === 200) {
                 var info = JSON.parse(body);
                 if (info != null && !info.error_code) {
                     params.success && params.success.call(this, info);
                 } else {
-                    console.log(body)
-                    params.error && params.error.call(this, body);
+                    var error = {error_code: info.error_code, msg: info.error};
+                    if(params.error){
+                        return params.error.call(this, error);
+                    }
+                    res.json(error);
+
                 }
             } else {
-                params.error && params.error.call(this, body);
+                var error = {error_code: response.statusCode, msg: response.statusCode + ' error'};
+                if(params.error){
+                    return params.error.call(this, error);
+                }
+                res.json(error);
             }
         }
 
@@ -87,6 +89,7 @@ var HttpClient = {
      * */
     fetch: function (req, params) {
         var fetch = require('node-fetch');
+        var req = args[0],res = args[1];  //取参数
 
         console.log('req---->',req);
 
@@ -105,7 +108,7 @@ var HttpClient = {
                 token: session.user.token
             }
                 : {},
-            body: params.data && querystring.stringify(params.data) || ''
+            body: querystring.stringify(params.data || {})
         };
 
         fetch(requestUrl, options)
