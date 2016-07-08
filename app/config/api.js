@@ -8,8 +8,8 @@ var api = {
     "vcode": "/V1/sms/vcode/sendSmsVcodeForLoginOrReg.htm",     //获取验证码
     "center": "/V1/member/center/getMemberCenterCountInfo.htm",     //个人中心
     "MBeanList": "/V1/mbean/queryMBeanList.htm",     //获取妈豆记录
-    "MemberPoint": "/V1/member/center/queryMemberPoint.htm",     //分员积分
-    "coupons": "/V2/coupon/list.htm",     //分员积分
+    "MemberPoint": "/V1/member/center/queryMemberPoint.htm",     //积分
+    "coupons": "/V2/coupon/list.htm",     //优惠券
     "orderList": "/V3/order/basic/queryOrderList.htm",     //订单地址列表
     "addressList": "/V1/member/delivery/getDeliveryAddr.htm",     //收货地址列表
     "checkArea": "/V1/basic/checkArea.htm",     //地址

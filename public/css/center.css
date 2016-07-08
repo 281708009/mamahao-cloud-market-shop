@@ -33,21 +33,20 @@
 .m-record li sub,
 .m-record li sup{ min-width: 50px; color:#477ED8; text-align: right;}
 .m-record li sup{ color:#FF4D61;}
-
 /* 优惠劵 */
-.m-coupon .header .content{ background-color: #FFF; position: fixed; width: 100%; z-index: 998;}
+.m-coupon { height: 100%;}
+.m-coupon .header{ background-color: #FFF;}
 .m-coupon .header .convert{ padding: 10px; border-bottom: 1px solid #DCDCDC; display:-webkit-box; display:flex; display:-webkit-flex;}
 .m-coupon .header .convert input{ border: 1px solid #DCDCDC; font-size: 13px; border-radius: 5px; background-color: #F8F8F8; -webkit-box-flex: 1; flex:1; -webkit-flex:1;}
 .m-coupon .header .u-btn{ margin-left: 10px;}
-.m-coupon .header .f-space{ height: 93px;}
 
-.m-coupon .list{ padding: 10px;}
+.m-coupon .list{ padding: 10px; -webkit-box-flex: 1; flex:1; -webkit-flex:1; overflow: auto; -webkit-overflow-scrolling: touch;}
 .m-coupon .list .item{ border: 1px solid #DCDCDC; background-color: #FFF; min-height: 50px; border-radius: 8px; overflow: hidden; position: relative; margin-bottom: 10px;}
 .m-coupon .list .item:last-child{ margin-bottom: 0;}
 .m-coupon .list .item:after{ content: ""; position: absolute; height: 4px; width: 100%; left: 0; top: 0; right: 0;}
 .m-coupon .list .item:before{ content: ""; position: absolute; width: 120px; height: 120px; right: -20px; top: 30px; background: url('data:image/png;base64,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') no-repeat; background-size: cover;}
 .m-coupon .list .item > del{ display: none;}
-.m-coupon .list .content{ display:-webkit-box; display:flex; display:-webkit-flex; padding: 15px;}
+.m-coupon .list .content{ display:-webkit-box; display:flex; display:-webkit-flex; padding: 15px; color: inherit;}
 .m-coupon .list .content dl{ -webkit-box-flex: 1; flex:1; -webkit-flex:1;}
 .m-coupon .list .content dt{ font-size: 40px; line-height: 1;}
 .m-coupon .list .content dt span{ font-size: 18px;}
@@ -58,3 +57,17 @@
 .m-coupon .list .info dl{ -webkit-box-flex: 1; flex:1; -webkit-flex:1; display:-webkit-box; display:flex; display:-webkit-flex; padding-right: 5px;}
 .m-coupon .list .info dt{ width: 3em; display:inline-block;}
 .m-coupon .list .info dd{ -webkit-box-flex: 1; flex:1; -webkit-flex:1; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow: hidden;}
+/* 展开 */
+.m-coupon .list .info.unfold dd{ -webkit-line-clamp:initial;}
+/* 不同样式 */
+.m-coupon .list .item.style-0 .content dl{ color: #FE4E61;}
+.m-coupon .list .item.style-0:after{background-color: #FE4E61;}
+.m-coupon .list .item.style-1 .content dl{ color: #797AFC;}
+.m-coupon .list .item.style-1:after{background-color: #797AFC;}
+.m-coupon .list .item.style-2 .content dl{ color: #76C126;}
+.m-coupon .list .item.style-2:after{background-color: #76C126;}
+.m-coupon .list .item.style-3,
+.m-coupon .list .item.style-3 p,
+.m-coupon .list .item.style-3 .info{ color: #CCC;}
+.m-coupon .list .item.style-3:after{background-color: #CCC;}
+.m-coupon .list .item.style-3 > del{ display: block; position: absolute; background-color: rgba(0,0,0,.3); color: #FFF; padding: 2px 20px; font-size: 13px; right: -21px; top: 8px; z-index: 3; transform:rotate(45deg); -webkit-transform:rotate(45deg);}

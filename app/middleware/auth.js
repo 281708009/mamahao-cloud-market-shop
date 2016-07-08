@@ -13,10 +13,10 @@ exports.requiredAuthentication = function(req, res, next) {
         }
         console.log("validation:"+validation);
         if(validation){
-            res.redirect('/wechat');
+            res.redirect('/demo');
         }else{
             req.session.error = 'Access denied!';
             res.redirect('/login');
         }
     }
-}
+};

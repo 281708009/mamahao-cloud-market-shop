@@ -6,7 +6,7 @@
 global.express = require('express');
 global.AppConfig = require('./app/config');
 global.log = require('./app/utils/log');
-global.jade = require('jade');
+global.jade = require('pug');
 
 /*依赖模块*/
 var path = require('path')

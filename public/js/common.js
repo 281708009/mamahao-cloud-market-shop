@@ -136,14 +136,15 @@
                 dataType: params.dataType || "json",
                 timeout: 2e4,  //20s
                 success: function (res) {
+                    //console.log('success', JSON.stringify(res))
                     if (res.error_code) {
                         var errorMsg = res.msg;
-                        if (res.error_code === -10000) {
+                        if (/^(-1|-10000)$/.test(res.error_code)) {
                             //未登录
                             return MMH.tips({
                                 body: "您还未登录，请登录后再试！",
                                 callback: function () {
-                                    location.href = '/login';
+                                    location.href = '/login?origin=' + location.href;
                                 }
                             });
                         }
@@ -231,30 +232,32 @@
                 init: function () {
                     var o = fun.elements;
 
-                    var tpl = ['<div class="ui-mask ui-dialog-mask"></div>', '<div class="ui-dialog-wrap">', '<div class="ui-dialog">', '<div class="ui-dialog-hd"></div>', '<div class="ui-dialog-bd"></div>', '<div class="ui-dialog-ft"></div>', '</div></div>'];
-                    $(document.body).append(tpl.join(''));
+                    var tpl = ['<div class="ui-dialog">', '<div class="ui-mask ui-dialog-mask"></div>', '<div class="ui-dialog-wrap">', '<div class="ui-dialog-inner">', '<div class="ui-dialog-hd"></div>', '<div class="ui-dialog-bd"></div>', '<div class="ui-dialog-ft"></div>', '</div></div></div>'];
+                    o.dialog = $(tpl.join('')).appendTo(document.body);
 
-                    o.mask = $('.ui-dialog-mask');
-                    o.wrapper = $('.ui-dialog-wrap');
-                    o.inner = $('.ui-dialog');
-                    o.hd = $('.ui-dialog-hd');
-                    o.bd = $('.ui-dialog-bd');
-                    o.ft = $('.ui-dialog-ft');
+                    o.mask = o.dialog.find('.ui-dialog-mask');
+                    o.wrapper = o.dialog.find('.ui-dialog-wrap');
+                    o.inner = o.dialog.find('.ui-dialog-inner');
+                    o.hd = o.dialog.find('.ui-dialog-hd');
+                    o.bd = o.dialog.find('.ui-dialog-bd');
+                    o.ft = o.dialog.find('.ui-dialog-ft');
 
                     var defaults = {
                         body: '模态框内容',
-                        buttons: ['确定', '取消'],
-                        confirm: null,
-                        cancel: null
+                        buttons: [
+                            {"text": "确定", "class": "success", "onClick": null},
+                            {"text": "取消", "class": "", "onClick": null}
+                        ]
                     };
+                    Object.prototype.toString.call(args) !== '[object Object]' && (args = {body: args + ''});
                     var params = fun.params = $.extend({}, defaults, args || {});
                     o.bd.html(params.body);
-                    params.className && o.wrapper.find('.ui-dialog').attr('class', 'ui-dialog ' + params.className);
+                    params.className && o.inner.addClass(params.className);
                     params.title && o.hd.html(params.title);
                     o.ft.empty().append(function () {
                         return $.map(params.buttons, function (item, index) {
-                            var btnClass = index === 0 ? 'success' : '';
-                            return ['<button class="u-btn ' + btnClass + '">' + item + '</button>'];
+                            var btnClass = ['u-btn', item.class].join(' ');
+                            return ['<button class="' + btnClass + '">' + item.text + '</button>'];
                         }).join('');
                     });
 
@@ -265,12 +268,17 @@
                     o.mask.add(o.inner).show().addClass('visible');
 
                     /*bind events*/
-                    o.ft.on('click', '.u-btn:eq(0)', function () {
-                        params.confirm ? params.confirm.call(this) : fun.hide();
+                    $.each(o.ft.find('.u-btn'), function (i, el) {
+                        $(el).on('click', function (e) {
+                            var callback = params.buttons[i].onClick;
+                            if (callback && $.isFunction(callback)) {
+                                callback(fun, e);
+                            } else {
+                                fun.hide();
+                            }
+                        })
                     });
-                    o.ft.on('click', '.u-btn:eq(1)', function () {
-                        params.cancel ? params.cancel.call(this) : fun.hide();
-                    });
+
                 },
                 hide: function () {
                     var o = fun.elements;
@@ -509,6 +517,37 @@
                 init: util.init
             }
         }(),
+        /*Swiper*/
+        swipe: function () {
+            var util = {
+                elements: {},
+                config: {
+                    tab: '.u-tab',  //tab
+                    swipe: '.ui-swipe'  //swipe外容器
+                },
+                init: function () {
+                    var c = util.config, o = util.elements;
+                    o.swipe = $(c.swipe);
+                    o.tab = $(c.tab);
+                    var Swipe = o.swipe.Swipe({
+                        continuous: false,
+                        callback: function (index, elem) {
+                            o.tab.find('ul li').eq(index).addClass('active').siblings().removeClass('active');
+                            $(elem).addClass('current').siblings().removeClass('current');   //添加当前表示
+                        }
+                    }).data('Swipe');
+
+                    /*绑定点击事件*/
+                    o.tab.on('click', 'ul li', function () {
+                        var _this = $(this), _index = _this.index();
+                        Swipe.slide(_index);
+                    });
+                }
+            };
+            return {
+                init: util.init
+            }
+        }(),
         url: function () {
             /*处理url*/
             var util = {
@@ -529,10 +568,14 @@
     window.alert = function (args) {
         MMH.tips(args);
     };
-    window.confirm = function (args, callback) {
-        var params = {};
-        Object.prototype.toString.call(args) !== '[object Object]' ? params.body = ('' + args) : params = args;
-        callback && (params.confirm = callback);
+    window.confirm = function (text, callback) {
+        var params = {
+            body: '' + text,
+            buttons: [
+                {"text": "确定", "class": "success", "onClick": callback},
+                {"text": "取消", "class": "", "onClick": null}
+            ]
+        };
         MMH.dialog(params)
     };
 
@@ -568,10 +611,11 @@
 
     $.page = {
         defaults: {
-            "scrollBox": window,    //触发分页的滚动容器
+            "scrollBox": null,    //触发分页的滚动容器
             "flex": 40,     // 距离底部距离，加载分页数据
             "api": null,    //api接口，分页数据请求地址
             "container": ".pagination",    //分页列表填充容器
+            "current": ".current",    //分页列表填充容器
             "fnLoading": null,   //加载中
             "fnSuccess": null,   //加载成功
             "fnFailed": null    //ajax请求后，回调函数res[请求参数和返回的data]、ele[当前容器]
@@ -580,12 +624,12 @@
             var me = this,
                 o = me.opts = $.extend({}, me.defaults, options || {});    //参数
 
-            o.scrollBox = $(o.scrollBox); //转为jquery对象
-
+            /*初始化*/
             $(o.container).addClass('pagination');  //添加分页容器标识
 
-            /*初始化*/
-            $(o.scrollBox).on("scroll touchmove", function () {
+            /*触发分页的滚动容器,如果是window，需要主动指定"scrollBox": window*/
+            var scrollBox = o.scrollBox ? $(o.scrollBox) : $(o.container);
+            scrollBox.on("scroll touchmove", function () {
                 me.scroll();
             });
 
@@ -594,13 +638,13 @@
         },
         run: function () {
             var me = this, o = me.opts;
-            var $this = me.$ele = $(o.container + ':visible');
+            var $this = me.$ele = me.currContainer();
 
             //容器不存在或已被锁定
             if (!$this[0] || $this.data('locked')) return false;
 
             //容器内没有列表或不满一屏，初始化一次
-            if (!$this.children()[0] || !me.isFullScreen()) {
+            if (!$this.children()[0]) {
                 //主动发起请求
                 var ajax_info = $this.data('params');
                 me.ajax(ajax_info);
@@ -611,19 +655,20 @@
         /*滚动触发事件*/
         scroll: function () {
             var me = this, o = me.opts;
-            var $this = me.$ele = $(o.container + ':visible');
+            var $this = me.$ele = me.currContainer();
 
             //容器不存在或已被锁定
             if (!$this[0] || $this.data('locked')) return false;
 
             /*滚动到底部*/
-            var scrollTop = o.scrollBox.scrollTop(),
-                diff = getHeight(o.scrollBox.children()) - (o.scrollBox.height() + scrollTop);
+            var currScrollBox = o.scrollBox ? $(o.scrollBox) : me.currContainer();
+            var scrollTop = currScrollBox.scrollTop(),
+                diff = getHeight(currScrollBox.children()) - (currScrollBox.height() + scrollTop);
+
             if (diff < o.flex) {
                 var ajax_info = $this.data('params') || {};
                 ajax_info.page = ($this.data('page') || 1) + 1;
 
-                console.log('ajax_info--->', ajax_info)
                 me.ajax(ajax_info);
             }
 
@@ -638,15 +683,10 @@
             }
 
         },
-        /*判断是否满一屏决定是否需要加载下一页*/
-        isFullScreen: function () {
+        /*获取当前分页容器*/
+        currContainer: function () {
             var me = this, o = me.opts;
-            var full_screen = true;
-            if ($(o.container).height() < $(window).height()) {
-                full_screen = false;
-            }
-            console.log('is_full_screen--->', full_screen);
-            return full_screen;
+            return $(o.container + o.current)[0] ? $(o.container + o.current) : $(o.container + ':visible:eq(0)');
         },
         /*do ajax*/
         ajax: function (params) {
@@ -663,10 +703,14 @@
 
             var defaults = {
                 "page": 1,
-                "count": o.count || 20,   //默认页数和条数
-                "index": me.$ele.children().length   //索引值
+                "count": params.count || 20,   //默认页数和条数
+                "pageSize": params.count || 20,   //默认页数和条数
+                "index": me.$ele.children().length,   //索引值
+                "ajax": true    //表明是分页ajax请求过来的
             };
             var ajax_info = $.extend({}, defaults, params || {});
+
+            console.log('ajax_info--->', ajax_info);
 
             //do ajax
             M.ajax({

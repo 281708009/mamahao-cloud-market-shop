@@ -1,0 +1,19 @@
+each item, index in list
+    .item(class={
+        'style-3': request.status == 4,
+        'style-0': request.status == 1
+    }
+    )
+        a.content(href= item.landingDetail || "javascript:;")
+            dl
+                dt
+                    span ￥
+                    | #{item.denominationAmount}
+                dd 满#{item.consumptionAmount}元可用 #{request.status}
+            p.u-arrow #{item.landingDesc}
+        .info
+            dl
+                dt 适用：
+                dd #{item.scopeDes}
+            time #{item.effectiveStartTimeFormat}-#{item.effectiveEndTimeFormat}
+

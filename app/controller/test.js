@@ -11,7 +11,11 @@ var test = {
         };
         res.render('test',data, function (err,html) {
             res.write(html);
-            res.write('<script>console.log("bigPipe test...")</script>');
+            res.write('<script>function showInfo(info){console.log(info)}</script>');
+            res.write('<script>showInfo("bigPipe test......")</script>');
+            res.write('<script>console.log("bigPipe test2...")</script>');
+            res.write('<script>console.log("bigPipe test3...")</script>');
+            res.write('<script>console.log("bigPipe test4...")</script>');
             res.end();
         });
     },

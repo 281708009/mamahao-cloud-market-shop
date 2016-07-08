@@ -7,12 +7,12 @@ var page = {
         // ajax向node请求的url;
         api: {
             home: "/home",
-            orders: "/orders",
-            address: "/address",
-            addressEdit: "/address/edit",
-            beans: "/beans",
-            coupons: "/coupons",
-            integral: "/integral"
+            orders: "/api/orders",
+            address: "/api/address",
+            addressEdit: "/api/address_edit",
+            beans: "/api/beans",
+            coupons: "/api/coupons",
+            integral: "/api/integral"
         }
     },
     init: function () {
@@ -109,6 +109,20 @@ var page = {
             url: '/coupons',
             render: function (callback) {
                 page.renderModule('coupons', callback);
+            },
+            bind: function () {
+                M.swipe.init();//初始化Swipe
+                $.pagination({
+                    container: '.ui-swipe-item',
+                    api: page.config.api['coupons'],
+                    fnSuccess: function (res, ele) {
+                        var data = res.data;
+                        ele.append(data.template);
+                        if(!data.template){
+                            ele.data('locked',true)
+                        }
+                    }
+                });
             }
         };
 
@@ -143,9 +157,14 @@ var page = {
             url: page.config.api[module],
             data: params || {},
             success: function (res) {
-                //console.log(res)
+                console.log('success--->',res);
                 var template = res.template;
                 callback(null, template);
+            },
+            error: function (res) {
+                var template = res.status + 'error';
+                callback(null, template);
+                console.log('show error template')
             }
         });
     }

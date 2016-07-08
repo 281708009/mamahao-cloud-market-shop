@@ -5,20 +5,23 @@
 var router = express.Router();
 var auth = require("../middleware/auth");
 
-var indexCtrl = require("../controller/index");
-var storeCtrl = require("../controller/store");
-var categoryCtrl = require("../controller/category");
-var cartCtrl = require("../controller/cart");
-var usersCtrl = require("../controller/users");
-var wechateCtrl = require("../controller/wechat");
+var indexCtrl = require("../controller/index"),            //首页
+    storeCtrl = require("../controller/store"),            //门店
+    categoryCtrl = require("../controller/category"),     //分类
+    cartCtrl = require("../controller/cart"),              //购物车
+    accountCtrl = require("../controller/account"),       //账户相关，登录等
+    centerCtrl = require("../controller/center"),         //个人中心
+    weChatCtrl = require("../controller/wechat");         //微信相关
 
 
 /**
  * 网站主页
  */
 router
+    .get("/demo", indexCtrl.demo)  //demo
     .get("/",indexCtrl.index)
     .get("/index",indexCtrl.index);
+
 
 /**
  * 门店
@@ -43,23 +46,21 @@ router
  * 用户登录
  */
 router
-    .get("/login", usersCtrl.toLogin)
-    .post("/login", usersCtrl.doLogin)
-    .all("/logout", usersCtrl.logout)
-    .all("/sendMessage", usersCtrl.sendMessage);
+    .get("/login", accountCtrl.toLogin)
+    .get("/logout", accountCtrl.logout)
+    .post("/api/login", accountCtrl.doLogin)
+    .post("/api/sendMessage", accountCtrl.sendMessage);
 
 
 /*用户个人中心*/
-//router.get('/center',auth.requiredAuthentication,usersCtrl.center);
 router
-    .get('/center',auth.requiredAuthentication, usersCtrl.center.index);
-router
-    .post('/orders', usersCtrl.center.orders)
-    .post('/address', usersCtrl.center.address)
-    .post('/address/edit', usersCtrl.center.addressEdit)
-    .post('/beans', usersCtrl.center.beans)
-    .post('/integral', usersCtrl.center.integral)
-    .post('/coupons', usersCtrl.center.coupons)
+    .get('/center',auth.requiredAuthentication, centerCtrl.index)
+    .post('/api/orders', centerCtrl.orders)
+    .post('/api/address', centerCtrl.address)
+    .post('/api/address_edit', centerCtrl.addressEdit)
+    .post('/api/beans', centerCtrl.beans)
+    .post('/api/integral', centerCtrl.integral)
+    .post('/api/coupons', centerCtrl.coupons)
 ;
 
 
@@ -67,12 +68,8 @@ router
  * 微信相关
  */
 router
-    .get("/wechat", wechateCtrl.toWechat)
-    .get("/weixin/callback", wechateCtrl.wechatCallBack);
+    .get("/wechat", weChatCtrl.toWechat)
+    .get("/weixin/callback", weChatCtrl.wechatCallBack);
 
-
-/*demo*/
-router
-    .get("/demo", usersCtrl.demo);
 
 module.exports = router;

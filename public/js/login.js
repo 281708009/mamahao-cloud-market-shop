@@ -45,7 +45,7 @@ var page = {
         }
 
         M.ajax({
-            url: '/sendMessage',
+            url: '/api/sendMessage',
             data: {mobile: mobile_val},
             success: function (res) {
                 if (res.success_code) {
@@ -60,7 +60,7 @@ var page = {
     login: function () {
         if (!page.validate($('form'))) return false;
         M.ajax({
-            url: '/login',
+            url: '/api/login',
             data: $('form').serialize(),
             success: function (res) {
                 if (res.success) {
