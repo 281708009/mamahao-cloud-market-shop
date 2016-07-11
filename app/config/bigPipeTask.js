@@ -16,7 +16,7 @@ var task = {
         {
             selector: ".list:eq(0)",
             api: API.coupons,
-            jade: '/users/components/coupons_list.jade',
+            jade: '/lists/coupon.jade',
             blank: {style: '07', tips: '您暂时还没有优惠劵哦~'},
             data: {
                 page: 1,

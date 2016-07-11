@@ -55,7 +55,7 @@ var HttpClient = {
         console.log("session:" + JSON.stringify(session));
         console.log("url:" + options.uri);
         console.log("headers:" + JSON.stringify(options.headers));
-        console.log("form:" + options.form);
+        console.log("form:" + JSON.stringify(options.form));
         console.log("\r\nAPI请求日志打印结束\r\n\r\n");
 
 

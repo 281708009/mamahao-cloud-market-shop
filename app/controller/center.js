@@ -1,7 +1,7 @@
-var HttpClient = require("../utils/http_client");
-var bigPipe = require("../utils/bigPipe");
-var bigPipeTask = require('../config/bigPipeTask');
-var API = require('../config/api');
+var HttpClient = require("../utils/http_client"),
+    bigPipe = require("../utils/bigPipe"),
+    bigPipeTask = require('../config/bigPipeTask'),
+    API = require('../config/api');
 
 /*到个人主页*/
 var center = {
@@ -72,30 +72,19 @@ var center = {
     },
     // 妈豆记录;
     beans: function (req, res, next) {
-        //console.log(req)
+        var defaults = {
+            page: 1,
+            pageSize: 20
+        };
+        var params = $.extend({}, defaults, req.body);
+        var jadeFile = params.ajax ? 'lists/bean' : 'users/components/beans';
+
         HttpClient.request(arguments, {
             url: API.MBeanList,
-            data: {
-                page: 1,
-                pageSize: 20
-            },
+            data: params,
             success: function (data) {
                 //console.log(data)
-                // 重组数据;
-                var json = {
-                    name: "beans",
-                    sum: data.mbeanCount, // 总妈豆数;
-                    rows: []
-                }, i = 0, mbeans = data.mbeans, l = mbeans.length;
-                for (; i < l; i++) {
-                    json.rows.push({
-                        type: mbeans[i].mathOperator,       // 记录类型 0扣妈豆 1加妈豆;
-                        title: mbeans[i].titleShow,         // 描述;
-                        text: mbeans[i].mbeanNumShow,       // 数值;
-                        date: mbeans[i].createDate          // 时间;
-                    });
-                }
-                res.render('users/components/beans', json, function (err, html) {
+                res.render(jadeFile, data, function (err, html) {
                     res.json({template: html});
                 });
             }
@@ -120,7 +109,7 @@ var center = {
     },
     // 我的优惠券;
     coupons: function (req, res, next) {
-        if(req.body.ajax){
+        if (req.body.ajax) {
             //来源为分页请求
             var params = req.body; // 请求参数值;
             HttpClient.request(arguments, {
@@ -128,12 +117,12 @@ var center = {
                 data: params,
                 success: function (data) {
                     data.request = params;
-                    res.render('users/components/coupons_list', data, function (err, html) {
+                    res.render('lists/coupon', data, function (err, html) {
                         res.json({template: html});
                     });
                 }
             });
-        }else{
+        } else {
             /*bigPipe方案加载第一页数据*/
             var task = bigPipeTask.coupons;
 

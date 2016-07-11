@@ -1,0 +1,11 @@
+//- 妈豆记录列表;
+each item, index in mbeans
+    li
+        dl
+            dt #{item.titleShow}
+            dd
+                time #{item.createDate}
+        if item.mathOperator
+            sup #{item.mbeanNumShow}
+        else
+            sub #{item.mbeanNumShow}
