@@ -93,6 +93,20 @@ var page = {
             url: '/beans',
             render: function (callback) {
                 page.renderModule('beans', callback);
+            },
+            bind: function () {
+                $.pagination({
+                    scrollBox: "#spa",
+                    container: '.m-record .list',
+                    api: page.config.api['beans'],
+                    fnSuccess: function (res, ele) {
+                        var data = res.data;
+                        if(!data.template){
+                            return ele.data('locked',true)
+                        }
+                        ele.append(data.template);
+                    }
+                });
             }
         };
 
@@ -117,10 +131,10 @@ var page = {
                     api: page.config.api['coupons'],
                     fnSuccess: function (res, ele) {
                         var data = res.data;
-                        ele.append(data.template);
                         if(!data.template){
-                            ele.data('locked',true)
+                            return ele.data('locked',true)
                         }
+                        ele.append(data.template);
                     }
                 });
             }

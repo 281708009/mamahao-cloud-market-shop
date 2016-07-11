@@ -522,7 +522,7 @@
             var util = {
                 elements: {},
                 config: {
-                    tab: '.u-tab',  //tab
+                    tab: '.ui-swipe-tab',  //tab
                     swipe: '.ui-swipe'  //swipe外容器
                 },
                 init: function () {
