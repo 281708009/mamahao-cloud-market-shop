@@ -1,9 +1,12 @@
 /* 我的订单 */
+.m-order{height: 100%;}
+.m-order .list{height: 100%;}
 .m-order .list .item:first-child{ margin-top: 10px;}
 .m-order .list .item{ background-color: #FFF; margin-bottom: 10px; border-bottom: 1px solid #DCDCDC; border-top: 1px solid #DCDCDC; padding: 0 8px;}
 .m-order .list .item .footer,
 .m-order .list .item .header{ padding: 10px 0; border-bottom: 1px solid #DCDCDC; display:-webkit-box; display:flex; display:-webkit-flex; }
 .m-order .list .item .header dt{ font-size: 14px; color: #333; -webkit-box-flex: 1; flex:1; -webkit-flex:1;}
+.m-order .list .item .header dt span{font-size: 11px; background-color: #ff4d61; color: #FFF; border-radius: 2px; padding: 0 2px; margin: 0 2px;}
 .m-order .list .item .header dt em{ font-size: 12px; color: #999; padding: 0 5px;}
 .m-order .list .item .header dd{ min-width: 50px; text-align: center; font-size: 12px;}
 .m-order .list .item .footer{ border-top: 1px solid #DCDCDC; border-bottom: 0;}
@@ -34,10 +37,11 @@
 .m-order-detail .carry li em{ width: 5em;}
 .m-order-detail .carry li p{ -webkit-box-flex: 1; flex:1; -webkit-flex:1;}
 .m-order-detail .carry li a{ color:#477ED8; text-decoration: underline;}
-.m-order-detail .carry li time{ color: #FF4D63;}
+.m-order-detail .carry li time{ color: #ff4d61;}
 .m-courier .order .list,
 .m-order-detail .order .item{ background: #FFF; padding: 0 10px; margin-bottom: 10px; border-top: 1px solid #dcdcdc; border-bottom: 1px solid #dcdcdc;}
 .m-order-detail .order .header{ border-bottom: 1px solid #dcdcdc; padding: 10px 0; font-size: 14px; color: #333;}
+.m-order-detail .order .header em{ font-size: 11px; background-color: #ff4d61; color: #FFF; border-radius: 2px; padding: 0 2px; margin: 0 2px;}
 .m-courier .order .content,
 .m-order-detail .order .content{ display:-webkit-box; display:flex; display:-webkit-flex; font-size: 14px; padding: 15px 0; border-bottom: 1px solid #DCDCDC;}
 .m-courier .order .content:last-child,
@@ -52,6 +56,8 @@
 .m-order-detail .order figure p{ font-size: 13px; color: #999; padding-top: 3px;}
 .m-courier .order .content dl,
 .m-order-detail .order .content dl{ width: 80px; text-align: right;}
+.m-courier .order .content dt del,
+.m-order-detail .order .content dt del{ display: block; font-size: 11px; color: #999; text-decoration: line-through;}
 .m-courier .order .content dd,
 .m-order-detail .order .content dd{ font-size: 11px; color: #999; padding: 1px 0;}
 .m-order-detail .order .content .u-btn{ padding: 4px 8px; font-size: 13px;}

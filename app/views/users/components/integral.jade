@@ -1,19 +1,30 @@
 // 我的分员积分;
-section.m-integral
-    .u-tab.double.fixed
+section.m-integral.flex-column
+    .u-tab.double.fixed.ui-swipe-tab
         ul
             li.active
                 a(href='javascript:;')
-                    | #{totalPoint}分
+                    | #{data[0].totalPoint}分
                     em Goodbady积分
             li
                 a(href='javascript:;')
-                    | 251分
-                    em MotherCare积分
+                    | #{data[1].totalPoint}分
+                    em Mothercare积分
         .f-space
-    .m-record
-        .title
-            strong GB积分交易明细
-            a(href='http://h5.mamahao.com/help/integral/') 积分说明
-        ul.list
-            include ../../lists/integral
+
+    .m-record.flex.flex-column
+        .ui-swipe.flex
+            .ui-swipe-wrap
+                //-积分类型 0：GB,1:MC
+
+                .ui-swipe-item.flex-column
+                    .title
+                        strong GB积分交易明细
+                        a(href='http://h5.mamahao.com/help/integral/') 积分说明
+                    ul.list.flex(data-params='{"type": 0}')
+
+                .ui-swipe-item.flex-column
+                    .title
+                        strong MC积分交易明细
+                        a(href='http://h5.mamahao.com/help/integral/') 积分说明
+                    ul.list.flex(data-params='{"type": 1}')

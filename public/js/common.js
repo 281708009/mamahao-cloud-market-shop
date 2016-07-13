@@ -106,12 +106,12 @@
             if (!$loading[0]) {
                 $loading = $('<div class="loading"><span><s></s></span></div>').appendTo(document.body);
             }
-            $loading.show();
+            $loading.fadeIn();
         },
         /*隐藏loading*/
         hideLoading: function () {
             var $loading = $('.loading');
-            $loading[0] && $loading.hide();
+            $loading[0] && $loading.fadeOut();
         },
         /*ajax请求*/
         ajax: function (params) {
@@ -119,6 +119,7 @@
 
             /*是否显示loading*/
             c.showLoading = typeof params.showLoading === 'boolean' ? params.showLoading : true;
+            c.loadingDelay = params.loadingDelay || 500;
 
             /*超时显示loading*/
             if (c.isAjax) return false;
@@ -126,7 +127,7 @@
             var timer = setTimeout(function () {
                 clearTimeout(timer);
                 c.isAjax && c.showLoading && MMH.showLoading();  //200ms之后显示loading遮罩
-            }, 200);
+            }, c.loadingDelay);
 
             /*do ajax*/
             $.ajax({
@@ -523,7 +524,8 @@
                 elements: {},
                 config: {
                     tab: '.ui-swipe-tab',  //tab
-                    swipe: '.ui-swipe'  //swipe外容器
+                    swipe: '.ui-swipe',  //swipe外容器
+                    currClass: 'current'  //当前容器标识
                 },
                 init: function () {
                     var c = util.config, o = util.elements;
@@ -533,7 +535,7 @@
                         continuous: false,
                         callback: function (index, elem) {
                             o.tab.find('ul li').eq(index).addClass('active').siblings().removeClass('active');
-                            $(elem).addClass('current').siblings().removeClass('current');   //添加当前表示
+                            $(elem).addClass(c.currClass).siblings().removeClass(c.currClass);   //添加当前表示
                         }
                     }).data('Swipe');
 
@@ -559,7 +561,89 @@
             return {
                 query: util.query
             };
-        }()
+        }(),
+        /* 微信 */
+        wx: {
+            data: {
+                title: "妈妈好",
+                url: "http://m.mamahao.com/",
+                image: "http://s.mamhao.cn/common/images/icon-114.png",
+                desc: "让每一件商品都是安全的!"
+            },
+            /*授权，初始化*/
+            init: function () {
+                var self = this;
+                MMH.ajax({
+                    data: {url: window.location.href, r: Math.random()},
+                    dataType: "jsonp",
+                    url: "http://api.mamhao.cn/V1/basic/weixin/secret.htm",
+                    success: function (data) {
+                        //console.log(data);
+                        wx.config({
+                            debug: false,
+                            appId: data.appId,
+                            timestamp: data.time,
+                            nonceStr: data.none,
+                            signature: data.sign,
+                            jsApiList: [
+                                'checkJsApi',
+                                'onMenuShareTimeline',
+                                'onMenuShareAppMessage',
+                                'onMenuShareQQ',
+                                'onMenuShareWeibo',
+                                'hideMenuItems',
+                                'showMenuItems',
+                                'hideAllNonBaseMenuItem',
+                                'getLocation',
+                                'getNetworkType'
+                            ]
+                        });
+                        self.ready(function () {
+                            MMH.wx.share(self.data);
+                        });
+                    }
+                });
+            },
+            /*分享*/
+            share: function (msg) {
+                var wxData = {
+                    title: msg.title,
+                    link: msg.url,
+                    imgUrl: msg.image,
+                    desc: msg.desc,
+                    success: function (e) {
+                        // 接口调用成功时执行的回调函数;
+                        msg.success && msg.success(e);
+                    },
+                    cancel: function () {
+                        // 用户点击取消时的回调函数，仅部分有用户取消操作的api才会用到
+                        msg.cancel && msg.cancel();
+                    }
+                };
+                var wxDataTimeline = {
+                    title: msg.title,
+                    link: msg.url,
+                    imgUrl: msg.image,
+                    success: function (e) {
+                        // 接口调用成功时执行的回调函数;
+                        msg.success && msg.success(e);
+                    },
+                    cancel: function () {
+                        // 用户点击取消时的回调函数，仅部分有用户取消操作的api才会用到
+                        msg.cancel && msg.cancel();
+                    }
+                };
+                wx.onMenuShareTimeline(wxDataTimeline);
+                wx.onMenuShareAppMessage(wxData);
+                wx.onMenuShareQQ(wxData);
+                wx.onMenuShareWeibo(wxData);
+            },
+            ready: function (callback) {
+                wx.ready(function () {
+                    callback && callback.call(callback);
+                });
+            }
+        }
     };
 
     MMH.init(); //初始化
@@ -611,6 +695,7 @@
 
     $.page = {
         defaults: {
+            "keys": {"page": "page", "count": "pageSize"}, //分页参数关键字
             "scrollBox": null,    //触发分页的滚动容器
             "flex": 40,     // 距离底部距离，加载分页数据
             "api": null,    //api接口，分页数据请求地址
@@ -622,7 +707,7 @@
         },
         init: function (options) {
             var me = this,
-                o = me.opts = $.extend({}, me.defaults, options || {});    //参数
+                o = me.opts = $.extend(true, {}, me.defaults, options || {});    //参数
 
             /*初始化*/
             $(o.container).addClass('pagination');  //添加分页容器标识
@@ -667,7 +752,7 @@
 
             if (diff < o.flex) {
                 var ajax_info = $this.data('params') || {};
-                ajax_info.page = ($this.data('page') || 1) + 1;
+                ajax_info[o.keys.page] = ($this.data('page') || 1) + 1;
 
                 me.ajax(ajax_info);
             }
@@ -686,13 +771,27 @@
         /*获取当前分页容器*/
         currContainer: function () {
             var me = this, o = me.opts;
-            return $(o.container + o.current)[0] ? $(o.container + o.current) : $(o.container + ':visible:eq(0)');
+            return $(o.current).find('.pagination')[0] ? $(o.current).find('.pagination') : $(o.container + ':visible:eq(0)');
         },
         /*do ajax*/
         ajax: function (params) {
             var me = this, o = me.opts;
+            console.log(JSON.stringify(o))
 
             me.$ele.data('locked', true);   //锁定当前请求
+
+
+            //默认参数
+            var defaults = {
+                "index": me.$ele.children().length,   //索引值
+                "ajax": true    //表明是分页ajax请求过来的
+            };
+            defaults[o.keys.page] = 1;
+            defaults[o.keys.count] =  params.count || 20;   //默认页数和条数
+
+            var ajax_info = $.extend({}, defaults, params || {});
+
+            console.log('ajax_info--->', ajax_info);
 
             /*加载中*/
             if (!o.fnLoading) {
@@ -700,17 +799,6 @@
             } else {
                 o.fnLoading();
             }
-
-            var defaults = {
-                "page": 1,
-                "count": params.count || 20,   //默认页数和条数
-                "pageSize": params.count || 20,   //默认页数和条数
-                "index": me.$ele.children().length,   //索引值
-                "ajax": true    //表明是分页ajax请求过来的
-            };
-            var ajax_info = $.extend({}, defaults, params || {});
-
-            console.log('ajax_info--->', ajax_info);
 
             //do ajax
             M.ajax({
@@ -722,7 +810,7 @@
                         params: ajax_info,
                         data: res
                     };
-                    me.$ele.data('page', ajax_info.page); //设置页数
+                    me.$ele.data('page', ajax_info[o.keys.page]); //设置页数
                     me.$ele.data('locked', false);    //解除锁定
 
                     o.fnSuccess && o.fnSuccess.call(this, info, me.$ele);  //将结果返回

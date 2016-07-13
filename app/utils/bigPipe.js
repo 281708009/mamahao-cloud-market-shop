@@ -13,6 +13,7 @@ var path = require('path');
 function bigPipe(task, http) {
     this.task = task;   //任务数组
     this.http = http;   //http请求需要的参数
+    this.data = []; //所有请求的数据存储在此
 
     this.scripts = ['<script>function bigPipeRender(selector, context) {$(selector).empty().append(context);}</script>'];   //最终返回的数据
     this.render();
@@ -67,6 +68,7 @@ bigPipe.prototype.fetch = function (item, callback) {
         data: request.data,
         success: function (result) {
             var data = me.reform(result, request);
+            me.data.push(data);
 
             var context = (jade.renderFile(viewPath + (item.jade || me.task[0].jade), data) || blank).replace(/"/g, '\\"');     //内容
 
@@ -74,6 +76,8 @@ bigPipe.prototype.fetch = function (item, callback) {
             callback && callback.call(me);
         },
         error: function (error) {
+            me.data.push({request: request.data});
+
             var context = blank.replace(/"/g, '\\"');
             me.scripts.push('<script>bigPipeRender("' + item.selector + '","' + context + '");</script>');
 
@@ -92,10 +96,10 @@ bigPipe.prototype.reform = function (res, req) {
 bigPipe.prototype.done = function (error) {
     /*
      * 全部请求完成，此时error参数为最后一个错误信息
-     * 状态码-1、-10000为未登录状态，此时返回未登录的json到浏览器response
+     * 状态码-1、-10000等未登录状态，此时返回未登录的json到浏览器response
      * 其他状态如服务器异常等情况均执行success方法，只不过此时显示的是blank页面
      * */
-    if (error && /^(-1|-10000)$/.test(error.error_code)) {
+    if (error && -1 === error.error_code) {
         return this.failed(error);
     }
     this.succeed();

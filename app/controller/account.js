@@ -8,7 +8,7 @@ var account = {
     /*到登录页*/
     toLogin: function (req, res, next) {
         if (req.session.user) {
-            var redirectURL = req.query && req.query.origin || '/index';
+            var redirectURL = '/index';
             res.redirect(redirectURL);
         } else {
             res.render('account/login', {title: "妈妈好微商城-登录"});

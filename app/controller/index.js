@@ -1,4 +1,3 @@
-
 /*渲染首页*/
 exports.index = function (req, res, next) {
     res.render("index");
@@ -7,6 +6,8 @@ exports.index = function (req, res, next) {
 
 exports.demo = function (req, res, next) {
     //临时设置登录代码 ==start
+    //{"memberId":391,"token":"87e53c5879157637bfbc7d2a5ba95fa3"}
+    //{"memberId":384,"token":"8e7e0e2ae5b65dbadae4ce15e1b1f28c"}
     var data = {
         "babies": null,
         "babyCnt": 0,
@@ -40,14 +41,14 @@ exports.demo = function (req, res, next) {
         "duoDateStr": "2016-06-14",
         "headPic": "http://cmi.mamhao.cn/member-head-images/defaultHeadPic/huaiyun.png",
         "isFirstLogin": 0,
-        "memberId": 391,
+        "memberId": 384,
         "memberName": null,
         "memberNickName": "hmm2861",
         "memberType": 0,
         "perfectInfo": true,
-        "phone": "15257182861",
+        "phone": "18668035676",
         "shareRoleType": null,
-        "token": "87e53c5879157637bfbc7d2a5ba95fa3",
+        "token": "8e7e0e2ae5b65dbadae4ce15e1b1f28c",
         "vip": false,
         "vipLevel": null,
         "vipLevelLogo": null,

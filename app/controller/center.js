@@ -17,24 +17,36 @@ var center = {
             }
         });
     },
-    /*订单列表*/
+    /* 订单列表 */
     orders: function (req, res, next) {
+        var task = bigPipeTask.orders;
+
+        bigPipe.prototype.succeed = function () {
+            var me = this;
+            res.render('order/index', {}, function (err, html) {
+                var template = html + me.scripts.join('');
+                res.json({template: template});
+            });
+        };
+
+        new bigPipe(task, arguments);
+
+    },
+    /* 订单详情 */
+    orderDetail: function (req, res, next) {
+        var params = req.body;
         HttpClient.request(arguments, {
-            url: API.orderList,
-            data: {
-                page: 1,
-                count: 15
-            },
+            url: API.orderDetail,
+            data: params,
             success: function (data) {
                 var json = {
-                    rows: data.rows
+                    detail: data
                 };
-                res.render('users/orders', json, function (err, html) {
+                res.render('order/detail', json, function (err, html) {
                     res.json({template: html});
                 });
             }
         });
-
     },
     /*地址列表*/
     address: function (req, res, next) {
@@ -70,6 +82,13 @@ var center = {
             }
         });
     },
+    /*地址GPS列表*/
+    addressGPS: function (req, res, next) {
+        var json = {data: JSON.parse(req.body.data)};
+        res.render('users/components/address_gps', json, function (err, html) {
+            res.json({template: html});
+        });
+    },
     // 妈豆记录;
     beans: function (req, res, next) {
         var defaults = {
@@ -92,20 +111,34 @@ var center = {
     },
     // 我的积分;
     integral: function (req, res, next) {
-        var params = req.body; // 请求参数值;
-        HttpClient.request(arguments, {
-            url: API.MemberPoint,
-            data: {
-                type: +params.type, // 积分类型 0：GB,1:MC
-                pageNo: 1,
-                pageSize: 20
-            },
-            success: function (data) {
-                res.render('users/components/integral', data, function (err, html) {
-                    res.json({template: html});
+
+        if (req.body.ajax) {
+            //来源为分页请求
+            var params = req.body; // 请求参数值;
+            HttpClient.request(arguments, {
+                url: API.integral,
+                data: params,
+                success: function (data) {
+                    data.request = params;
+                    res.render('lists/integral', data, function (err, html) {
+                        res.json({template: html});
+                    });
+                }
+            });
+        } else {
+            /*bigPipe方案加载第一页数据*/
+            var task = bigPipeTask.integral;
+
+            bigPipe.prototype.succeed = function () {
+                var me = this;
+                res.render('users/components/integral', {data: me.data}, function (err, html) {
+                    var template = html + me.scripts.join('');
+                    res.json({template: template});
                 });
-            }
-        });
+            };
+
+            new bigPipe(task, arguments);
+        }
     },
     // 我的优惠券;
     coupons: function (req, res, next) {

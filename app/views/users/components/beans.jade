@@ -1,14 +1,19 @@
 //- 妈豆记录;
-section.m-beans
+section.m-beans.flex-column
     dl.info
         dt
             strong #{mbeanCount}
             em 个
         dd 100妈豆=1元，购物可抵现金
-    .m-record
+
+    .m-record.flex.flex-column
         .title
             strong 妈豆交易明细
             a(href='http://h5.mamahao.com/help/beans/') 妈豆说明
-        if mbeans
-            ul.list
+
+        if mbeans && mbeans.length
+            ul.list.flex
                 include ../../lists/bean
+        else
+            include ../../includes/mixin
+            +blank('05', '您还没有麻豆哦~')

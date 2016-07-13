@@ -52,10 +52,10 @@ var HttpClient = {
 
         // API请求日志打印;
         console.log("\r\n\r\nAPI请求日志打印开始");
-        console.log("session:" + JSON.stringify(session));
-        console.log("url:" + options.uri);
-        console.log("headers:" + JSON.stringify(options.headers));
-        console.log("form:" + JSON.stringify(options.form));
+        console.log("session: " + JSON.stringify(session));
+        console.log("url: " + baseUrl + options.uri);
+        console.log("headers: " + JSON.stringify(options.headers));
+        console.log("form: " + JSON.stringify(options.form));
         console.log("\r\nAPI请求日志打印结束\r\n\r\n");
 
 
@@ -70,6 +70,13 @@ var HttpClient = {
             if (!error && response.statusCode === 200) {
                 var info = JSON.parse(body);
                 if (info.error_code) {
+
+                    //未登录状态设置统一状态码
+                    if (/^(-1|-10000|901)$/.test(info.error_code)) {
+                        info.error_code = -1;
+                    }
+
+                    //返回错误信息
                     var error = {status: response.statusCode,error_code: info.error_code, msg: info.error};
                     if(params.error){
                         return params.error.call(this, error);

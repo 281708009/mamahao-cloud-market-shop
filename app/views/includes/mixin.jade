@@ -1,4 +1,4 @@
-//可重用的代码块
+//- 可重用的代码块
 mixin footer_nav(name)
     .footer-nav
         .placeholder-ft
@@ -8,3 +8,15 @@ mixin footer_nav(name)
             li(class={active: name === 'category',category: true}): a(href='/category') 分类
             li(class={active: name === 'cart',cart: true}): a(href='/cart') 购物车
             li(class={active: name === 'account',account: true}): a(href='/center#/') 我
+
+
+//- 空白提示页
+mixin blank(style, tips)
+    .u-null-all
+        .u-null
+            dl
+                dt(class='n-' + style)
+                dd
+                    p #{tips}
+                    if block
+                        block

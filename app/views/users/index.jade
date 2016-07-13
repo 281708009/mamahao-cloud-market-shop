@@ -2,13 +2,11 @@ extends ../layouts/layout
 block title
     title= (title ? title : '个人中心')
 block css
-    link(rel='stylesheet', href='css/center.css')
-    link(rel='stylesheet', href='css/orders.css')
-    link(rel='stylesheet', href='css/address.css')
+    link(rel='stylesheet', href='/css/center.css')
+    link(rel='stylesheet', href='/css/orders.css')
 block js
+    script(src='http://webapi.amap.com/maps?v=1.3&key=97a72a5c35a9f4915293fdb121bbdc2a')
     script(src='/js/center.js')
-block meta
-    meta(name='toTop')
 block content
     #spa
 
@@ -19,6 +17,10 @@ block content
     //添加地址模板
     script#tpl_address_add(type='text/html')
         include components/address_add
+
+    //搜索地址模板
+    script#tpl_address_search(type='text/html')
+        include components/address_search
 
 
 

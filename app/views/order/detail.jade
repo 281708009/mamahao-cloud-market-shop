@@ -1,0 +1,120 @@
+section.m-order-detail
+    // 门店信息
+    if detail.shopInfo
+        ul.carry
+            li
+                em 门店名称：
+                p #{detail.shopInfo.shopName}
+            li
+                em 门店地址：
+                p #{detail.shopInfo.addr}
+            li
+                em 营业时间：
+                p 工作日: #{detail.shopInfo.workTime}<br>节假日: #{detail.shopInfo.holiday}
+            li
+                em 联系方式：
+                p
+                    a(href='tel:#{detail.shopInfo.telephone}') #{detail.shopInfo.telephone}
+            // li
+                em 送达时间：
+                p 预计
+                    time 17:30 点送达
+    // 收货人信息
+    .u-send
+        dl
+            dt
+                strong 收货人: #{detail.deliveryInfo.deliveryName}
+                em #{detail.deliveryInfo.deliveryPhone}
+            dd #{detail.deliveryInfo.deliveryAddr}
+    // 订单商品信息
+    .order
+        each item in detail.data
+            .item
+                .header #{item.shopName}
+                    em 集团自营
+                each goods in item.goodsList
+                    .content
+                        .pic
+                            img(src='#{goods.itemPic}')
+                        figure
+                            figcaption #{goods.itemName}
+                            if goods.spec.length
+                                p
+                                    each sp in goods.spec
+                                        | #{sp.value}
+                        dl
+                            dt ￥#{goods.itemPrice}
+                                if goods.oPrice
+                                    del #{goods.oPrice}
+                            dd x#{goods.quantity}
+                            //if(detail.allowRefund && !goods.isRefunded)
+                                dd
+                                    button.u-btn 退款退货
+    // 付款信息
+    .info
+        ul.sale
+            each p in detail.price
+                if p.name == '运费' || p.price != 0
+                    li
+                        em #{p.name}：
+                        span
+                            if (p.name == '运费' && p.price == 0)
+                                | 免运费
+                            else if p.price != 0
+                                if (p.name != '运费' && p.name != '商品金额')
+                                    | -￥#{p.price}
+                                else
+                                    | ￥#{p.price}
+
+        dl.finally
+            dt 实付款：
+            dd ￥#{detail.payPrice}
+        ol.number
+            li 订单编号：#{detail.orderNo}
+            li 下单时间：#{detail.createTime}
+            li 订单状态：
+                case detail.orderStatus
+                    when 0
+                        em 已完成
+                    when 1
+                        em 已失效
+                    when 2
+                        em 已取消
+                    when 3
+                        em 待付款
+                    when 4
+                        em 待发货
+                    when 5
+                        em 待收货
+                    when 6
+                        em 待评价
+                    when 8
+                        em 已删除
+            li 订单来源:
+    // 底导
+    footer.footer
+        dl
+            if detail.allowRefund
+                dt
+                    em 退款/退货说明
+            dd
+            case detail.orderStatus
+                when 0
+                when 1
+                    button.u-btn 删除订单
+                when 2
+                    button.u-btn 删除订单
+                when 3
+                    button.u-btn.success 立即付款
+                when 4
+                    button.u-btn 提醒发货
+                when 5
+                    button.u-btn 查看物流
+                when 6
+                    button.u-btn.success 评价晒单
+                when 8
+                default
+                    | ''
+
+            if detail.allowBuy
+                button.u-btn.success 再次购买

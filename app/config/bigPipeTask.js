@@ -33,6 +33,73 @@ var task = {
             }
         }
     ],
+    orders: [
+        {
+            selector: ".list:eq(0)",
+            api: API.orderList,
+            jade: '/lists/order.jade',
+            blank: {style: '02', tips: '您还没有任何订单哦~'},
+            data: {
+                page: 1,
+                count: 15
+            }
+        },
+        {
+            selector: ".list:eq(1)",
+            data: {
+                page: 1,
+                count: 15,
+                queryType: 3   //待付款
+            }
+        },
+        {
+            selector: ".list:eq(2)",
+            data: {
+                page: 1,
+                count: 15,
+                queryType: 4   //待发货
+            }
+        },
+        {
+            selector: ".list:eq(3)",
+            data: {
+                page: 1,
+                count: 15,
+                queryType: 5   //待收货
+            }
+        },
+        {
+            selector: ".list:eq(4)",
+            data: {
+                page: 1,
+                count: 15,
+                queryType: 6   //待评价
+            }
+        }
+    ],
+    //积分
+    "integral": [
+        {
+            selector: ".list:eq(0)",
+            api: API.integral,
+            jade: '/lists/integral.jade',
+            blank: {style: '04', tips: '您暂时还没有Goodbaby积分哦~'},
+            data: {
+                pageNo: 1,
+                pageSize: 20,
+                type: 0   //GB
+            }
+        },
+        {
+            selector: ".list:eq(1)",
+            blank: {style: '04', tips: '您暂时还没有Mothercare积分哦~'},
+            data: {
+                pageNo: 1,
+                pageSize: 20,
+                type: 1   //MC
+            }
+        }
+    ],
 
 };
 

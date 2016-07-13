@@ -1,0 +1,80 @@
+each order, index in rows
+    // 订单列表
+    a(href='#/order/detail/' + order.orderNo + '/' + order.orderStatus )
+        .item
+            dl.header
+                dt
+                    if order.shopName
+                        | #{order.shopName}
+                    else
+                        | 妈妈好平台
+                    if order.deliveryId == 1
+                        em (门店配送)
+                    else if order.deliveryId == 2
+                        em (到店自提)
+                    if order.shopName
+                        span 集团自营
+                case order.orderStatus
+                    when 0
+                        dd 已完成
+                    when 1
+                        dd 已失效
+                    when 2
+                        dd 已取消
+                    when 3
+                        dd 待付款
+                    when 4
+                        dd 待发货
+                    when 5
+                        dd 待收货
+                    when 6
+                        dd 待评价
+                    when 8
+                        dd 已删除
+            .content(class={ditto: order.goodsList.length > 1})
+                ul.pic
+                    each goods in order.goodsList
+                        li
+                            img(src=goods.itemPic + '@1e_400w_400h_0c_0i_0o_100q_1x.jpg')
+
+
+                if(order.goodsList.length === 1)
+                    each goods in order.goodsList
+                        dl
+                            dt #{goods.itemName}
+                            dd
+                                each spec in goods.spec
+                                    | #{spec.value} &nbsp;
+
+                .u-arrow.right.number 共#{order.itemCount}件
+            .footer
+                dl
+                    dt 实付：￥#{order.payPrice}
+                    if(order.orderStatus === 3)
+                        dd 14分58秒后订单失效
+                ul
+                    case order.orderStatus
+                        when 0
+                            if(order.allowBuy)
+                                li
+                                    button.u-btn.checked 再次购买
+                        when 1
+                            li
+                                button.u-btn 删除订单
+                        when 2
+                            li
+                                button.u-btn 删除订单
+                        when 3
+                            li
+                                button.u-btn.checked 立即付款
+                        when 4
+                            li
+                                button.u-btn 提醒发货
+                        when 5
+                            li
+                                button.u-btn 配送信息
+                            li
+                                button.u-btn.checked 确认收货
+                        when 6
+                            li
+                                button.u-btn.checked 评价晒单

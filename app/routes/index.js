@@ -56,8 +56,10 @@ router
 router
     .get('/center',auth.requiredAuthentication, centerCtrl.index)
     .post('/api/orders', centerCtrl.orders)
+    .post('/api/order_detail', centerCtrl.orderDetail)
     .post('/api/address', centerCtrl.address)
     .post('/api/address_edit', centerCtrl.addressEdit)
+    .post('/api/address_gps', centerCtrl.addressGPS)
     .post('/api/beans', centerCtrl.beans)
     .post('/api/integral', centerCtrl.integral)
     .post('/api/coupons', centerCtrl.coupons)
