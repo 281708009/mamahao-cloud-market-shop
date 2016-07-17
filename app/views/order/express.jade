@@ -1,0 +1,36 @@
+//- 物流详情
+if logistics.length == 1
+    -var logistic = logistics[0]
+
+section.m-courier
+    .order(class=logistic.goodsList.length > 1 && 'more')
+        .list
+            // 商品列表
+            each goods in logistic.goodsList
+                .content.flex-center
+                    .pic
+                        img(src='#{goods.itemPic}')
+                    figure
+                        figcaption #{goods.itemName}
+                        p
+                            if goods.spec
+                                each sp in goods.spec
+                                    | #{sp.value}&nbsp;
+                    dl
+                        dt ￥#{goods.itemPrice}
+                        dd x#{goods.quantity}
+        if logistic.goodsList.length > 1
+            .more-show(data-num = logistic.goodsList.length - 1)
+                em 显示其余#{logistic.goodsList.length - 1}件
+    .info
+        dl.header.flex-center
+            dt.flex 物流公司：#{logistic.platformName}
+            dd 物流单号：#{logistic.waybillNumber}
+        dl.record
+            dt 物流详情
+            dd
+                ol
+                    each item in logistic.data
+                        li
+                            p #{item.description}
+                            time #{item.time}

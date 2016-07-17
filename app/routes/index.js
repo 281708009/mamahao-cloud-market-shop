@@ -47,6 +47,7 @@ router
  */
 router
     .get("/login", accountCtrl.toLogin)
+    .get("/account/bind", accountCtrl.toBind)
     .get("/logout", accountCtrl.logout)
     .post("/api/login", accountCtrl.doLogin)
     .post("/api/sendMessage", accountCtrl.sendMessage);
@@ -63,6 +64,10 @@ router
     .post('/api/beans', centerCtrl.beans)
     .post('/api/integral', centerCtrl.integral)
     .post('/api/coupons', centerCtrl.coupons)
+    .post('/api/address/save', centerCtrl.doAddressSave)   //保存或新增地址
+    .post('/api/address/queryArea', centerCtrl.queryAddressArea)   //保存或新增地址
+    .post('/api/order_express', centerCtrl.orderExpress)
+    .post('/api/order_review', centerCtrl.orderReview)
 ;
 
 

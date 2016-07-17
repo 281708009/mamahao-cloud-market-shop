@@ -1,5 +1,5 @@
 /*高度100%模块*/
-.m-beans,.m-integral,.m-coupon,.m-address,.m-address-search,.m-address-edit { height: 100%;}
+.m-beans,.m-integral,.m-coupon,.m-address,.m-address-add,.m-address-edit,.m-address-search { height: 100%;}
 
 /* 个人中心 */
 .m-center .header{ background: url(../images/bg-center-header.jpg) no-repeat center top; background-size: cover; position: relative; padding: 46px 0;}
@@ -16,14 +16,14 @@
 .m-center .menu p{ font-size: 12px; color: #999; text-overflow:ellipsis; white-space:nowrap; overflow: hidden; padding: 0 5px;}
 
 /* 地址管理 */
-.m-address .list{ padding-top: 10px;}
+.m-address .list{ padding-top: 10px;overflow: auto}
 .m-address .list > li{ padding: 16px 0; background-color: #FFF; margin-bottom: 10px; border-top: 1px solid #DCDCDC; border-bottom: 1px solid #DCDCDC; display:-webkit-box; display:flex; display:-webkit-flex;}
 .m-address .list > li label{ display: none; padding: 0 10px; position: relative;}
 .m-address .list > li a.edit{ padding: 0 15px; width: 50px; position: relative; text-indent: -88em; overflow: hidden;}
 .m-address .list > li a.edit:after{ content: ""; position: absolute;  width: 20px; height: 20px; left: 50%; top: 50%; transform:translate3d(-50%,-50%,0); -webkit-transform:translate3d(-50%,-50%,0); background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoBAMAAAB+0KVeAAAAJ1BMVEUAAACZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmahP7BAAAADHRSTlMAEs8Z2PHErXAm+ciS3RVTAAAAqUlEQVQoz73SsQ2CYBBA4YtGjImFpYWNKxjHsHAAC9zA1tLego4lKBgBSCCEMBR3CfDCUdFwxRG+vOZPTpZM/Gr7qez3luo6mIHbR6h73/xEmHtx0r2rEQuv9jnmPjTM5iFICBKChCAhSAgSgoSgC0FCkDAIQfdq24QgIUjoUEOPhCAhSDjBjYUeg7eA7DUwn+BF0R+Y/J8yO8Vz8pHhaJkyGs8b+8qS6QAbBWQwW5N+SQAAAABJRU5ErkJggg==') no-repeat; background-size: cover;}
-.m-address .list > li dl{ -webkit-box-flex: 1; flex:1; -webkit-flex:1; padding:0 10px;}
-.m-address .list > li dt{ color: #333;}
-.m-address .list > li dt strong{ font-weight: normal;margin-right: 1.5em;}
+.m-address .list > li dl{ -webkit-box-flex: 1; flex:1; -webkit-flex:1; padding:0 10px;overflow: hidden;}
+.m-address .list > li dt{ color: #333;display:-webkit-box; display:flex; display:-webkit-flex;}
+.m-address .list > li dt strong{ font-weight: normal;margin-right: 1.5em;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
 .m-address .list > li dd{ font-size: 13px;}
 /* 默认地址 */
 .u-send .default dt,
@@ -37,15 +37,14 @@
 .m-address-edit{ padding-top: 10px;}
 .m-address-edit .u-form{ border-top: 1px solid #dcdcdc; border-bottom: 1px solid #dcdcdc;}
 /* 搜索地址 */
-.m-address-search .header .content{ position: fixed; width: 100%; background-color: #F0F0F0; z-index: 998;}
-.m-address-search .header .f-space{ height: 80px;}
+.m-address-search { height: 100%; display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-orient: vertical;-webkit-flex-direction: column;flex-direction: column;}
 .m-address-search .search{ padding: 10px;}
 .m-address-search .search .field{ border: 1px solid #DCDCDC; padding:2px 0 4px 20px; border-radius: 5px; background-color: #fff; position: relative;}
 .m-address-search .search .field:after{ content:""; position:absolute; width:11px; height:11px; border-radius:50%; border:1px solid #999; left:5px; top:5px; overflow:hidden;}
 .m-address-search .search .field:before{ content:""; position:absolute; width:7px; height:1px; overflow:hidden; background-color:#999; transform:rotate(45deg); -webkit-transform:rotate(45deg); left:15px; top:17px;}
 .m-address-search .search input{ width: 100%; font-size: 14px; padding: 0 5px; background-color: transparent;}
 /* 搜索历史 */
-.m-address-search .history{ background-color: #FFF;}
+.m-address-search .history{ background-color: #FFF; -webkit-box-flex: 1; flex:1; -webkit-flex:1; overflow: auto;}
 .m-address-search .history h3{ font-size: 15px; color: #333; font-weight: normal; height: 44px; line-height: 42px; padding: 0 10px; border-bottom: 1px solid #DCDCDC;}
 .m-address-search .history ul{ padding: 0 10px;}
 .m-address-search .history li{ padding: 10px 0; border-bottom: 1px solid #DCDCDC;}
@@ -54,7 +53,7 @@
 .m-address-search .history .footer del{ position: relative; display: inline-block; padding-left: 22px;}
 .m-address-search .history .footer del:after{ content: ""; position: absolute; left: 0; top: 1px; width: 18px; height: 18px; background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAAP1BMVEUAAAB8fX18fX18fX18fX18fX18fX18fX18fX18fX18fX18fX18fX18fX18fX18fX18fX18fX18fX18fX18fX29TpPEAAAAFHRSTlMAzDMPm/Im3uWtbcamkx3oz79CPSVczmcAAACOSURBVDjL7c7dDoIwDIbhjtL9CeLPd//XapCwTud2oDEkhPeo655koy/j62SWxrY7ITW0nbt3z24eQ9Od14Mt5GjW/OJUOmOyHzuk/OxUTki5+cEuxRl7v9m8vs+GcqUBOpSrAx5wN/BiSKcKLPoRcs3xCxTEGowQ0gIk8ifGEQikWUE1sZTLIBUWLP2pB4XqFf30aXJ6AAAAAElFTkSuQmCC') no-repeat; background-size: cover;}
 /* 附近地址 */
-.m-address-search .list{ background-color: #FFF; padding: 0 15px;}
+.m-address-search .list{ background-color: #FFF; padding: 0 15px; -webkit-box-flex: 1; flex:1; -webkit-flex:1; overflow: auto;}
 .m-address-search .list li{ padding: 10px 0; display:-webkit-box; display:flex; display:-webkit-flex; border-bottom: 1px solid #DCDCDC;}
 .m-address-search .list li:last-child{ border-bottom: 0;}
 .m-address-search .list dl{ -webkit-box-flex: 1; flex:1; -webkit-flex:1; padding-right: 10px;}
@@ -72,7 +71,7 @@
 .m-beans .info dd{ color:#999; font-size: 12px;}
 
 /* 记录列表 */
-.m-record{ margin-top:8px; border-top:1px solid #F0F0F0; border-bottom:1px solid #F0F0F0; font-size: 13px;}
+.m-record{ margin-top:8px; border-top:1px solid #F0F0F0; border-bottom:1px solid #F0F0F0; font-size: 13px;overflow: hidden;}
 .m-record .title{ padding:8px; overflow:hidden; background-color: #fff;-webkit-flex-shrink: 0;flex-shrink: 0;}
 .m-record .title strong{ float:left; font-weight:normal;}
 .m-record .title a{ float:right; font-size:12px; color:#666;}

@@ -1,38 +1,21 @@
 //- 地址搜索列表
 section.m-address-search
     .header
-        .content
-            .u-alert
-                p 尝试输入小区、写字楼等，楼层、门牌稍后输入
-                del x
-            .search
-                .field
-                    input(type='search', placeholder='尝试输入小区、写字楼等')
-        .f-space
-    // 历史搜索记录
-    .history
-        h3 搜索历史
-        ul
-            li 北京市
-            li 杭州望江东路
-            li 中豪国际
-            li 区政府
-        .footer
-            del 清空历史搜索
+        .u-alert
+            p 尝试输入小区、写字楼等，楼层、门牌稍后输入
+            del x
+        .search
+            .field
+                input(type='search', placeholder='请输入小区/写字楼等，楼层、门牌稍后输入', id='keywords', maxlength=255)
+    //- 历史搜索记录
+        .history
+            h3 搜索历史
+            ul
+                li 北京市
+                li 杭州望江东路
+                li 中豪国际
+                li 区政府
+            .footer
+                del 清空历史搜索
     // 搜索结果
-    ul.list
-        li
-            dl
-                dt 浙江大学玉泉校区
-                dd 浙大路38号
-            span 100m
-        li
-            dl
-                dt 浙江大学紫金港校区
-                dd 余杭塘路866号
-            span 200m
-        li
-            dl
-                dt 中豪望江国际
-                dd 浙江省杭州市上城区望江东路332号
-            span 500m
+    ul.list#result

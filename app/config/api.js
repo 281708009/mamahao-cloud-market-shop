@@ -10,12 +10,21 @@ var api = {
     "MBeanList": "/V1/mbean/queryMBeanList.htm",     //获取妈豆记录
     "integral": "/V1/member/center/queryMemberPoint.htm",     //积分
     "coupons": "/V2/coupon/list.htm",     //优惠券
-    "orderList": "/V3/order/basic/queryOrderList.htm",      // 订单地址列表
+    "orderList": "/V3/order/basic/queryOrderList.htm",      // 订单列表
     "orderDetail": "/V2/order/basic/queryOrderDetail.htm",  // 订单详情
     "addressList": "/V1/member/delivery/getDeliveryAddr.htm",     //收货地址列表
     "checkArea": "/V1/basic/checkArea.htm",     //地址
     "addAddress": "/V1/member/delivery/addDeliveryAddr.htm",     //添加地址
     "updateAddress": "/V1/member/delivery/updateDeliveryAddr.htm",     //更新地址
+    "orderDelete": "",  // 删除订单请求
+    "orderExpress": "/V1/order/basic/getOrderLogisticsList.htm",    // 物流详情页
+    "orderToPay": "/V3/order/basic/toSettlement.htm",               // 立即付款????
+    "orderReview": "/V1/order/basic/queryOrderGoodsList.htm",        // 评价晒单页面
+    "orderRemind": "",  // 提醒发货
+    "orderBuy": "", // 再次购买页面
+    "orderReceive": "", // 确认收货
+
+    "queryArea": "/V1/basic/queryArea.htm",     //获取省市区
 };
 
 module.exports = api;

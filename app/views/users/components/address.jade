@@ -1,15 +1,15 @@
 section.m-address.flex-column
-    .flex
-        ul.list
-            if rows && rows.length
-                each item, index in rows
-                    li(class={default : item.isDefault == true})
-                        dl
-                            dt
-                                strong #{item.consignee}
-                                em #{item.phone}
-                            dd #{item.prv}#{item.city}#{item.area}#{item.gpsAddr}#{item.addrDetail}
-                        a.edit(href='#/address/edit/#{item.deliveryAddrId}') 编辑
+
+    ul.list.flex
+        if rows && rows.length
+            each item, index in rows
+                li(class={default : item.isDefault == true})
+                    dl
+                        dt
+                            strong #{item.consignee}
+                            em #{item.phone}
+                        dd #{item.prv}#{item.city}#{item.area}#{item.gpsAddr}#{item.addrDetail}
+                    a.edit(href='#/address/edit/#{item.deliveryAddrId}') 编辑
 
     section.u-footer-button
         ul

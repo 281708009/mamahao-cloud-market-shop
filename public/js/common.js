@@ -138,9 +138,10 @@
                 timeout: 2e4,  //20s
                 success: function (res) {
                     //console.log('success', JSON.stringify(res))
+                    c.isAjax = false;
                     if (res.error_code) {
                         var errorMsg = res.msg;
-                        if (/^(-1|-10000)$/.test(res.error_code)) {
+                        if (/^(-1|1001)$/.test(res.error_code)) {
                             //未登录
                             return MMH.tips({
                                 body: "您还未登录，请登录后再试！",
@@ -155,6 +156,7 @@
                 },
                 error: function (res) {
                     console.log('error--->', res)
+                    c.isAjax = false;
                     if (params.error) {
                         params.error.call(this, res);
                     } else {
@@ -165,7 +167,6 @@
                 },
                 complete: function (res) {
                     //console.log('complete--->', res)
-                    c.isAjax = false;
                     MMH.hideLoading();
                     params.complete && params.complete.call(this, res);
                 }
@@ -563,87 +564,96 @@
             };
         }(),
         /* 微信 */
-        wx: {
-            data: {
-                title: "妈妈好",
-                url: "http://m.mamahao.com/",
-                image: "http://s.mamhao.cn/common/images/icon-114.png",
-                desc: "让每一件商品都是安全的!"
-            },
-            /*授权，初始化*/
-            init: function () {
-                var self = this;
-                MMH.ajax({
-                    data: {url: window.location.href, r: Math.random()},
-                    dataType: "jsonp",
-                    url: "http://api.mamhao.cn/V1/basic/weixin/secret.htm",
-                    success: function (data) {
-                        //console.log(data);
-                        wx.config({
-                            debug: false,
-                            appId: data.appId,
-                            timestamp: data.time,
-                            nonceStr: data.none,
-                            signature: data.sign,
-                            jsApiList: [
-                                'checkJsApi',
-                                'onMenuShareTimeline',
-                                'onMenuShareAppMessage',
-                                'onMenuShareQQ',
-                                'onMenuShareWeibo',
-                                'hideMenuItems',
-                                'showMenuItems',
-                                'hideAllNonBaseMenuItem',
-                                'getLocation',
-                                'getNetworkType'
-                            ]
-                        });
-                        self.ready(function () {
-                            MMH.wx.share(self.data);
-                        });
-                    }
-                });
-            },
-            /*分享*/
-            share: function (msg) {
-                var wxData = {
-                    title: msg.title,
-                    link: msg.url,
-                    imgUrl: msg.image,
-                    desc: msg.desc,
-                    success: function (e) {
-                        // 接口调用成功时执行的回调函数;
-                        msg.success && msg.success(e);
-                    },
-                    cancel: function () {
-                        // 用户点击取消时的回调函数，仅部分有用户取消操作的api才会用到
-                        msg.cancel && msg.cancel();
-                    }
-                };
-                var wxDataTimeline = {
-                    title: msg.title,
-                    link: msg.url,
-                    imgUrl: msg.image,
-                    success: function (e) {
-                        // 接口调用成功时执行的回调函数;
-                        msg.success && msg.success(e);
-                    },
-                    cancel: function () {
-                        // 用户点击取消时的回调函数，仅部分有用户取消操作的api才会用到
-                        msg.cancel && msg.cancel();
-                    }
-                };
-                wx.onMenuShareTimeline(wxDataTimeline);
-                wx.onMenuShareAppMessage(wxData);
-                wx.onMenuShareQQ(wxData);
-                wx.onMenuShareWeibo(wxData);
-            },
-            ready: function (callback) {
-                wx.ready(function () {
-                    callback && callback.call(callback);
-                });
+        wx: function () {
+            var util = {
+                data: {
+                    title: "妈妈好",
+                    url: "http://m.mamahao.com/",
+                    image: "http://s.mamhao.cn/common/images/icon-114.png",
+                    desc: "让每一件商品都是安全的!"
+                },
+                /*授权，初始化*/
+                init: function (wx, args) {
+                    var me = util;
+                    MMH.ajax({
+                        data: {url: window.location.href, r: Math.random()},
+                        dataType: "jsonp",
+                        url: "http://api.mamhao.cn/V1/basic/weixin/secret.htm",
+                        success: function (data) {
+                            //console.log(data);
+                            wx.config({
+                                debug: false,
+                                appId: data.appId,
+                                timestamp: data.time,
+                                nonceStr: data.none,
+                                signature: data.sign,
+                                jsApiList: [
+                                    'checkJsApi',
+                                    'onMenuShareTimeline',
+                                    'onMenuShareAppMessage',
+                                    'onMenuShareQQ',
+                                    'onMenuShareWeibo',
+                                    'hideMenuItems',
+                                    'showMenuItems',
+                                    'hideAllNonBaseMenuItem',
+                                    'getLocation',
+                                    'getNetworkType'
+                                ]
+                            });
+                            wx.ready(function () {
+                                util.share(wx, me.data);
+                                args.ready && args.ready.call(this);
+                            });
+
+                            wx.error(function (res) {
+                                console.error('[wechat config error]', res.errMsg);
+                                args.error && args.error.call(this, res);
+                            });
+
+                        }
+                    });
+                },
+                /*分享*/
+                share: function (wx, msg) {
+                    var wxData = {
+                        title: msg.title,
+                        link: msg.url,
+                        imgUrl: msg.image,
+                        desc: msg.desc,
+                        success: function (e) {
+                            // 接口调用成功时执行的回调函数;
+                            msg.success && msg.success(e);
+                        },
+                        cancel: function () {
+                            // 用户点击取消时的回调函数，仅部分有用户取消操作的api才会用到
+                            msg.cancel && msg.cancel();
+                        }
+                    };
+                    var wxDataTimeline = {
+                        title: msg.title,
+                        link: msg.url,
+                        imgUrl: msg.image,
+                        success: function (e) {
+                            // 接口调用成功时执行的回调函数;
+                            msg.success && msg.success(e);
+                        },
+                        cancel: function () {
+                            // 用户点击取消时的回调函数，仅部分有用户取消操作的api才会用到
+                            msg.cancel && msg.cancel();
+                        }
+                    };
+                    wx.onMenuShareTimeline(wxDataTimeline);
+                    wx.onMenuShareAppMessage(wxData);
+                    wx.onMenuShareQQ(wxData);
+                    wx.onMenuShareWeibo(wxData);
+                }
+            };
+
+            return {
+                init: util.init,
+                share: util.share
             }
-        }
+        }()
     };
 
     MMH.init(); //初始化
@@ -787,7 +797,7 @@
                 "ajax": true    //表明是分页ajax请求过来的
             };
             defaults[o.keys.page] = 1;
-            defaults[o.keys.count] =  params.count || 20;   //默认页数和条数
+            defaults[o.keys.count] = params.count || 20;   //默认页数和条数
 
             var ajax_info = $.extend({}, defaults, params || {});
 
@@ -804,7 +814,7 @@
             M.ajax({
                 showLoading: false,
                 url: ajax_info.url || o.api,
-                data: ajax_info,
+                data: {data: JSON.stringify(ajax_info)},
                 success: function (res) {
                     var info = {
                         params: ajax_info,

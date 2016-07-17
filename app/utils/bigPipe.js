@@ -96,10 +96,10 @@ bigPipe.prototype.reform = function (res, req) {
 bigPipe.prototype.done = function (error) {
     /*
      * 全部请求完成，此时error参数为最后一个错误信息
-     * 状态码-1、-10000等未登录状态，此时返回未登录的json到浏览器response
+     * 状态码1001是未登录状态，此时返回未登录的json到浏览器response
      * 其他状态如服务器异常等情况均执行success方法，只不过此时显示的是blank页面
      * */
-    if (error && -1 === error.error_code) {
+    if (error && /^(-1|1001)$/.test(error.error_code)) {
         return this.failed(error);
     }
     this.succeed();

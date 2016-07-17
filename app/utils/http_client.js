@@ -20,7 +20,7 @@ var HttpClient = {
      * */
     request: function (args, params) {
         var request = require("request");
-        var req = args[0],res = args[1], next = args[2];  //取参数
+        var req = args[0], res = args[1], next = args[2];  //取参数
 
         //console.log('req---->',req);
 
@@ -62,8 +62,10 @@ var HttpClient = {
         /*callback*/
         function callback(error, response, body) {
 
-            //console.log('response--->' + JSON.stringify(response));
-            console.log('response body, status:',response.statusCode,'--->', body);
+            if (response) {
+                //console.log('response--->' + JSON.stringify(response));
+                console.log('response body, status:', response.statusCode, '--->', body);
+            }
 
             //  成功 {success: true, msg: 'success'}
             //  失败 {error_code: 1001, msg: '404 error'}
@@ -72,13 +74,13 @@ var HttpClient = {
                 if (info.error_code) {
 
                     //未登录状态设置统一状态码
-                    if (/^(-1|-10000|901)$/.test(info.error_code)) {
+                    if (/^(-1|1001)$/.test(info.error_code)) {
                         info.error_code = -1;
                     }
 
                     //返回错误信息
-                    var error = {status: response.statusCode,error_code: info.error_code, msg: info.error};
-                    if(params.error){
+                    var error = {status: response.statusCode, error_code: info.error_code, msg: info.error};
+                    if (params.error) {
                         return params.error.call(this, error);
                     }
                     res.status(error.status).json(error);
@@ -86,8 +88,16 @@ var HttpClient = {
                     params.success && params.success.call(this, info);
                 }
             } else {
-                var error = {status: response.statusCode,error_code: response.statusCode, msg: response.statusCode + ' error'};
-                if(params.error){
+                //request error
+                var error = {status: error.code, error_code: error.code, msg: error.errno};
+                if (response) {
+                    error = {
+                        status: response.statusCode,
+                        error_code: response.statusCode,
+                        msg: response.statusCode + ' error'
+                    };
+                }
+                if (params.error) {
                     return params.error.call(this, error);
                 }
                 res.status(error.status).json(error);

@@ -8,9 +8,11 @@ module.exports = {
         port:3000,
         name:"mamahao-mobile-site",
         api:{
-            host : "172.28.1.107",
+            host : "101.69.254.214",    // 促销
+            port: "11001",
+            //host : "172.28.1.107",
             // host : "localhost",
-            port: "8080",
+            //port: "8080",
             root: "/mamahao-app-api"
         },
         wechat:{

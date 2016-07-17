@@ -8,7 +8,9 @@ block js
     script seajs.use('app/login');
 
 block content
-    section.m-login
+    section.m-binding
+        .tip
+            p 为了您的帐户安全请及时绑定手机
         ul.u-form.gap.fm-login
             li
                 em 手机号
@@ -20,4 +22,4 @@ block content
                     input(name='vcode',type='tel', placeholder='请输入验证码',maxlength='6')
                 .codes.js-vcode 获取验证码
         .u-submit
-            button.u-btn.max.success.alone.js-submit(type='button') 手机快速登录
+            button.u-btn.max.success.alone.js-submit(type='button') 绑定

@@ -1,3 +1,4 @@
+// 订单详情
 section.m-order-detail
     // 门店信息
     if detail.shopInfo
@@ -15,7 +16,7 @@ section.m-order-detail
                 em 联系方式：
                 p
                     a(href='tel:#{detail.shopInfo.telephone}') #{detail.shopInfo.telephone}
-            // li
+            //- li
                 em 送达时间：
                 p 预计
                     time 17:30 点送达
@@ -30,8 +31,11 @@ section.m-order-detail
     .order
         each item in detail.data
             .item
-                .header #{item.shopName}
-                    em 集团自营
+                if item.shopName
+                    .header #{item.shopName}
+                        em 集团自营
+                else
+                    .header 妈妈好平台
                 each goods in item.goodsList
                     .content
                         .pic
@@ -41,13 +45,17 @@ section.m-order-detail
                             if goods.spec.length
                                 p
                                     each sp in goods.spec
-                                        | #{sp.value}
+                                        | #{sp.value}&nbsp;
                         dl
-                            dt ￥#{goods.itemPrice}
-                                if goods.oPrice
-                                    del #{goods.oPrice}
+                            if goods.isGift
+                                dt
+                                    sub 赠品
+                            else
+                                dt ￥#{goods.itemPrice}
+                                    if goods.oPrice && goods.oPrice != goods.itemPrice
+                                        del ￥#{goods.oPrice}
                             dd x#{goods.quantity}
-                            //if(detail.allowRefund && !goods.isRefunded)
+                            //- if(detail.allowRefund && !goods.isRefunded)
                                 dd
                                     button.u-btn 退款退货
     // 付款信息
@@ -56,18 +64,18 @@ section.m-order-detail
             each p in detail.price
                 if p.name == '运费' || p.price != 0
                     li
-                        em #{p.name}：
+                        em #{p.name}
                         span
                             if (p.name == '运费' && p.price == 0)
                                 | 免运费
                             else if p.price != 0
                                 if (p.name != '运费' && p.name != '商品金额')
-                                    | -￥#{p.price}
+                                    | - ￥#{p.price}
                                 else
                                     | ￥#{p.price}
 
         dl.finally
-            dt 实付款：
+            dt 实付款
             dd ￥#{detail.payPrice}
         ol.number
             li 订单编号：#{detail.orderNo}
@@ -90,31 +98,43 @@ section.m-order-detail
                         em 待评价
                     when 8
                         em 已删除
+                    when 9
+                        em 退款退货
             li 订单来源:
     // 底导
     footer.footer
-        dl
-            if detail.allowRefund
+        if detail.orderStatus == 3 && detail.failureMillisecond <= 0
+            dl
+                dt
+                    time 订单已失效，请重新生成。
+        else if detail.allowRefund
+            dl
                 dt
                     em 退款/退货说明
-            dd
-            case detail.orderStatus
-                when 0
-                when 1
-                    button.u-btn 删除订单
-                when 2
-                    button.u-btn 删除订单
-                when 3
-                    button.u-btn.success 立即付款
-                when 4
-                    button.u-btn 提醒发货
-                when 5
-                    button.u-btn 查看物流
-                when 6
-                    button.u-btn.success 评价晒单
-                when 8
-                default
-                    | ''
-
-            if detail.allowBuy
-                button.u-btn.success 再次购买
+                dd
+                case detail.orderStatus
+                    when 0
+                    when 1
+                        button.u-btn 删除订单
+                    when 2
+                        button.u-btn 删除订单
+                    when 3
+                        if detail.failureMillisecond <= 0
+                            button.u-btn.ban 订单失效
+                        else
+                            button.u-btn.success 立即付款
+                    when 4
+                        unless detail.deliveryId == 2
+                            button.u-btn 提醒发货
+                    when 5
+                        button.u-btn 查看物流
+                    when 6
+                        unless detail.deliveryId == 2
+                            button.u-btn 查看物流
+                        button.u-btn.success 评价晒单
+                    when 8
+                    default
+                        | &nbsp;
+                if detail.allowBuy
+                    button.u-btn.success 再次购买
+        .f-space

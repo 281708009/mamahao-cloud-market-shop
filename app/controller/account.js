@@ -14,6 +14,9 @@ var account = {
             res.render('account/login', {title: "妈妈好微商城-登录"});
         }
     },
+    toBind: function (req, res, next) {
+        res.render('account/bind');
+    },
     /*请求登录*/
     doLogin: function (req, res, next) {
         var mobile = req.body.mobile, vcode = req.body.vcode;
