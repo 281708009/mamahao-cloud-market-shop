@@ -4,15 +4,13 @@ html(lang="en")
         include ../includes/head
 
     body(ontouchstart)
-        #app
+
+        //- 主内容区域，被#app包裹
+        #app.flex-column
             block content
-            include ../includes/foot
 
-        script(src='/lib/jq.2.1.min.js')
-        script(src='/lib/fastclick.min.js')
-        script(src='/js/common.js')
+        //- 其他需要补充的元素
+        block extra
 
-        script(src='/modules/seajs/sea.js', id='seajsnode')
-        script(src='/modules/seajs/config.js')
-
-        block js
+        //- 公用页面底部元素
+        include ../includes/foot

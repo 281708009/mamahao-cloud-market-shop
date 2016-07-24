@@ -10,7 +10,7 @@ block js
     script seajs.use('app/index');
 
 block content
-    main.main.smooth
+    main.main.smooth.flex
         header
             nav.nav.auto-scroll.auto-fix
                 ul.smooth
@@ -80,5 +80,5 @@ block content
                             img(src='http://bgo.mamhao.cn/2437ab1c-606b-4bb7-956d-375bb84d3102.jpg')
                             img(src='http://bgo.mamhao.cn/055e6e5f-172c-488e-8b4c-e3bafafdf0c5.jpg')
 
-        include includes/mixin
-        +footer_nav('index')
+    include includes/mixin
+    +footer_nav('index')

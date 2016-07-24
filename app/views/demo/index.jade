@@ -3,6 +3,7 @@ block title
     title= (title ? title : '示例')
 block css
     link(rel='stylesheet', href='/css/animate.css')
+    link(rel='stylesheet', href='css/demo.css')
 block js
     script(src='/modules/jquery/router.min.js')
     script(src='/lib/dropload.min.js')
@@ -10,45 +11,44 @@ block js
     script(src='/js/demo.js')
 block meta
     meta(name='toTop')
-block content
-    #spa
-
+block extra
     //首页模板
+
     script#tpl_home(type='text/html')
-        link(rel='stylesheet', href='css/demo.css')
-        header
-            .profile
-                .avatar
-                    img(src='#{avatar}')
-                .info
-                    span.name #{nickName}
-                .details
+        section.m-home.flex
+            header
+                .profile
+                    .avatar
+                        img(src='#{avatar}')
+                    .info
+                        span.name #{nickName}
+                    .details
 
-        section
-            h3 Message && Tip
-            ul
-                li
-                    a.js-tips(href='javascript:;') 小提示
-                li
-                    a.js-dialog(href='javascript:;') 模态对话框
-                li
-                    a.js-loading(href='javascript:;') loading
+            section
+                h3 Message && Tip
+                ul
+                    li
+                        a.js-tips(href='javascript:;') 小提示
+                    li
+                        a.js-dialog(href='javascript:;') 模态对话框
+                    li
+                        a.js-loading(href='javascript:;') loading
 
-        section
-            h3 Form
-            ul
-                li 开关 &nbsp;&nbsp;
-                    input.u-switch(type='checkbox')
+            section
+                h3 Form
+                ul
+                    li 开关 &nbsp;&nbsp;
+                        input.u-switch(type='checkbox')
 
-        section
-            h3 Scroller
-            ul
-                li
-                    a(href='#/navCenter') 导航栏点击选项滚动居中
-                li
-                    a(href='#/headroom') Headroom
-                li
-                    a(href='#/dropload') 下拉刷新，上拉加载分页
+            section
+                h3 Scroller
+                ul
+                    li
+                        a(href='#/navCenter') 导航栏点击选项滚动居中
+                    li
+                        a(href='#/headroom') Headroom
+                    li
+                        a(href='#/dropload') 下拉刷新，上拉加载分页
         include ../includes/mixin
         +footer_nav()
 

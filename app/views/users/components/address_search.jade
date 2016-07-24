@@ -1,21 +1,20 @@
 //- 地址搜索列表
-section.m-address-search
-    .header
-        .u-alert
-            p 尝试输入小区、写字楼等，楼层、门牌稍后输入
-            del x
-        .search
-            .field
-                input(type='search', placeholder='请输入小区/写字楼等，楼层、门牌稍后输入', id='keywords', maxlength=255)
-    //- 历史搜索记录
-        .history
-            h3 搜索历史
-            ul
-                li 北京市
-                li 杭州望江东路
-                li 中豪国际
-                li 区政府
-            .footer
-                del 清空历史搜索
-    // 搜索结果
-    ul.list#result
+.header
+    .u-alert
+        p 尝试输入小区、写字楼等，楼层、门牌稍后输入
+        del x
+    .search
+        .field
+            input(type='search', placeholder='请输入小区/写字楼等，楼层、门牌稍后输入', id='keywords', maxlength=255)
+//- 历史搜索记录
+    .history
+        h3 搜索历史
+        ul
+            li 北京市
+            li 杭州望江东路
+            li 中豪国际
+            li 区政府
+        .footer
+            del 清空历史搜索
+// 搜索结果
+ul.list#result

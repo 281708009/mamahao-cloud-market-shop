@@ -20,15 +20,30 @@ section.m-order-detail
                 em 送达时间：
                 p 预计
                     time 17:30 点送达
+    if detail.distributionInfo
+        ul.carry
+            li
+                em 门店名称：
+                p #{detail.distributionInfo.shopName}
+            li
+                em 门店地址：
+                p #{detail.distributionInfo.addr}
+            li
+                em 送货人员：
+                p #{detail.distributionInfo.deliveryStaff}&nbsp;
+                    a(href='tel:#{detail.distributionInfo.phone}') #{detail.distributionInfo.phone}
+            li
+                em 送达时间：
+                p 预计#{detail.distributionInfo.arriveTime}前送达
     // 收货人信息
     .u-send
         dl
             dt
-                strong 收货人: #{detail.deliveryInfo.deliveryName}
+                strong #{detail.deliveryInfo.deliveryName}
                 em #{detail.deliveryInfo.deliveryPhone}
             dd #{detail.deliveryInfo.deliveryAddr}
     // 订单商品信息
-    .order
+    .u-order
         each item in detail.data
             .item
                 if item.shopName
@@ -115,9 +130,9 @@ section.m-order-detail
                 case detail.orderStatus
                     when 0
                     when 1
-                        button.u-btn 删除订单
+                        button.u-btn.js-btn-del 删除订单
                     when 2
-                        button.u-btn 删除订单
+                        button.u-btn.js-btn-del 删除订单
                     when 3
                         if detail.failureMillisecond <= 0
                             button.u-btn.ban 订单失效
@@ -125,13 +140,13 @@ section.m-order-detail
                             button.u-btn.success 立即付款
                     when 4
                         unless detail.deliveryId == 2
-                            button.u-btn 提醒发货
+                            button.u-btn.js-btn-remind 提醒发货
                     when 5
-                        button.u-btn 查看物流
+                        a.u-btn(href='#/order/express/' + detail.orderNo) 查看物流
                     when 6
                         unless detail.deliveryId == 2
-                            button.u-btn 查看物流
-                        button.u-btn.success 评价晒单
+                            a.u-btn(href='#/order/express/' + detail.orderNo) 查看物流
+                        a.u-btn.checked(href='#/order/review/' + detail.orderNo) 评价晒单
                     when 8
                     default
                         | &nbsp;

@@ -1,0 +1,6 @@
+//- 商品分类一级列表;
+if data && data.length
+    ul
+        each item, index in data
+            li(data-id= item.typeId,class={active: index === 0})
+                em #{item.name}

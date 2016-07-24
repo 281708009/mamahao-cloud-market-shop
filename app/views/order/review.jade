@@ -1,1 +1,28 @@
 //- 评价晒单
+section.m-assess-list
+    .u-alert
+        p 发表购物体验，晒实拍图即可获得10个妈豆!
+        del x
+    ul.u-order
+        each item in rows
+            li.item
+                .content
+                    .pic
+                        img(src='#{item.itemPic}')
+                    figure
+                        figcaption #{item.itemName}
+                        p
+                            each sp in item.spec
+                                | #{sp.value}&nbsp;
+                    dl
+                        dt
+                            if item.isGift
+                                sub 赠品
+                            else
+                                | ￥#{item.itemPrice}
+                        dd x1
+                        dd
+                            if item.commentCount == 0
+                                a.u-btn.checked(href='#/order/reviewDetail/' + orderNo + '/' + item.itemId) 评价晒单
+                            else
+                                | 已完成

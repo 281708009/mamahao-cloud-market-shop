@@ -22,6 +22,8 @@ var HttpClient = {
         var request = require("request");
         var req = args[0], res = args[1], next = args[2];  //取参数
 
+        var isAjax = req.headers['ajax'] ? true : false;
+
         //console.log('req---->',req);
 
         /*根据配置文件取api地址*/
@@ -79,28 +81,44 @@ var HttpClient = {
                     }
 
                     //返回错误信息
-                    var error = {status: response.statusCode, error_code: info.error_code, msg: info.error};
+                    var errorInfo = {status: response.statusCode, error_code: info.error_code, msg: info.error};
                     if (params.error) {
-                        return params.error.call(this, error);
+                        return params.error.call(this, errorInfo);
                     }
-                    res.status(error.status).json(error);
+
+                    //处理错误，区分来源是否为ajax请求
+                    if(isAjax){
+                        res.status(errorInfo.status).json(errorInfo);
+                    }else{
+                        res.render('error', errorInfo);
+                    }
                 } else {
                     params.success && params.success.call(this, info);
                 }
             } else {
                 //request error
-                var error = {status: error.code, error_code: error.code, msg: error.errno};
-                if (response) {
-                    error = {
+                var errorInfo = {};
+                if(error){
+                    console.warn(error);
+                    errorInfo = {status: error.code, error_code: error.code, msg: error.errno};
+                }else if (response) {
+                    console.log('response--->' + JSON.stringify(response));
+                    errorInfo = {
                         status: response.statusCode,
                         error_code: response.statusCode,
                         msg: response.statusCode + ' error'
                     };
                 }
                 if (params.error) {
-                    return params.error.call(this, error);
+                    return params.error.call(this, errorInfo);
                 }
-                res.status(error.status).json(error);
+
+                //处理错误，区分来源是否为ajax请求
+                if(isAjax){
+                    res.status(errorInfo.status).json(errorInfo);
+                }else{
+                    res.render('error', errorInfo);
+                }
             }
         }
 

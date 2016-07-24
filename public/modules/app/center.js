@@ -19,15 +19,12 @@ define(function (require, exports, module) {
                 beans: "/api/beans",
                 coupons: "/api/coupons",
                 integral: "/api/integral",
-                orderDelete: "",
-                orderRemind: "",
                 orderExpress: "/api/order_express",
-                orderReview: "api/order_review"
+                orderReview: "/api/order_review",
+                orderReviewDetail:"/api/order_review_detail"
             }
         },
         init: function () {
-
-            require('swipe'); //加载swipe
             require.async('router', page.setRouter); //加载路由库文件
 
             page.bindEvents();
@@ -38,7 +35,7 @@ define(function (require, exports, module) {
         setRouter: function () {
             /*路由测试*/
             var router = new Router({
-                container: '#spa',
+                container: '#app',
                 enter: 'enter',
                 leave: 'leave',
                 enterTimeout: 250,
@@ -59,6 +56,7 @@ define(function (require, exports, module) {
             /*订单列表*/
             var orders = {
                 url: '/orders',
+                className: 'm-order',
                 render: function (callback) {
                     page.renderModule('orders', callback);
                 },
@@ -77,6 +75,12 @@ define(function (require, exports, module) {
                     this.params.queryType && (this.params.queryType = +this.params.queryType);
                     var params = this.params;
                     page.renderModule('orderDetail', callback, params);
+                },
+                bind: function () {
+                    var $module = $(this);
+                    require.async('app/order', function (func) {
+                        new func(page, $module).render();
+                    });
                 }
             };
             /* 物流详情 */
@@ -89,7 +93,7 @@ define(function (require, exports, module) {
                 bind: function () {
                     var $this = $(this);
                     $this.on('click', '.more-show', function () {
-                        var $list = $(this).closest('.more').find('.list');
+                        var $list = $(this).prev();
                         $list.toggleClass('in');
                         $(this).find('em').html($list.is('.in') ? '隐藏商品' : ('显示其余' + $(this).data('num') + '件'));
                     })
@@ -101,16 +105,46 @@ define(function (require, exports, module) {
                 render: function (callback) {
                     var params = this.params;
                     page.renderModule('orderReview', callback, params);
+                },
+                bind: function(){
+
+                }
+            };
+            /* 订单评价详情 */
+            var order_review_detail = {
+                url: '/order/reviewDetail/:orderNo/:itemId',
+                render: function (callback) {
+                    var params = this.params;
+                    page.renderModule('orderReviewDetail', callback, params);
+                },
+                bind: function(){
+                    var $this = $(this);
+                    $this.on('click','.js-review-submit',function(){
+                        var data = $(this).data('params');
+                        data.content = $('#reviewCtn').val();
+                        data.deliverySpeedStar = 5;
+                        data.serveStar = 5;
+                        data.star = 5;
+                        return console.log(data);
+                        M.ajax({
+                            url:'/api/order/reviewSubmit',
+                            data:{data:data},
+                            success:function(res){
+                                // 跳转到评价成功结果页
+                            }
+                        })
+                    });
                 }
             };
             /*地址列表*/
             var address = {
                 url: '/address',
+                className: 'm-address',
                 render: function (callback) {
                     page.renderModule('address', callback);
                 },
                 bind: function () {
-                    var $spa = $("#spa"), $module = $(this);
+                    var $spa = $("#app"), $module = $(this);
                     $spa.data('data', null);
                 }
             };
@@ -118,6 +152,7 @@ define(function (require, exports, module) {
             /*新增地址*/
             var address_add = {
                 url: '/address/add',
+                className: 'm-address-edit',
                 render: function () {
                     return $('#tpl_address_add').html();
                 },
@@ -132,6 +167,7 @@ define(function (require, exports, module) {
             /*编辑地址*/
             var address_edit = {
                 url: '/address/edit/:id',
+                className: 'm-address-edit',
                 render: function (callback) {
                     this.params.id = +this.params.id;
                     var params = this.params;
@@ -148,6 +184,7 @@ define(function (require, exports, module) {
             /*关键字搜索地址*/
             var address_search = {
                 url: '/address/search/:areaId',
+                className: 'm-address-search',
                 render: function () {
                     this.params.areaId = +this.params.areaId;
                     address_search.params = this.params;
@@ -164,6 +201,7 @@ define(function (require, exports, module) {
             /*GPS地址定位列表*/
             var address_gps = {
                 url: '/address/gps',
+                className: 'm-address-search',
                 render: function (callback) {
                     require.async('app/address_gps', function (func) {
                         new func(page, callback).render();
@@ -172,7 +210,7 @@ define(function (require, exports, module) {
                 bind: function () {
                     var $module = $(this);
                     $module.on('click', '.list li', function () {
-                        var $this = $(this), $spa = $("#spa");
+                        var $this = $(this), $spa = $("#app");
                         var data = $spa.data('data') || {};
                         data.gpsAddr = $this.find('dt').text();
                         $spa.data('data', data);
@@ -184,6 +222,7 @@ define(function (require, exports, module) {
             // 妈豆列表；
             var beans = {
                 url: '/beans',
+                className: 'm-beans',
                 render: function (callback) {
                     page.renderModule('beans', callback);
                 },
@@ -205,13 +244,18 @@ define(function (require, exports, module) {
             // 分员积分；
             var integral = {
                 url: '/integral/:type',
+                className: 'm-integral',
                 render: function (callback) {
                     this.params.type = +this.params.type;
-                    var params = this.params;
-                    page.renderModule('integral', callback, params);
+                    integral.params = this.params;
+                    page.renderModule('integral', callback);
                 },
                 bind: function () {
-                    M.swipe.init();//初始化Swipe
+
+                    //加载swipe
+                    require.async('swipe', function () {
+                        M.swipe.init();//初始化Swipe
+                    });
                     $.pagination({  //分页
                         keys: {page: "pageNo"},   //设置分页参数关键字
                         container: '.ui-swipe-item .list',
@@ -229,11 +273,15 @@ define(function (require, exports, module) {
             // 优惠券；
             var coupons = {
                 url: '/coupons',
+                className: 'm-coupon',
                 render: function (callback) {
                     page.renderModule('coupons', callback);
                 },
                 bind: function () {
-                    M.swipe.init();//初始化Swipe
+                    //加载swipe
+                    require.async('swipe', function () {
+                        M.swipe.init();//初始化Swipe
+                    });
                     $.pagination({  //分页
                         container: '.ui-swipe-item .list',
                         api: page.config.api['coupons'],
@@ -261,11 +309,12 @@ define(function (require, exports, module) {
                 .push(coupons)
                 .push(order_express)
                 .push(order_review)
+                .push(order_review_detail)
                 .setDefault('/').init();
         },
         /*拼接地址表单数据*/
         getAddressData: function (form) {
-            var $spa = $("#spa");
+            var $spa = $("#app");
             var data = {
                 consignee: form.find('.name').val(),
                 phone: form.find('.mobile').val(),
@@ -460,7 +509,7 @@ define(function (require, exports, module) {
         /*更新地址表单数据*/
         updateAddressData: function (module) {
             //读取已有数据
-            var $spa = $("#spa"), $module = module;
+            var $spa = $("#app"), $module = module;
             var data = $spa.data('data');
             if (data) {
                 $module.find('.street').val(data.gpsAddr).data({lat: data.lat, lng: data.lng});

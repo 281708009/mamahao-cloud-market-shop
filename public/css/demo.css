@@ -28,3 +28,13 @@ section ul li:before{display: inline-block;content:'';width: 20px;height: 20px;b
 .m-home section ul li a{padding: .6em 0;border-bottom: 1px solid #f0f0f0;position: relative}
 .m-home section ul li:last-child a{border: 0;}
 section ul li a:after{display: inline-block;content:'';width: 6px;height: 6px;border: 1px solid #ccc;border-top: 0;border-left: 0;position: absolute;top: 50%;right: 10px;margin-top: -4px;-webkit-transform: rotate(-45deg);transform: rotate(-45deg);}
+
+/*m-dropload*/
+.m-dropload{position: relative;}
+.m-dropload .dropload-body{height: 400px;background: rgba(0, 0, 0, .1);width: 80%;position: absolute;left: 50%;top: 50%;
+    transform: translate3d(-50%, -50%, 0);-webkit-transform: translate3d(-50%, -50%, 0);}
+.m-dropload .dropload-body .test{height: 40px;padding: 10px 0;}
+
+/*m-headroom*/
+.m-headroom .headroom-body .test{height: 200px;padding: 100px 0;}
+.m-headroom #header{position: fixed;z-index: 10;left: 0;right: 0;top: 0;}

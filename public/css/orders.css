@@ -34,7 +34,9 @@
 .m-order-detail .carry li p{ -webkit-box-flex: 1; flex:1; -webkit-flex:1;}
 .m-order-detail .carry li a{ color:#477ED8; text-decoration: underline;}
 .m-order-detail .carry li time{ color: #ff4d61;}
-.m-courier .order .list,
+
+
+/*.m-courier .order .list,
 .m-order-detail .order .item{ background: #FFF; padding: 0 10px; margin-bottom: 10px; border-top: 1px solid #dcdcdc; border-bottom: 1px solid #dcdcdc;}
 .m-order-detail .order .header{ border-bottom: 1px solid #dcdcdc; padding: 10px 0; font-size: 14px; color: #333;}
 .m-order-detail .order .header em{ font-size: 11px; background-color: #ff4d61; color: #FFF; border-radius: 2px; padding: 0 2px; margin: 0 2px;}
@@ -69,7 +71,9 @@
 .m-courier .order .content dd,
 .m-order-detail .order .content dd{ font-size: 11px; color: #999; padding: 1px 0;}
 .m-assess-list .list .u-btn,
-.m-order-detail .order .content .u-btn{ padding: 4px 8px; font-size: 13px;}
+.m-order-detail .order .content .u-btn{ padding: 4px 8px; font-size: 13px;}*/
+
+
 .m-order-detail .info{ background: #FFF; border-top: 1px solid #dcdcdc; padding:0 10px;}
 .m-order-detail .sale{ font-size: 14px; padding: 5px 0; border-bottom: 1px solid #dcdcdc;}
 .m-order-detail .sale li{ display:-webkit-box; display:flex; display:-webkit-flex; padding: 2px 0;}

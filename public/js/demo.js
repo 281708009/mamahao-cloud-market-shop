@@ -27,7 +27,7 @@ var page = {
     setRouter: function () {
         /*路由测试*/
         var router = new Router({
-            container: '#spa',
+            container: '#app',
             enter: 'enter',
             leave: 'leave',
             enterTimeout: 250,
@@ -36,7 +36,7 @@ var page = {
 
         var home = {
             url: '/',
-            className: 'm-home',
+            className: 'flex-column',
             render: function () {
                 return $('#tpl_home').html();
             },
@@ -59,7 +59,7 @@ var page = {
         /*下拉刷新*/
         var dropload = {
             url: '/dropload',
-            className: 'm-dropload',
+            className: 'flex-column',
             render: function () {
                 return $('#tpl_dropload').html();
             },
@@ -91,26 +91,18 @@ var page = {
         /*鼠标滚动header展开或收缩*/
         var headroom = {
             url: '/headroom',
-            className: 'm-headroom',
+            className: 'm-headroom flex-column',
             render: function () {
                 return $('#tpl_headroom').html();
             },
             bind: function () {
                 //鼠标滚动上滑展开下滑收缩
                 $("#header").headroom({
-                    scroller: $("#spa")[0],
+                    scroller: $(".headroom-body")[0],
                     classes: {
                         initial: "animated",
                         pinned: "fadeInDown", //向下拖动
                         unpinned: "fadeOutUp"  //向上拖动
-                    }
-                });
-                $(".footer-nav .affix-bottom").headroom({
-                    scroller: $("#spa")[0],
-                    classes: {
-                        initial: "animated",
-                        pinned: "fadeInUp",
-                        unpinned: "fadeOutDown"
                     }
                 });
             }

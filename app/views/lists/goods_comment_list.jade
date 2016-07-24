@@ -1,0 +1,31 @@
+//- 商品评论列表;
+if rows && rows.length
+    each item in rows
+        .item
+            // 评价用户信息
+            .header
+                .user
+                    .pic
+                        img(src=item.headPic + '@1e_200w_0c_0i_0o_100q_1x.jpg', alt=item.name)
+                    dl
+                        dt #{item.name}
+                        dd #{item.babyAge}
+                .value
+                    sub(class='star-'+ item.star)
+                        sup
+                    time #{item.commentTime}
+            //- 评价内容
+            .content
+                article
+                    | #{item.commentContent}
+
+                //- 回复
+                if item.shopReplyContent
+                    .reply 门店回复：#{item.shopReplyContent}
+
+                //- 购买款式
+                    dl.buy
+                        dt 已购买该商品
+                        dd
+                            span 浅色
+                            span S码

@@ -1,0 +1,68 @@
+//- 评价详情
+-var item = {}
+each goods in rows
+    if goods.itemId == itemId
+        -item = goods
+        -break
+
+section.m-assess
+    .u-alert
+        p 发表购物体验，晒实拍图即可获得10个妈豆!
+        del x
+    .content
+        .info
+            .pic
+                img(src='#{item.itemPic}')
+            if comment.flag
+                dl.single
+                    dt 商品评价
+                    dd
+                        .star.star-5
+                        ol
+                            li 1
+                            li 2
+                            li 3
+                            li 4
+                            li 5
+            else
+                dl
+                    dt 商品评价
+                    dd
+                        .star.star-5
+                        ol
+                            li 1
+                            li 2
+                            li 3
+                            li 4
+                            li 5
+                dl
+                    dt 服务评价
+                    dd
+                        .star.star-5
+                        ol
+                            li 1
+                            li 2
+                            li 3
+                            li 4
+                            li 5
+                dl
+                    dt 发货速度
+                    dd
+                        .star.star-5
+                        ol
+                            li 1
+                            li 2
+                            li 3
+                            li 4
+                            li 5
+        .text
+            textarea(placeholder='长度在1-140个字之间写下购买体会或使用过程中带来的帮助，可以为其他小伙伴提供参考，也可以获得妈豆奖励哟！',id="reviewCtn")
+        ul.file
+            li
+                .add
+                    input(type='file')
+                    span 添加晒单图片
+    footer.footer
+        .btn
+            button.u-btn.mini.success.js-review-submit(data-params='{"shopId":#{shopId},"orderNo":#{orderNo},"itemId":#{item.itemId},"templateId":#{item.templateId}}') 发表评价
+        .f-space

@@ -1,0 +1,43 @@
+extends ../layouts/layout
+block title
+    title 搜索
+
+block js
+    script seajs.use('app/search');
+
+block content
+    section.m-search.flex-column
+        .u-search
+            .content
+                form.field.search.fm-search(action='/goods/search/result',method='get')
+                    input(id='keywords',name='keywords',type='search', placeholder='搜索商品/品牌',value='#{keywords}',required)
+                .tools
+                    button(type='button').js-search 搜索
+
+        //- 默认显示内容
+        .autoshow.flex
+            //- 热门
+            if hotWords && hotWords.length
+                dl.hot
+                    dt 热门
+                    dd
+                        each word in hotWords
+                            em #{word}
+
+
+            // 搜索历史
+            dl.history
+                dt 历史搜索
+                dd
+                    ul.list
+                        li 口水巾
+                        li 口袋车
+                        li 我想搜索个什么呢，我也不知道啊啊啊，好长的话怎么办呢，怎么显示呢
+                .delete
+                    del 清空历史搜索
+
+        // 搜索结果列表
+        ul.list.flex.none
+            li 口水巾
+            li 口袋车
+            li 我想搜索个什么呢，我也不知道啊啊啊，好长的话怎么办呢，怎么显示呢

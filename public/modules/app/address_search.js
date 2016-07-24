@@ -22,7 +22,7 @@ define(function (require, exports, module) {
     pageFunc.prototype.bind = function () {
         var me = this, params = me.params;
 
-        var $spa = $("#spa"),
+        var $app = $("#app"),
             $result = $('#result'),
             $keywords = $('#keywords');
 
@@ -60,14 +60,14 @@ define(function (require, exports, module) {
         // 点击单条结果跳转到前一页地址编辑页面
         $result.on('click', 'li', function () {
             var $this = $(this);
-            var data = $spa.data('data') || {},
+            var data = $app.data('data') || {},
                 this_data = $this.data();
 
             data.gpsAddr = this_data.gps;
             data.lat = this_data.lat;
             data.lng = this_data.lng;
 
-            $spa.data('data', data);
+            $app.data('data', data);
             window.history.go(-1);
         });
 

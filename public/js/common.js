@@ -133,6 +133,7 @@
             $.ajax({
                 type: params.type || "POST",
                 url: params.url || "/",
+                headers: {ajax: true},
                 data: params.data || {},
                 dataType: params.dataType || "json",
                 timeout: 2e4,  //20s
@@ -199,6 +200,7 @@
                     }
                     var params = fun.params;
                     params.body && o.bd.html(params.body);
+                    params.class && o.inner.addClass(params.class); // 附加class;  true / false 提示文字上面有对错图标;
 
                     fun.show();
                     var timer = setTimeout(function () {
@@ -234,15 +236,15 @@
                 init: function () {
                     var o = fun.elements;
 
-                    var tpl = ['<div class="ui-dialog">', '<div class="ui-mask ui-dialog-mask"></div>', '<div class="ui-dialog-wrap">', '<div class="ui-dialog-inner">', '<div class="ui-dialog-hd"></div>', '<div class="ui-dialog-bd"></div>', '<div class="ui-dialog-ft"></div>', '</div></div></div>'];
+                    var tpl = ['<div class="ui-mask ui-dialog-mask"></div>', '<div class="ui-dialog-wrap">', '<div class="ui-dialog-inner">', '<div class="ui-dialog-hd"></div>', '<div class="ui-dialog-bd"></div>', '<div class="ui-dialog-ft"></div>', '</div></div>'];
                     o.dialog = $(tpl.join('')).appendTo(document.body);
 
-                    o.mask = o.dialog.find('.ui-dialog-mask');
-                    o.wrapper = o.dialog.find('.ui-dialog-wrap');
-                    o.inner = o.dialog.find('.ui-dialog-inner');
-                    o.hd = o.dialog.find('.ui-dialog-hd');
-                    o.bd = o.dialog.find('.ui-dialog-bd');
-                    o.ft = o.dialog.find('.ui-dialog-ft');
+                    o.mask = $('.ui-dialog-mask');
+                    o.wrapper = $('.ui-dialog-wrap');
+                    o.inner = $('.ui-dialog-inner');
+                    o.hd = $('.ui-dialog-hd');
+                    o.bd = $('.ui-dialog-bd');
+                    o.ft = $('.ui-dialog-ft');
 
                     var defaults = {
                         body: '模态框内容',
@@ -274,7 +276,7 @@
                         $(el).on('click', function (e) {
                             var callback = params.buttons[i].onClick;
                             if (callback && $.isFunction(callback)) {
-                                callback(fun, e);
+                                callback.call(fun, e);
                             } else {
                                 fun.hide();
                             }
@@ -427,6 +429,7 @@
                 init: fun.init
             }
         }(),
+        /*nav*/
         nav: function () {
             /*设置可滑动导航条组件
              * 1.HTML 需要遵循以下结构
@@ -520,7 +523,7 @@
             }
         }(),
         /*Swiper*/
-        swipe: function () {
+        swipe: function (opts) {
             var util = {
                 elements: {},
                 config: {
@@ -532,10 +535,12 @@
                     var c = util.config, o = util.elements;
                     o.swipe = $(c.swipe);
                     o.tab = $(c.tab);
-                    var Swipe = o.swipe.Swipe({
+
+                    o.swipe.Swipe({
                         continuous: false,
                         callback: function (index, elem) {
-                            o.tab.find('ul li').eq(index).addClass('active').siblings().removeClass('active');
+                            var tab = $(elem).closest(c.swipe).data('tab') || c.tab;
+                            $(tab).find('ul li').eq(index).addClass('active').siblings().removeClass('active');
                             $(elem).addClass(c.currClass).siblings().removeClass(c.currClass);   //添加当前表示
                         }
                     }).data('Swipe');
@@ -543,6 +548,8 @@
                     /*绑定点击事件*/
                     o.tab.on('click', 'ul li', function () {
                         var _this = $(this), _index = _this.index();
+                        var target = _this.closest(c.tab).data('target') || c.swipe;
+                        var Swipe = $(target).data('Swipe');
                         Swipe.slide(_index);
                     });
                 }
@@ -551,8 +558,8 @@
                 init: util.init
             }
         }(),
+        /*处理url*/
         url: function () {
-            /*处理url*/
             var util = {
                 query: function (key) {
                     var value = location.search.match(new RegExp("[\?\&]" + key + "=([^\&]*)(\&?)", "i"));

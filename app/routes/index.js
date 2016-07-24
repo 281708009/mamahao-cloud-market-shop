@@ -7,10 +7,11 @@ var auth = require("../middleware/auth");
 
 var indexCtrl = require("../controller/index"),            //首页
     storeCtrl = require("../controller/store"),            //门店
-    categoryCtrl = require("../controller/category"),     //分类
+    goodsCtrl = require("../controller/goods"),     //分类
     cartCtrl = require("../controller/cart"),              //购物车
     accountCtrl = require("../controller/account"),       //账户相关，登录等
     centerCtrl = require("../controller/center"),         //个人中心
+    orderCtrl = require("../controller/order"),         //个人中心
     weChatCtrl = require("../controller/wechat");         //微信相关
 
 
@@ -19,8 +20,8 @@ var indexCtrl = require("../controller/index"),            //首页
  */
 router
     .get("/demo", indexCtrl.demo)  //demo
-    .get("/",indexCtrl.index)
-    .get("/index",indexCtrl.index);
+    .get("/", indexCtrl.index)
+    .get("/index", indexCtrl.index);
 
 
 /**
@@ -30,16 +31,25 @@ router
     .get("/store", storeCtrl.index);
 
 /**
- * 分类
+ * 商品相关
  */
 router
-    .get("/category", categoryCtrl.index);
+    .get("/goods", goodsCtrl.index)
+    .get("/goods/list", goodsCtrl.list)
+    .get("/goods/brand", goodsCtrl.brand)
+    .get("/goods/detail", goodsCtrl.detail)
+    .get("/goods/qualityPic", goodsCtrl.qualityPic)
+    .get("/goods/search", goodsCtrl.search)
+    .get("/goods/search/result", goodsCtrl.search_result)
+    .get("/goods/filter", goodsCtrl.filter)
+    .post("/api/goodsTypeTree", goodsCtrl.getGoodsTypeTree)
+;
 
 /**
  * 购物车
  */
 router
-    .get("/cart", cartCtrl.index);
+    .get("/cart/:cartId?", cartCtrl.index);
 
 
 /**
@@ -53,11 +63,18 @@ router
     .post("/api/sendMessage", accountCtrl.sendMessage);
 
 
+
+/**
+ * 微信相关
+ */
+router
+    .get("/wechat", weChatCtrl.toWechat)
+    .get("/weixin/callback", weChatCtrl.wechatCallBack);
+
+
 /*用户个人中心*/
 router
-    .get('/center',auth.requiredAuthentication, centerCtrl.index)
-    .post('/api/orders', centerCtrl.orders)
-    .post('/api/order_detail', centerCtrl.orderDetail)
+    .get('/center', auth.requiredAuthentication, centerCtrl.index)
     .post('/api/address', centerCtrl.address)
     .post('/api/address_edit', centerCtrl.addressEdit)
     .post('/api/address_gps', centerCtrl.addressGPS)
@@ -66,17 +83,20 @@ router
     .post('/api/coupons', centerCtrl.coupons)
     .post('/api/address/save', centerCtrl.doAddressSave)   //保存或新增地址
     .post('/api/address/queryArea', centerCtrl.queryAddressArea)   //保存或新增地址
-    .post('/api/order_express', centerCtrl.orderExpress)
-    .post('/api/order_review', centerCtrl.orderReview)
-;
+    ;
 
 
-/**
- * 微信相关
- */
+/*
+* 订单相关
+* */
 router
-    .get("/wechat", weChatCtrl.toWechat)
-    .get("/weixin/callback", weChatCtrl.wechatCallBack);
+    .post('/api/orders', orderCtrl.orders)
+    .post('/api/order_express', orderCtrl.orderExpress)
+    .post('/api/order_detail', orderCtrl.orderDetail)
+    .post('/api/order_review', orderCtrl.orderReview)
+    .post('/api/order/:option', orderCtrl.orderOption)
+    .post('/api/order_review_detail', orderCtrl.orderReviewDetail)
+    ;
 
 
 module.exports = router;

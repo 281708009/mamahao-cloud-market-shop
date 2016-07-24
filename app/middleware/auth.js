@@ -7,11 +7,10 @@ exports.requiredAuthentication = function (req, res, next) {
         next();
     } else {
         var isWeChat = false;//验证是否是微信浏览器
-        var userAgent = req.header("user-agent").toLowerCase();
-        if (userAgent.indexOf("micromessenger") > 0) {// 是微信浏览器
+        var userAgent = req.header("user-agent");
+        if (/micromessenger/gi.test(userAgent)) {// 是微信浏览器
             isWeChat = true;
         }
-        console.log("isWeChat:" + isWeChat);
         if (isWeChat) {
             res.redirect('/account/bind');
         } else {

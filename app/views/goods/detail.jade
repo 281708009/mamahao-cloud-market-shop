@@ -1,0 +1,297 @@
+extends ../layouts/layout
+block title
+    title 每一件商品都是安全的
+block css
+    link(rel='stylesheet', href='/css/goods.css')
+block js
+    script seajs.use('app/goods_detail');
+
+block content
+    //- 商品详情
+    //- inlet(入口): 1.门店 2.妈豆尊享  3.预售  4.订单  5.口碑  6.类目 7.条形码
+    //- jsonTerm: {"templateId":"182972","itemId":"326588"}
+    section.m-goods-detail.flex
+
+        //- 商品主图
+        if pic && pic.length
+            #swipe-banner.ui-swipe(data-tab='#swipe-tab-banner')
+                ol.ui-swipe-wrap
+                    each pic_url in pic
+                        li.ui-swipe-item
+                            img(src= pic_url + '@1e_600w_0c_0i_0o_100q_1x.jpg')
+
+                // 点点点
+                .ui-swipe-tab#swipe-tab-banner(data-target='#swipe-banner')
+                    ul
+                        each pic_circle, i in pic
+                            li(class={active: i === 0})
+
+                // 渐变蒙板
+                .mask
+
+        // 价格
+        dl.price
+            dt
+                strong ￥#{price}
+                if price < originalPrice
+                    del ￥#{originalPrice}
+                    em 直降
+            dd
+                span 已售#{totalSaleCount}件
+                a(href='http://h5.mamahao.com/help/beans/')
+                    | 购买可获得
+                    em #{getmBean}
+                    | 个妈豆
+        // 标题
+        dl.title
+            dt
+                | #{title}
+                sup 自营
+                sub 实体店
+            dd ##{subtitle}
+        // 促销
+        .sale
+            // 优惠劵
+            .coupon
+                p
+                    em 领劵
+                    | 满1000元减50元
+            // 满减、赠品、套餐
+            .rush
+                p
+                    em 满减
+                    | 六一儿童节，满100减10元，满200减20
+                p
+                    em 满赠
+                    | 六一儿童节，全场满100赠湿纸巾
+                p
+                    em 赠品
+                    | 好孩子海洋水润婴儿湿巾80抽
+                p
+                    em 套餐
+                    | 六一儿童节，口袋车组合优惠100元
+        // 好妈妈说
+        .guide
+            dl
+                dd
+                    img(src='http://type-images.oss-cn-hangzhou.aliyuncs.com/' + specialistPhoto, alt='')
+                dt #{specialistName}
+            article.ellipsis
+                strong 好妈妈说：
+                | #{mamCare}
+        // 配送信息
+        .delivery
+            dl
+                dt 送至
+                dd
+                    p 浙江>杭州市>上城区
+                    time
+                        | 下单预计
+                        em 17:00
+                        | 前送达
+            dl
+                dt 运费
+                dd
+                    p 订单总额不满#{mailPriceTerm}元收取运费#{mailPrice}元
+
+            dl
+                dt 服务
+                dd
+                    p
+                        | 由
+                        span #{shop}
+                        | 发货并提供售后服务
+                    if goodsTag && goodsTag.length
+                        ol
+                            each tag in goodsTag
+                                li
+                                    img(src= tag.pic, alt= tag.view)
+                                    | #{tag.view}
+
+
+
+        //- 质检担保
+        if qualityPic && qualityPic.length
+            .quality(data-pic=qualityPic)
+                a.u-arrow.right(href='/goods/qualityPic?templateId=' + templateId) 质检担保
+
+        // 门店
+        .shop
+            a.u-arrow.right(href='javascript:;')
+                .pic
+                    img(src='http://bgo.mamhao.cn/f8e3bb18-cd83-4f33-9171-511a8c281585.jpg@1e_200w_0c_0i_0o_100q_1x.jpg', alt='')
+                dl
+                    dt #{shop}
+                    dd 距您1000m
+
+        // 商品详情
+        .u-tab.max.ui-swipe-tab#swipe-tab-detail(data-target='#swipe-detail')
+            ul
+                li.active
+                    a(href='javascript:;') 图文详情
+                li
+                    a(href='javascript:;') 商品参数
+                li
+                    a(href='javascript:;') 商品口碑
+            .f-space
+
+
+        .ui-swipe#swipe-detail(data-tab='#swipe-tab-detail')
+            .ui-swipe-wrap
+                .ui-swipe-item(style='height: in')
+                    // 图文详情
+                    .photo !{styleHtml}
+
+                .ui-swipe-item
+                    // 商品参数
+                    .config
+
+
+                .ui-swipe-item
+                    // 商品口碑
+                    .u-score.flex-column
+                        // 评分合计
+                        .out
+
+                        // 口碑列表
+                        .list.flex
+
+
+
+    // 加入购物车
+    .u-cart
+        .content
+            a.cart.new(href='/cart') 购物车
+            .tools
+                button.u-btn 加入购物车
+                button.u-btn.success 立即购买
+
+    // 选择地址 .show显示
+    section.u-fixed.m-select-address.bottom
+        .mask
+        .content
+            .title
+                | 选择地址
+                del
+            .gps 定位到当前位置
+            ul.list
+                li
+                    label(for='add-1')
+                        input#add-1.u-radio(type='radio', name='address')
+                        span 中豪.望江国际1栋9层
+                li
+                    label(for='add-2')
+                        input#add-2.u-radio(type='radio', name='address')
+                        span 江干区新城派出所
+                li
+                    label(for='add-3')
+                        input#add-3.u-radio(type='radio', name='address')
+                        span 杭州市文一西路恩济花园三区19栋1-2023室纺织工作室
+                li
+                    label(for='add-4')
+                        input#add-4.u-radio(type='radio', name='address')
+                        span 滨江区缤纷北苑27幢4单元502室
+                li
+                    label(for='add-5')
+                        input#add-5.u-radio(type='radio', name='address')
+                        span 中豪.望江国际1栋9层
+                li
+                    label(for='add-6')
+                        input#add-6.u-radio(type='radio', name='address')
+                        span 江干区新城派出所
+                li
+                    label(for='add-7')
+                        input#add-7.u-radio(type='radio', name='address')
+                        span 杭州市文一西路恩济花园三区19栋1-2023室纺织工作室
+                li
+                    label(for='add-8')
+                        input#add-8.u-radio(type='radio', name='address')
+                        span 滨江区缤纷北苑27幢4单元502室
+                li
+                    label(for='add-9')
+                        input#add-9.u-radio(type='radio', name='address')
+                        span 中豪.望江国际1栋9层
+                li
+                    label(for='add-10')
+                        input#add-10.u-radio(type='radio', name='address')
+                        span 江干区新城派出所
+                li
+                    label(for='add-11')
+                        input#add-11.u-radio(type='radio', name='address')
+                        span 杭州市文一西路恩济花园三区19栋1-2023室纺织工作室
+                li
+                    label(for='add-12')
+                        input#add-12.u-radio(type='radio', name='address')
+                        span 滨江区缤纷北苑27幢4单元502室
+    // 促销列表 .show显示
+    section.u-fixed.bottom.m-sale-pop
+        .mask
+        .content
+            h3 促销
+            .list
+                dl
+                    dt
+                        span 满减
+                    dd
+                        a.u-arrow.right(href='javascript:;') 六一儿童节，满100减10元，满200减20
+                dl
+                    dt
+                        span 满赠
+                    dd
+                        a.u-arrow.right(href='javascript:;') 六一儿童节，全场满100赠湿纸巾
+                dl
+                    dt
+                        span 赠品
+                    dd
+                        a.u-arrow.right(href='javascript:;') 好孩子海洋水润婴儿湿巾80抽
+                        a.u-arrow.right(href='javascript:;') 好孩子海洋水润婴儿湿巾80抽好孩子海洋水润婴儿湿巾80抽
+                dl
+                    dt
+                        span 套餐
+                    dd
+                        a.u-arrow.right(href='javascript:;')
+                            .header
+                                strong
+                                    | 最高省
+                                    em 111.1
+                                    | 元
+                                span 共3种
+                            ol
+                                li
+                                    h4 套餐1
+                                    .stuff
+                                        .item
+                                            .pic
+                                                img(src='http://img.mamhao.cn/B80064/main_B80064_04.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
+                                            sub 2件
+                                        .item
+                                            .pic
+                                                img(src='http://img.mamhao.cn/B80064/main_B80064_01.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
+                                        .item
+                                            .pic
+                                                img(src='http://img.mamhao.cn/B80064/main_B80064_05.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
+                                            sub 2件
+                                li
+                                    h4 套餐2
+                                    .stuff
+                                        .item
+                                            .pic
+                                                img(src='http://img.mamhao.cn/B80064/main_B80064_02.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
+                                                sub 2件
+                                        .item
+                                            .pic
+                                                img(src='http://img.mamhao.cn/B80064/main_B80064_04.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
+                                                sub 2件
+                                li
+                                    h4 套餐3
+                                    .stuff
+                                        .item
+                                            .pic
+                                                img(src='http://img.mamhao.cn/B80064/main_B80064_05.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
+                                                sub 2件
+                                        .item
+                                            .pic
+                                                img(src='http://img.mamhao.cn/B80064/main_B80064_04.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
+            .footer
+                button.u-btn.success.max.alone 关闭
+

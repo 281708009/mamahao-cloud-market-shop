@@ -1,0 +1,23 @@
+//- 评论图表;
+if ratingCount && ratingCount.length
+    - var totalCount = 0, totalScore = 0,average = 0, rating = ratingCount.reverse();
+    - var len = rating.length;
+    each count, i in rating
+        - totalCount += count;
+        - totalScore += count * (len - i);
+        - average = totalScore / totalCount;
+
+    dl
+        dt
+            strong 商品评分
+            sub
+                sup(style='width: ' + average / len * 100 + '%;')
+            em #{average}分
+
+        dd
+            each rate, index in rating
+                p
+                    span #{len - index}分
+                    sub
+                        sup(style='width: ' + rate / totalCount * 100 + '%;')
+                    em #{rate}

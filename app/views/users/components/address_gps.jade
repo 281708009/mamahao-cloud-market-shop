@@ -7,17 +7,16 @@ if data.error
 else
 
     if data && data.length
-        section.m-address-search.gps
-            ul.list
-                each item, index in data
-                    li
-                        dl
-                            dt
-                                | #{item.name}
-                                if index === 0
-                                    em 推荐
-                            dd #{item.address}
-                        span #{item.distance}m
+        ul.list
+            each item, index in data
+                li
+                    dl
+                        dt
+                            | #{item.name}
+                            if index === 0
+                                em 推荐
+                        dd #{item.address}
+                    span #{item.distance}m
 
     else
         include ../../includes/mixin.jade

@@ -1,19 +1,18 @@
 //-优惠券
-section.m-coupon.flex-column
-    .header
-        .content
-            .convert
-                input(type='text', placeholder='请输入您的优惠劵兑换码')
-                button.u-btn.success.mini 立刻兑换
-            .u-tab.two.ui-swipe-tab
-                ul
-                    li.active
-                        a(href='javascript:;') 未使用
-                    li
-                        a(href='javascript:;') 已过期
-    .ui-swipe.flex
-        .ui-swipe-wrap
-            .ui-swipe-item
-                .list(data-params='{"status": 1}')
-            .ui-swipe-item
-                .list(data-params='{"status": 4}')
+.header
+    .content
+        .convert
+            input(type='text', placeholder='请输入您的优惠劵兑换码')
+            button.u-btn.success.mini 立刻兑换
+        .u-tab.two.ui-swipe-tab
+            ul
+                li.active
+                    a(href='javascript:;') 未使用
+                li
+                    a(href='javascript:;') 已过期
+.ui-swipe.flex
+    .ui-swipe-wrap
+        .ui-swipe-item
+            .list(data-params='{"status": 1}')
+        .ui-swipe-item
+            .list(data-params='{"status": 4}')

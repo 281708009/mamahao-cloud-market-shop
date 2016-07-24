@@ -3,8 +3,8 @@ if logistics.length == 1
     -var logistic = logistics[0]
 
 section.m-courier
-    .order(class=logistic.goodsList.length > 1 && 'more')
-        .list
+    .u-order(class=logistic.goodsList.length > 1 && 'more')
+        .item.js-list
             // 商品列表
             each goods in logistic.goodsList
                 .content.flex-center
