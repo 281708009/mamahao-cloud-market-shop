@@ -1,8 +1,9 @@
 define(function(require, exports, module) {
 
-    module.exports = function (page, module, callback, params) {
+    module.exports = function (api_url, callback, params) {
         M.ajax({
-            url: page.config.api[module],
+            loadingDelay: typeof callback.loadingDelay === 'number' ? callback.loadingDelay : 300,
+            url: api_url,
             data: params ? {data: JSON.stringify(params)} : {},
             success: function (res) {
                 console.log('success--->', res);

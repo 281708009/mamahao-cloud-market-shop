@@ -5,7 +5,7 @@
 module.exports = {
     env:'development',
     site:{
-        port:3000,
+        port:80,
         name:"mamahao-mobile-site",
         api:{
             host : "101.69.254.214",    // 促销

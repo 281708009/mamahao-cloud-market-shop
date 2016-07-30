@@ -1,0 +1,24 @@
+extends ../layouts/layout
+block title
+    title 登录
+block css
+    link(rel='stylesheet', href='/css/login.css')
+block js
+    //- 入口文件
+    script seajs.use('app/login');
+
+block content
+    section.m-login
+        form.fm-login
+            ul.u-form.gap
+                li
+                    em 手机号
+                    .field
+                        input.js-mobile(name='mobile',type='tel',data-type='mobile', placeholder='请输入手机号码',maxlength='11')
+                li
+                    em 验证码
+                    .field
+                        input(name='vcode',type='tel', placeholder='请输入验证码',maxlength='6')
+                    .codes.js-vcode 获取验证码
+            .u-submit
+                button.u-btn.max.success.alone.js-submit(type='button') 手机快速登录

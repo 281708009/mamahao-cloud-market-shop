@@ -10,6 +10,7 @@ define(function (require, exports, module) {
                 home: "/home",
                 orders: "/api/orders",
                 orderDetail: "/api/order_detail",
+                orderResult: "/api/order_result",
                 address: "/api/address",
                 addressEdit: "/api/address_edit",
                 addressGPS: "/api/address_gps",
@@ -112,7 +113,7 @@ define(function (require, exports, module) {
             };
             /* 订单评价详情 */
             var order_review_detail = {
-                url: '/order/reviewDetail/:orderNo/:itemId',
+                url: '/order/reviewDetail/:orderNo/:itemId?',
                 render: function (callback) {
                     var params = this.params;
                     page.renderModule('orderReviewDetail', callback, params);
@@ -122,20 +123,46 @@ define(function (require, exports, module) {
                     $this.on('click','.js-review-submit',function(){
                         var data = $(this).data('params');
                         data.content = $('#reviewCtn').val();
-                        data.deliverySpeedStar = 5;
-                        data.serveStar = 5;
-                        data.star = 5;
-                        return console.log(data);
+                        data.deliverySpeedStar = +$('#deliverySpeedStar').data('star');
+                        data.serveStar = +$('#serveStar').data('star');
+                        data.star = +$('#goodsStar').data('star');
+                        //return console.log(data);
                         M.ajax({
                             url:'/api/order/reviewSubmit',
-                            data:{data:data},
+                            data:{data:JSON.stringify(data)},
                             success:function(res){
                                 // 跳转到评价成功结果页
+                                if(res.success){
+                                    location.href = '/center#/order/result/' + data.templateId + '/' + data.orderNo + '/' + res.mbeanGet;
+                                }else{
+                                    alert(res.msg);
+                                }
                             }
                         })
                     });
+
+                    $this.on('click','.js-star li',function(){
+                        var star = $(this).text();
+                        $(this).closest('ol').prev().attr('class','star star-' + star).data('star',star);
+                    })
                 }
             };
+            // 评价/确认收货成功结果页
+            var order_result = {
+                url:'/order/result/:templateId/:orderNo/:mbeans?',
+                render:function(callback){
+                    var params = this.params;
+                    //params.mbeans = M.url.query('mbeans');
+                    console.log('params=======',params);
+                    page.renderModule('orderResult',callback, params);
+                },
+                bind: function () {
+                    M.lazyLoad.init({
+                        container: $('.spa')
+                    });
+                }
+            };
+
             /*地址列表*/
             var address = {
                 url: '/address',
@@ -243,7 +270,7 @@ define(function (require, exports, module) {
 
             // 分员积分；
             var integral = {
-                url: '/integral/:type',
+                url: '/integral/:type?',
                 className: 'm-integral',
                 render: function (callback) {
                     this.params.type = +this.params.type;
@@ -310,6 +337,7 @@ define(function (require, exports, module) {
                 .push(order_express)
                 .push(order_review)
                 .push(order_review_detail)
+                .push(order_result)
                 .setDefault('/').init();
         },
         /*拼接地址表单数据*/
@@ -524,7 +552,7 @@ define(function (require, exports, module) {
         /*渲染模块*/
         renderModule: function (module, callback, params) {
             var func = require('app/renderSPA');
-            func(page, module, callback, params);
+            func(page.config.api[module], callback, params);
         }
     };
 

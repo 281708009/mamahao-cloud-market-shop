@@ -30,7 +30,7 @@ bigPipe.prototype.render = function () {
     //    "coupons": {
     //        common: {
     //            api: API.coupons,
-    //            jade: '/lists/coupon.jade',
+    //            pug: '/lists/coupon.pug',
     //            blank: {style: '07', tips: '您暂时还没有优惠劵哦~'}
     //        },
     //        module: [
@@ -79,7 +79,7 @@ bigPipe.prototype.fetch = function (item, callback) {
     /*空白页面，提示无数据*/
     var viewPath = path.join(__dirname, '../views');
     var blank_info = params.blank || '';
-    var blank = typeof blank_info === 'string' ? blank_info : jade.renderFile(viewPath + '/includes/blank.jade', blank_info);
+    var blank = typeof blank_info === 'string' ? blank_info : pug.renderFile(viewPath + '/includes/blank.pug', blank_info);
 
     HttpClient.request(me.http, {
         url: params.api,
@@ -88,7 +88,7 @@ bigPipe.prototype.fetch = function (item, callback) {
             var data = me.reform(result, params);
             me.data.push(data);
 
-            var context = (jade.renderFile(viewPath + params.jade, data) || blank).replace(/"/g, '\\"');     //内容
+            var context = (pug.renderFile(viewPath + params.pug, data) || blank).replace(/"/g, '\\"');     //内容
             var script = '<script>bigPipeRender("' + params.selector + '","' + context + '");</script>';
             me.scripts.push(script);
 

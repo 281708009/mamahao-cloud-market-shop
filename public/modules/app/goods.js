@@ -15,6 +15,11 @@ define(function (require, exports, module) {
         },
         bindEvents: function () {
 
+            //懒加载
+            M.lazyLoad.init({
+                container: $('.list')
+            });
+
             var $nav = $('.category .nav') , $list = $('.category .list');
             $nav.find('li:eq(0)').data('template',$list.html()); //缓存第一个分类的节点
 

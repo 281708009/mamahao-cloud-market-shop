@@ -105,6 +105,26 @@ var order = {
                 });
             }
         });
+    },
+    /*订单评价完成、确认收货结果页*/
+    orderResult:function(req, res, next){
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        console.log('params',params);
+        HttpClient.request(arguments, {
+            url: API.goodsGuessYouLike,
+            data: params,
+            success: function (data) {
+                var json = {
+                    rows: data.data,
+                    orderNo:params.orderNo
+                };
+                params.mbeans && (json.mbeans = params.mbeans);
+                res.render('order/result', json, function (err, html) {
+                    res.json({template: html});
+                });
+            }
+        });
+
     }
 
 };

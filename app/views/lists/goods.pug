@@ -1,0 +1,35 @@
+//- 商品列表;
+if rows && rows.length
+    each item in rows
+        li
+            a(href='/goods/detail?inlet=6&templateId=' + item.templateId + '&itemId=' + item.itemNumId)
+                .pic
+                    img(data-original=item.goodsPic, src=placeholderPic, alt=item.itemName)
+                    //- topRightTag，枚举：0不显示 1 赠 2 券
+                    case item.topRightTag
+                        when 1
+                            sup 赠
+                        when 2
+                            sub 劵
+                .info
+                    h3 #{item.itemName}
+                    .tools
+                        strong ￥#{item.price}
+
+                        if item.proTag && item.proTag.length
+                            if item.proTag.length > 1
+                                em 多重优惠
+                            else
+                                case item.proTag[0]
+                                    when 3
+                                        //- em 满赠
+                                    when 4
+                                        em 套餐
+                                    when 5
+                                        em 满减
+                                    when 6
+                                        //- em 赠品
+                        else if item.price < item.minPrice
+                            em 直降
+
+                    .sales 已售#{item.totalSale}件

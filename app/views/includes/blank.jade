@@ -1,9 +1,0 @@
-//提示页面
-include ./mixin.jade
-+blank(style, tips)
-    if btn
-        each item in btn
-            a(
-            class='u-btn ' + (item.class || 'checked'),
-            href= item.link || 'javascript:;'
-            ) #{item.text}

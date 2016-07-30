@@ -39,7 +39,7 @@ var store = {
     /*商品列表*/
     list: function (req, res, next) {
         var defaults = {
-            searchType: 0,
+            searchType: 0,     //	0综合，1销量，2价格，3最新
             sort: 0,
             nextPageStart: 0,
             pageSize: 20
@@ -116,7 +116,7 @@ var store = {
         };
         res.render("goods/qualityPic", data);
     },
-    /*搜索*/
+    /*搜索入口*/
     search: function (req, res, next) {
         var json = {keywords: req.query.keywords || ''};
         HttpClient.request(arguments, {
@@ -129,19 +129,21 @@ var store = {
     },
     /*搜索结果*/
     search_result: function (req, res, next) {
-        var keywords = req.query.keywords || '';
+        var params = req.query;
+        var keywords = params.keywords || '';
         HttpClient.request(arguments, {
             url: API.search,
             data: {
-                //ages: 6,
+                //ages: "0-3,3-6",
                 areaId: 330102,
-                //brandIds: [],
+                //brandIds: "63,75",
+                //categoryId: 34,
                 keyword: keywords,
                 lat: 30.22965,
                 lng: 120.192567,
                 nextPageStart: 0,
                 pageSize: 20,
-                searchType: 0,
+                searchType: 0,     //	0综合，1销量，2价格，3最新
                 sort: 0
             },
             success: function (data) {
@@ -152,8 +154,14 @@ var store = {
     },
     /*筛选*/
     filter: function (req, res, next) {
-        var data = {};
-        res.render("search/filter", data);
+        var params = req.query;
+        HttpClient.request(arguments, {
+            url: API.filterCategory,
+            success: function (data) {
+                data.params = params;
+                res.render("search/filter", data);
+            }
+        });
     }
 };
 

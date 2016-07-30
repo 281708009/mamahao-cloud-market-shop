@@ -1,0 +1,43 @@
+section.m-center.flex
+    // 头部
+    .header
+        a.logout(href='/logout') 退出
+        dl.avatar
+            dd
+                img(src=avatar, alt=nickname)
+            dt #{nickName}
+    // 导航菜单
+    .menu
+        ul.clearfix
+            li
+                a(href='#/orders')
+                    em
+                        img(src='http://s.mamhao.cn/wei/v3/images/icon-02.png')
+                    strong 全部订单
+                    p 查看所有
+            li
+                a(href='#/address')
+                    em
+                        img(src='http://s.mamhao.cn/wei/v3/images/icon-03.png')
+                    strong 收货地址
+                    p 管理地址
+            li
+                a(href='#/beans')
+                    em
+                        img(src='http://s.mamhao.cn/wei/v3/images/icon-04.png')
+                    strong 我的妈豆
+                    p #{mbeanCount}颗妈豆
+            li
+                a(href='#/integral/0')
+                    em
+                        img(src='http://s.mamhao.cn/wei/v3/images/icon-05.png')
+                    strong 我的积分
+                    p 门店积分
+            li
+                a(href='#/coupons')
+                    em
+                        img(src='http://s.mamhao.cn/wei/v3/images/icon-06.png')
+                    strong 我的优惠劵
+                    p #{voucherCount}张优惠劵
+
++footer_nav('account')

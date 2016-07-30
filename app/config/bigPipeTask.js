@@ -7,7 +7,7 @@ var API = require('../config/api');
 /*配置bigPipe任务列表，对应多个模块,第一个任务必填，之后的任务可继承
  * @selector 模块的选择器
  * @api 后台api接口地址
- * @jade 模块对应的jade视图文件地址
+ * @pug 模块对应的pug视图文件地址
  * @data 后台请求需要的参数
  * */
 var task = {
@@ -15,7 +15,7 @@ var task = {
     "coupons": {
         common: {
             api: API.coupons,
-            jade: '/lists/coupon.jade',
+            pug: '/lists/coupon.pug',
             blank: {style: '07', tips: '您暂时还没有优惠劵哦~'},
             data: {
                 page: 1,
@@ -41,7 +41,7 @@ var task = {
     orders: {
         common: {
             api: API.orderList,
-            jade: '/lists/order.jade',
+            pug: '/lists/order.pug',
             blank: {style: '02', tips: '您还没有任何订单哦~'},
             data: {
                 page: 1,
@@ -82,7 +82,7 @@ var task = {
     "integral": {
         common: {
             api: API.integral,
-            jade: '/lists/integral.jade',
+            pug: '/lists/integral.pug',
             blank: {style: '04'},
             data: {
                 pageNo: 1,
@@ -113,12 +113,12 @@ var task = {
             {
                 selector: ".category .nav",
                 api: API.goodsType,
-                jade: '/lists/goods_type.jade'
+                pug: '/lists/goods_type.pug'
             },
             {
                 selector: ".category .list",
                 api: API.goodsTypeTree,
-                jade: '/lists/goods_type_detail.jade',
+                pug: '/lists/goods_type_detail.pug',
                 blank: {style: '04', tips: '还没有商品分类哦~'},
                 data: {
                     typeId: 0   //第一个分类下的列表
@@ -134,19 +134,19 @@ var task = {
             {
                 selector: ".u-score .out",
                 api: API.goodsCommentChart,
-                jade: '/lists/goods_comment_chart.jade'
+                pug: '/lists/goods_comment_chart.pug'
             },
             //商品参数
             {
                 selector: "#swipe-detail .config",
                 api: API.goodsParams,
-                jade: '/lists/goods_params.jade'
+                pug: '/lists/goods_params.pug'
             },
             //评论列表
             {
                 selector: ".u-score .list",
                 api: API.goodsCommentList,
-                jade: '/lists/goods_comment_list.jade',
+                pug: '/lists/goods_comment_list.pug',
                 blank: {style: '10', tips: '暂时还没有商品评论哦~'},
                 data: {
                     page: 1,
@@ -154,7 +154,19 @@ var task = {
                 }
             }
         ]
+    },
+    // 猜你喜欢商品列表
+    "orderResult": {
+        common: {},
+        module: [
+            {
+                selector: ".u-goods-list",
+                api: API.goodsGuessYouLike,
+                pug: '/lists/goods.pug'
+            }
+        ]
     }
+
 
 };
 

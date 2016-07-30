@@ -1,0 +1,51 @@
+extends ../layouts/layout
+block title
+    title 每一件商品都是安全的
+
+block js
+    script seajs.use('app/filter');
+
+block content
+    //- 筛选 entry 0:品牌 1:分类
+    section.m-filter.flex
+        unless params.entry === '0'
+            .item.brands
+                .title
+                    strong 品牌
+                    .more.u-arrow.bottom.js-collapse 全部展开
+                .content
+                    ul
+                        each brand, index in brands
+                            li(class={active: index === 0, hide: index > 5},data-id=brand.bId)
+                                dl
+                                    dd
+                                        img(src=brand.bLogo)
+                                    dt #{brand.bName}
+
+        .item.ages
+            .title
+                strong 年龄
+                .more.u-arrow.bottom.js-collapse 全部展开
+            .content
+                ol
+                    - var hash = {"-1-0":"孕妈咪","0-3":"0-3月","3-6":"3-6月","6-12":"6-12月","12-36":"1-3岁","36-84":"3-7岁","84-":"7岁以上"};
+                    each age, index in ages
+                        li(class={active: index === 0, hide: index > 5},data-age=age)
+                            em #{hash[age]}
+
+        unless params.entry === '1'
+            .item.types
+                .title
+                    strong 类目
+                    .more.u-arrow.bottom.js-collapse 全部展开
+                .content
+                    ol
+                        each type,index in types
+                            li(class={active: index === 0, hide: index > 5},data-id=type.typeId)
+                                em #{type.typeName}
+
+
+    section.u-footer-button
+        ul
+            li
+                button.u-btn.max.success.alone.js-filter 确定

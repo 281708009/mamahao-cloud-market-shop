@@ -71,7 +71,7 @@ define(function(require, exports, module) {
                 url:'/api/order/orderRemind',
                 data:{data:data},
                 success:function(res){
-                    M.tips({body: "提醒成功",delay: 10000000, class: "true"});
+                    M.tips({body: "提醒成功",delay: 1000, class: "true"});
                 }
             })
         });
@@ -95,24 +95,46 @@ define(function(require, exports, module) {
             });
         });
 
+        $this.on('click','.js-btn-delivery',function(){
+            var data = JSON.stringify({orderNo: $(this).closest('.item').data('id'),shopId:$(this).data('shopId')});
+            M.ajax({
+                url:'/api/order/deliveryInfo',
+                data:{data:data},
+                success:function(res){
+                    console.log(res);
+                    var bodyHtml = ['<dl><dt>门店名称:</dt><dd>',res.shopName,'</dd>','<dt>配送员:</dt><dd>',res.deliveryStaff,'</dd>','<dt>送达时间:</dt><dd><p>预计' + res.arriveTime + '前送达</p>','</dd>','</dl>'];
+                    M.dialog({
+                        body: bodyHtml.join(''),
+                        buttons: [
+                            {"text": "确定", "class": "success", "onClick": function(){this.hide();}}
+                        ]
+                    })
+                }
+            });
+        });
+
         // 确认收货
         $this.on('click', '.js-btn-receive', function () {
-            var $item = $(this).closest('.item')
-                ,data = JSON.stringify({orderNo: $item.data('id')});
+            var $item = $(this).closest('.item'),
+                orderNo = $item.data('id'),
+                data = JSON.stringify({orderNo:orderNo});
             confirm('是否确认收货',function(){
-                //M.ajax({
-                //    url:'/api/order/orderReceive',
-                //    data:{data:data},
-                //    success:function(res){
-                //        跳转成功页面
-                //    }
-                //})
+                M.ajax({
+                    url:'/api/order/orderReceive',
+                    data:{data:data},
+                    success:function(res){
+                        //跳转成功页面
+                        if(res.success){
+                            location.href = '/center#/order/result/' + data.templateId + '/' + orderNo;
+                        }else{
+                            alert(res.msg);
+                        }
+                    }
+                })
                 this.hide();
             });
         });
     };
-
-
 
 
 });

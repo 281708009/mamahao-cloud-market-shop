@@ -56,6 +56,7 @@ var center = {
     addressGPS: function (req, res, next) {
         var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
         res.render('users/components/address_gps', {data: params}, function (err, html) {
+            console.log(html)
             res.json({template: html});
         });
     },
@@ -87,7 +88,7 @@ var center = {
     // 妈豆记录;
     beans: function (req, res, next) {
         var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
-        var jadeFile = params.ajax ? 'lists/bean' : 'users/components/beans';
+        var pugFile = params.ajax ? 'lists/bean' : 'users/components/beans';
         var defaults = {
             page: 1,
             pageSize: 20
@@ -99,7 +100,7 @@ var center = {
             data: params,
             success: function (data) {
                 //console.log(data)
-                res.render(jadeFile, data, function (err, html) {
+                res.render(pugFile, data, function (err, html) {
                     res.json({template: html});
                 });
             }

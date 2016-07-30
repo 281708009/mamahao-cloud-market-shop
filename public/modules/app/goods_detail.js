@@ -23,9 +23,9 @@ define(function (require, exports, module) {
 
             /*质检报告，数据缓存到本地*/
             var templateId = M.url.query('templateId'),
-                qualityPic =  JSON.parse(localStorage.getItem('qualityPic')) || {};
+                qualityPic =  JSON.parse(localStorage.getItem(CONST.local_qualityPic)) || {};
             qualityPic[templateId] = $('.quality').data('pic');
-            localStorage.setItem('qualityPic', JSON.stringify(qualityPic));
+            localStorage.setItem(CONST.local_qualityPic, JSON.stringify(qualityPic));
 
         }
     };

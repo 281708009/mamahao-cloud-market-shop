@@ -1,0 +1,55 @@
+include ../includes/mixin
+//- 操作结果页
+if mbeans
+    section.m-order-receipt.m-assess-success
+        .content
+            .pic
+                img(src='http://s.mamhao.cn/m/v1/images/bg-assess.png')
+            h2 评价成功啦!
+            p 感谢您此次发表的购物体验，奖励
+                em #{mbeans}妈豆
+            ul
+                li
+                    a.u-btn.max.alone(href='/center#/order/detail/#{orderNo}/') 查看订单
+                li
+                    a.u-btn.max.alone(href='/') 快去购物吧
+
+
+        if rows && rows.length
+            .push
+                h2 您还需要
+                //- 以下商品列表
+                ul.u-goods-list
+                    each item in rows
+                        li
+                            a(href='/goods/detail?inlet=6&templateId='+item.styleNumId+'&itemId='+item.itemId)
+                                .pic
+                                    img(data-original=item.pic, src=placeholderPic, alt=item.itemName)
+                                    //- topRightTag，枚举：0不显示 1 赠 2 券
+                                    case item.topRightTag
+                                        when 1
+                                            sup 赠
+                                        when 2
+                                            sub 劵
+                                .info
+                                    h3 #{item.itemName}
+                                    .tools
+                                        strong ￥#{item.minPrice}
+
+                                        if item.proTag && item.proTag.length
+                                            if item.proTag.length > 1
+                                                em 多重优惠
+                                            else
+                                                case item.proTag[0]
+                                                    when 3
+                                                        //- em 满赠
+                                                    when 4
+                                                        em 套餐
+                                                    when 5
+                                                        em 满减
+                                                    when 6
+                                                        //- em 赠品
+                                        else if item.price < item.minPrice
+                                            em 直降
+                                    if item.totalSale
+                                        .sales 已售#{item.totalSale}件

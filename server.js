@@ -7,7 +7,7 @@ global.express = require('express');
 global.AppConfig = require('./app/config');
 global.log = require('./app/utils/log');
 global.$ = require('./app/utils/jquery');
-global.jade = require('pug');
+global.pug = require('pug');
 
 /*依赖模块*/
 var path = require('path')
@@ -77,7 +77,7 @@ app.use(function (req, res, next) {
 
 
 app.set('views', path.join(__dirname, './app/views'));
-app.set('view engine', 'jade'); // 模板引擎设置
+app.set('view engine', 'pug'); // 模板引擎设置
 app.use(flash());    //使用session实现的flash
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));

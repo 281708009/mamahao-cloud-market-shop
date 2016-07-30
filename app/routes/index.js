@@ -5,13 +5,13 @@
 var router = express.Router();
 var auth = require("../middleware/auth");
 
-var indexCtrl = require("../controller/index"),            //首页
-    storeCtrl = require("../controller/store"),            //门店
-    goodsCtrl = require("../controller/goods"),     //分类
-    cartCtrl = require("../controller/cart"),              //购物车
+var indexCtrl = require("../controller/index"),           //首页
+    storeCtrl = require("../controller/store"),           //门店
+    goodsCtrl = require("../controller/goods"),           //分类
+    cartCtrl = require("../controller/cart"),             //购物车
     accountCtrl = require("../controller/account"),       //账户相关，登录等
     centerCtrl = require("../controller/center"),         //个人中心
-    orderCtrl = require("../controller/order"),         //个人中心
+    orderCtrl = require("../controller/order"),           //订单
     weChatCtrl = require("../controller/wechat");         //微信相关
 
 
@@ -28,7 +28,9 @@ router
  * 门店
  */
 router
-    .get("/store", storeCtrl.index);
+    .get("/store", storeCtrl.index)
+    .post("/api/storeList", storeCtrl.storeList)
+;
 
 /**
  * 商品相关
@@ -49,7 +51,11 @@ router
  * 购物车
  */
 router
-    .get("/cart/:cartId?", cartCtrl.index);
+    .get("/cart", cartCtrl.index)
+    .get("/settlement", cartCtrl.settlement)
+    .get("/pay/:orderNo?", cartCtrl.pay)
+    .post("/api/cart", cartCtrl.list)
+;
 
 
 /**
@@ -61,7 +67,6 @@ router
     .get("/logout", accountCtrl.logout)
     .post("/api/login", accountCtrl.doLogin)
     .post("/api/sendMessage", accountCtrl.sendMessage);
-
 
 
 /**
@@ -83,20 +88,22 @@ router
     .post('/api/coupons', centerCtrl.coupons)
     .post('/api/address/save', centerCtrl.doAddressSave)   //保存或新增地址
     .post('/api/address/queryArea', centerCtrl.queryAddressArea)   //保存或新增地址
-    ;
+;
 
 
 /*
-* 订单相关
-* */
+ * 订单相关
+ * */
 router
     .post('/api/orders', orderCtrl.orders)
     .post('/api/order_express', orderCtrl.orderExpress)
     .post('/api/order_detail', orderCtrl.orderDetail)
     .post('/api/order_review', orderCtrl.orderReview)
-    .post('/api/order/:option', orderCtrl.orderOption)
     .post('/api/order_review_detail', orderCtrl.orderReviewDetail)
-    ;
+    .post('/api/order_result', orderCtrl.orderResult)
+    .post('/api/order/:option', orderCtrl.orderOption)
+;
+
 
 
 module.exports = router;

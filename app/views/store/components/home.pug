@@ -1,0 +1,58 @@
+//- 首页模板
+include ../../includes/mixin.pug
+section.m-stores.flex
+    //- 如果附近门店列表返回空，那么直接显示 未开通门店空白提示页;
+    if nearShopList && nearShopList.length
+        .header
+            img(src= bannerImg + '@95q.jpg')
+
+        // 我的服务店
+        .u-stores
+            .title
+                strong 我的服务店
+                if totalServiceShopNumber > 2
+                    a(href='javascript:;') 更多
+            if serviceShopList && serviceShopList.length
+                .list
+                    +storeList(serviceShopList)
+            else
+                .null
+                    .pic
+                    dl
+                        dt 当前城市没有您的服务店
+                        dd 在平台上与实体店发生交易即拥有您的专属服务店，快去附近找找吧.
+
+        if followShopList && followShopList.length
+            // 我的关注店
+            .u-stores
+                .title
+                    strong 我的关注店
+                    if totalFollowShopNumber > 2
+                        a(href='javascript:;') 更多
+                .list
+                    +storeList(followShopList)
+
+        // 最近的实体店
+        .u-stores
+            .title
+                strong 最近的实体店
+            .list
+                +storeList(nearShopList)
+
+    else
+        .stores-null
+            img(src='http://s.mamhao.cn/m/v1/images/bg-stores-null.png')
+            p 当前城市暂未开通实体店，敬请期待
+
+section.u-fixed.bottom.u-stores-service
+    .mask
+    .content
+        h2 本店提供
+        ul.list
+        button.u-btn.success.max.js-close 关闭
+
+.u-gps
+    .field
+        a(href='javascript:;') #{request.formattedAddress}
+
++footer_nav('store')

@@ -1,5 +1,4 @@
 /*高度100%模块*/
-#app .spa{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-orient: vertical;-webkit-flex-direction: column;flex-direction: column;}
 .m-beans,.m-integral,.m-coupon,.m-address,.m-address-add,.m-address-edit,.m-address-search { height: 100%;}
 
 /* 个人中心 */

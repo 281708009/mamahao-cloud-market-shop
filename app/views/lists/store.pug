@@ -1,0 +1,24 @@
+//- 门店列表;
+each item, index in rows
+    .item
+        a.content(href='javascript:;')
+            .pic
+                img(src=(item.outPageLogoPic || item.indexLogoPic) + '@300w_95q.jpg', alt=item.name)
+            .info
+                dl
+                    dt #{item.name || item.shopName}
+                    dd
+                        em 集团自营
+
+                if item.shopServieLabels
+                    ul(class="js-service", data-json=JSON.stringify(item.shopServieLabels))
+                        each label, i in item.shopServieLabels
+                            if i < 4
+                                li
+                                    img(src = label.tagPic + '@40w_40h_100q.jpg')
+                                    em #{label.tagTitle}
+
+        .footer
+            p #{item.address || item.adr}
+            if item.distance
+                span #{formatDistance(item.distance)}

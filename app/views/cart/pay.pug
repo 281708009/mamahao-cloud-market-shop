@@ -1,0 +1,20 @@
+//- 支付页面
+extends ../layouts/layout
+block title
+    title 选择支付方式
+block js
+    script seajs.use('app/cart');
+block content
+    section.m-pay-form
+        dl.flex-center
+            dt 请支付
+            dd ￥#{formatPrice(price)}
+        ul
+            li.u-arrow.right
+                a.weixin(href='javascript:;') 微信支付
+                a.alipay(href='javascript:;') 支付宝支付
+                a.codepay(href='javascript:;') 二维码支付
+        .code
+            p 如果微信支付和支付宝支付都不能正常支付，请长按下图二维码并识别二维码进行支付!
+            p
+                img(src='http://s.mamhao.cn/common/images/code-max.png',alt='')

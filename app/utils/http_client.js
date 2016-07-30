@@ -38,6 +38,7 @@ var HttpClient = {
             uri: params.url || '/',
             headers: params.headers || session.user
                 ? {
+                "User-Agent": "[node request],MamHao V2.5.6 2016072803",
                 memberId: session.user.id,
                 token: session.user.token
             }
@@ -48,7 +49,7 @@ var HttpClient = {
         /*区分request方式*/
         if (options.method.toLowerCase() === 'get') {
             if (params.data) {
-                options.url += '?' + querystring.stringify(params.data);
+                options.uri += '?' + querystring.stringify(params.data);
             }
         }
 

@@ -1,0 +1,90 @@
+//- 结算页
+extends ../layouts/layout
+block title
+    title 订单结算
+block js
+    script seajs.use('app/cart');
+block content
+    section.m-pay
+        .u-alert
+            p 您的订单由最近的自营实体店或仓库发货，因商品所在地不同，您可能会收到多个包裹，请注意查收!
+        //- 收货地址
+        .u-send
+            a.u-arrow.right(href='javascript:;')
+                dl.default
+                    dt
+                        strong 姓名
+                        em 15088660575
+                    dd 浙江省杭州市上城区望江东路332号中豪望江国际1幢9层
+
+        //- 物品信息
+        .u-order
+            .item
+                .header 武林门好孩子门店
+                    em 集团自营
+                .content
+                    .pic
+                        img(src='http://img.mamhao.cn/CS868/main_CS868_-01_20160623141839.jpg@1e_400w_400h_0c_0i_0o_100q_1x.jpg')
+                    figure
+                        figcaption 好孩子ISOFIX接口双向汽车安全座椅（0-4岁）CS868
+                        p 红色白底蓝黑金属边框 130K
+                    dl
+                        dt ￥1542.00
+                            del ￥1600.00
+                        dd x1
+        //- 配送
+        .courier
+            a.u-arrow.right(href='javascript:;')
+                strong 配送方式
+                em 门店配送
+        //- 优惠信息
+        .sale
+            .header
+                a.u-arrow.right(href='javascript:;')
+                    strong 优惠劵
+                        span 当前订单没有适用的优惠劵
+                    em 未使用
+            ul
+                li.open
+                    p 可用
+                        span 12500
+                        input(type='tel' value='12500') 妈豆，抵
+                            em ￥125.00
+                    label
+                        input.u-switch(type='checkbox',chekced='')
+                li.open
+                    p 可用
+                        span 12500
+                        input(type='tel' value='12500') GB积分，抵
+                            em ￥125.00
+                    label
+                        input.u-switch(type='checkbox',chekced='')
+                li.open
+                    p 可用
+                        span 12500
+                        input(type='tel' value='12500') MC积分，抵
+                            em ￥125.00
+                    label
+                        input.u-switch(type='checkbox',chekced='')
+        //- 结算金额明细
+        ul.total
+            li
+                em 商品金额：
+                span ￥1600
+            li
+                em 组合优惠：
+                span -￥60
+            li
+                em 全场满减：
+                span -￥20
+            li
+                em 运费：
+                span 免运费
+
+        //- 结算按钮
+        .footer
+            .field
+                p 实付
+                    em ￥2312
+                button.u-btn.success 结算
+            .f-space

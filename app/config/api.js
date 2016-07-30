@@ -28,12 +28,12 @@ var api = {
     "shopInfo":"/V1/order/basic/queryShopInfo.htm",  // 获取门店信息
     "deliveryInfo": "/V1/order/basic/queryDeliveryInfo.htm", // 获取配送信息
     "reviewSubmit": "/V2/comment/basic/commentGoodsTemplate.htm",    // 提交晒单评价
-    "reviewResult": "/V1/shop/basic/guessYouLike.htm",  // 评价成功结果页
 
     "search": "/V2/search/goods/list.htm", // 搜索
     "searchGoodsList": "/V1/shop/basic/searchGoodsList.htm", // 搜索: 查询商品列表信息和获取门店商品列表
     "searchHotWords": "/V1/client/search/getHotSearchWord.htm", // 搜索热词
     "searchKeywordTips": "/V1/client/search/getKeywordTips.htm", // 搜索关键字提示
+    "filterCategory": "/V1/shop/basic/getGoodsListFilterForSearch.htm", // 筛选分类列表
 
     "goodsType": "/V1/shop/basic/queryGoodsType.htm", // 商品分类：一级类目
     "goodsTypeTree": "/V1/shop/basic/queryGoodsTypeTree.htm", // 商品分类：二级类目
@@ -44,12 +44,19 @@ var api = {
     "goodsCommentChart": "/V1/comment/basic/queryGoodsTemplateCommentChart.htm",
     "goodsParams": "/V1/shop/basic/getGoodsParams.htm", // 商品参数详情
     "goodsContext": "/V1/shop/basic/getGoodsStyleHtml.htm", // 商品图文详情
-    "goodsProLableList": "/V1/pmt/proLableList.htm ", // 商品促销标签
-    "goodsGuessYouLike": "/V1/shop/basic/guessYouLike.htm ", // 商品猜你喜欢
-    "goodsCouponList": "/V2/coupon/getGoodsCouponList.htm ", // 商品优惠券列表
+    "goodsProLableList": "/V1/pmt/proLableList.htm", // 商品促销标签
+    "goodsGuessYouLike": "/V1/shop/basic/guessYouLike.htm", // 商品猜你喜欢
+    "goodsCouponList": "/V2/coupon/getGoodsCouponList.htm", // 商品优惠券列表
 
     "cart":"/V2/shop/cart/getCart.htm",  //购物车列表
-    "cartTopDesc":"/V1/pmt/getCartTopDesc.htm ",  //购物车顶部描述
+    "cartTopDesc":"/V1/pmt/getCartTopDesc.htm",  //购物车顶部描述
+    "pay":"/V1/order/basic/pay2.htm",   // 立即付款
+    "settlement": "/V4/order/basic/toSettlement.htm",    // 结算
+    "checkPay": "/V1/order/basic/checkPay.htm",
+
+
+    // 门店相关;
+    "queryMemberShopIndex": "/V1/member/shop/queryMemberShopIndex.htm"
 
 
 

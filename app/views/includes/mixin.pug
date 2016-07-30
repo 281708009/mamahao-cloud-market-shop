@@ -1,0 +1,40 @@
+//- 全局变量
+- var placeholderPic = 'http://s.mamhao.cn/common/images/placeholder.jpg';   //商品占位图
+
+//- 全局方法
+//- 格式化价格
+- function formatPrice(price){return price.toFixed(2)}
+
+//- 格式化日期
+- function formatDate(date, pattern){Date.prototype.format=function(a){var c,b={"M+":this.getMonth()+1,"d+":this.getDate(),"h+":this.getHours(),"m+":this.getMinutes(),"s+":this.getSeconds(),"q+":Math.floor((this.getMonth()+3)/3),S:this.getMilliseconds()};/(y+)/.test(a)&&(a=a.replace(RegExp.$1,(this.getFullYear()+"").substr(4-RegExp.$1.length)));for(c in b)new RegExp("("+c+")").test(a)&&(a=a.replace(RegExp.$1,1==RegExp.$1.length?b[c]:("00"+b[c]).substr((""+b[c]).length)));return a};return new Date(date).format(pattern)}
+
+//- 距离转换
+- function formatDistance(a){var b=Number(a),c=b;return b>=1e3&&(c=(b/1e3).toFixed(1)+"k"),c+"m"}
+
+
+//- 可重用的代码块
+mixin footer_nav(name)
+    .footer-nav.u-footer-menu
+        ul
+            li(class={active: name === 'index',index: true}): a(href='/') 首页
+            li(class={active: name === 'store',store: true}): a(href='/store#/') 门店
+            li(class={active: name === 'goods',goods: true}): a(href='/goods') 分类
+            li(class={active: name === 'cart',cart: true}): a(href='/cart') 购物车
+            li(class={active: name === 'account',account: true}): a(href='/center#/') 我
+
+
+//- 空白提示页
+mixin blank(style, tips)
+    .u-null-all
+        .u-null
+            dl
+                dt(class='n-' + style)
+                dd
+                    p #{tips}
+                    if block
+                        block
+
+
+//- 门店列表
+mixin storeList(rows)
+    include ../lists/store.pug

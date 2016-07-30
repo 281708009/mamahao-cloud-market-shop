@@ -1,0 +1,17 @@
+doctype html
+html(lang="en")
+    head
+        include ../includes/head
+        include ../includes/mixin
+
+    body(ontouchstart)
+
+        //- 主内容区域，被#app包裹
+        #app.flex-column
+            block content
+
+        //- 其他需要补充的元素
+        block extra
+
+        //- 公用页面底部元素
+        include ../includes/foot

@@ -1,0 +1,21 @@
+extends ../layouts/layout
+block title
+    title 每一件商品都是安全的
+block css
+    //link(rel='stylesheet', href='/css/goods.css')
+
+block js
+    script seajs.use('app/goods');
+
+block content
+    section.m-goods.flex
+        // 搜索
+        .u-search
+            .content
+                a.field.search(href='/goods/search')
+                    input(type='search', placeholder='搜索商品/品牌',readonly)
+            .f-space
+        // 主要内容
+        .category
+            .nav
+            .list.flex
