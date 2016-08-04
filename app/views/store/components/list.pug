@@ -1,0 +1,14 @@
+include ../../includes/mixin.pug
+section.m-stores-list
+    .u-stores
+        .list
+            +storeList(rows)
+
+
+// 门店服务标签弹出层;
+section.u-fixed.bottom.u-stores-service
+    .mask
+    .content
+        h2 本店提供
+        ul.list
+        button.u-btn.success.max.js-close 关闭

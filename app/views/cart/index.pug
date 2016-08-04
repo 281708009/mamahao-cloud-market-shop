@@ -1,9 +1,15 @@
-extends ../layouts/layout
+extends ../layouts/layout.pug
 block title
     title 购物车
 block js
     script seajs.use('app/cart');
 
 block extra
+    // 定位空白页
+    script#tpl_null(type='text/html')
+        +blank('06','您还没有为您可爱的宝宝挑选商品哦')
+            a.u-btn.checked(href='/') 随便逛逛
+
+
 
 

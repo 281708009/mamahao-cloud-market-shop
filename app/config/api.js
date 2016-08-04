@@ -48,15 +48,31 @@ var api = {
     "goodsGuessYouLike": "/V1/shop/basic/guessYouLike.htm", // 商品猜你喜欢
     "goodsCouponList": "/V2/coupon/getGoodsCouponList.htm", // 商品优惠券列表
 
+    "querySku":"/V1/goods/sku/querySku.htm", //查询sku
+    "addToCart":"/V2/shop/cart/addCartItem.htm ", //加入购物车
+
     "cart":"/V2/shop/cart/getCart.htm",  //购物车列表
     "cartTopDesc":"/V1/pmt/getCartTopDesc.htm",  //购物车顶部描述
     "pay":"/V1/order/basic/pay2.htm",   // 立即付款
     "settlement": "/V4/order/basic/toSettlement.htm",    // 结算
-    "checkPay": "/V1/order/basic/checkPay.htm",
+    "checkPay": "/V1/order/basic/checkPay.htm",     // 校验是否可以支付操作
+    "selectedCart": "/V2/shop/cart/selectedCart.htm",   // 购物车选择\取消选择商品
+    "updateCartItemCount":"/V2/shop/cart/updateCartItemCount.htm",  // 修改已选商品数量
+    "removeCartItem":"/V2/shop/cart/removeCartItem.htm",    // 删除购物车商品
+    "getDefaultDeliveryAddr":"/V2/member/delivery/getDefaultDeliveryAddr.htm",  // 获取用户默认收货地址
+    "aliPay":"/pay/wapalipay/submit.htm",   // 阿里支付
+    "wxPrePay":"/pay/weixin/getOpenId.htm", // 微信预支付
+    "wxPay":"/pay/weixin/submit.htm",       // 微信确认支付
 
 
     // 门店相关;
-    "queryMemberShopIndex": "/V1/member/shop/queryMemberShopIndex.htm"
+    "queryMemberShopIndex": "/V1/member/shop/queryMemberShopIndex.htm", // 附近实体店首页
+    "queryMemberServerShop": "/V1/member/shop/queryMemberServerShop.htm", // 我的服务店
+    "getMemberShopList": "/V1/member/shop/getMemberShopList.htm", // 我关注的店
+    "queryShopBasicInfo": "/V1/shop/basic/queryShopBasicInfo.htm", // 获取门店基本详情
+    "shopGoodsList": "/V2/shop/goods/list.htm", // 门店商品列表
+    "getDeliveryAddr": "/V1/member/delivery/getDeliveryAddr.htm",  // 用户当前收货地址列表
+    "getShopEvaluationInfo": "/V1/shop/basic/getShopEvaluationInfo.htm"  // 获取门店评价详情
 
 
 

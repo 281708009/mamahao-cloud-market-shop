@@ -3,6 +3,7 @@
  */
 //登录验证
 exports.requiredAuthentication = function (req, res, next) {
+    var originalUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
     if (req.session.user) {
         next();
     } else {
@@ -12,10 +13,10 @@ exports.requiredAuthentication = function (req, res, next) {
             isWeChat = true;
         }
         if (isWeChat) {
-            res.redirect('/account/bind');
+            res.redirect('/account/bind?origin=' + originalUrl);
         } else {
             req.session.error = 'Access denied!';
-            res.redirect('/login');
+            res.redirect('/login?origin=' + originalUrl);
         }
     }
 };

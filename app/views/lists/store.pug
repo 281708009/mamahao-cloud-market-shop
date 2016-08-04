@@ -1,7 +1,8 @@
+include ../includes/let.pug
 //- 门店列表;
 each item, index in rows
     .item
-        a.content(href='javascript:;')
+        a.content(href='#/detail/' + item.shopId + '/'+request.isLocal)
             .pic
                 img(src=(item.outPageLogoPic || item.indexLogoPic) + '@300w_95q.jpg', alt=item.name)
             .info

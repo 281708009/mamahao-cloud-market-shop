@@ -1,0 +1,47 @@
+extends ../layouts/layout.pug
+block title
+    title #{shopName}
+block js
+    script seajs.use('app/store_assess');
+block content
+    include ../includes/let.pug
+    - var totalCount = score_5 + score_4 + score_3 + score_2 + score_1;
+    - var totalScore = score_5 * 5 + score_4 * 4 + score_3 * 3 + score_2 * 2 + score_1;
+    section.m-stores-assess(data-id=shopId)
+        .u-score
+            // 评分合计
+            .out
+                dl
+                    dt
+                        strong 商品评分
+                        sub
+                            sup(style='width: '+ totalScore / (totalCount * 5) * 100 +'%;')
+                        em #{formatPrice(totalScore / totalCount)}分
+                    dd
+                        p
+                            span 5分
+                            sub
+                                sup(style='width: '+ score_5 / totalCount * 100 +'%;')
+                            em #{score_5}
+                        p
+                            span 4分
+                            sub
+                                sup(style='width: '+ score_4 / totalCount * 100 +'%;')
+                            em #{score_4}
+                        p
+                            span 3分
+                            sub
+                                sup(style='width: '+ score_3 / totalCount * 100 +'%;')
+                            em #{score_3}
+                        p
+                            span 2分
+                            sub
+                                sup(style='width: '+ score_2 / totalCount * 100 +'%;')
+                            em #{score_2}
+                        p
+                            span 1分
+                            sub
+                                sup(style='width: '+ score_1 / totalCount * 100 +'%;')
+                            em #{score_1}
+            // 口碑列表
+            +storeAssessList(evaluationDetail)

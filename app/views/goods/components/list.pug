@@ -1,0 +1,39 @@
+//- 和搜索结果页公用同一个模板，修改请慎重
+//- 商品列表
+include ../../includes/mixin.pug
+section.m-goods-list.flex
+    .header
+        //- search
+        .u-search
+            .content
+                .field
+                    a.back(href='#/search')
+                    - var keywords = params.keywords || (entry == 0 ? brandName : categoryName);
+                    if keywords
+                        span
+                            a.key(href='#/search/' + keywords) #{keywords}
+                            a.del(href='#/search') x
+                .tools
+                    a.js-to-filter 筛选
+        //- 购买须知
+        if desc
+            dl.notice
+                dt 购买须知
+                dd.ellipsis
+                    // 全部展开去掉 .ellipsis
+                    div #{desc}
+        //- tab
+        .u-tab.array
+            ul
+                li(class={active: params.searchType == 0}) 综合
+                li(class={active: params.searchType == 1,down: params.searchType == 1 && params.sort == 0})
+                    em 销量
+                li(class={active: params.searchType == 2,down: params.searchType == 2 && params.sort == 0})
+                    em 价格
+                li(class={active: params.searchType == 3}) 最新
+    .list
+        if rows && rows.length
+            ul.u-goods-list.clearfix
+                +goodsList(rows)
+        else
+            +blank('09', '未搜索到任何商品哦~')

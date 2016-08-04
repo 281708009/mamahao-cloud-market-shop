@@ -19,11 +19,15 @@ define(function (require, exports, module) {
 
 
     function Location() {
+        //判断是否为微信浏览器
+        this.isWeChat = /MicroMessenger/gi.test(navigator.userAgent) ? true : false;
+
+        //默认地理位置信息，杭州
         this.location = {
             areaId: 330102,
             lat: 30.22965,
             lng: 120.192567
-        }
+        };
     }
 
     /*微信获取经纬度*/
@@ -32,6 +36,13 @@ define(function (require, exports, module) {
 
         /*初始化，引用微信和高德的jsAPI*/
         require('AMap');   //加载高德sdk
+
+        //不是在微信内部打开
+        if(!me.isWeChat){
+            params.success && params.success.call(me, me.location);
+            return false;
+        }
+
         require.async('weixin', function (wx) {
             me.wx = wx;
             //初始化微信授权

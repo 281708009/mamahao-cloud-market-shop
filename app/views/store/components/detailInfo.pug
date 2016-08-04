@@ -1,0 +1,82 @@
+include ../../includes/let.pug
+// 门店头部
+.header
+    .pic
+        img(src=basicInfo.shopLogo + '@95q.jpg')
+    .intro
+        if basicInfo.pic
+            .logo
+                img(src=basicInfo.pic + '@95q.jpg')
+        dl
+            dt #{basicInfo.shopName}
+            dd
+                em 集团自营
+                span #{collect.count}人关注
+        // 未关注.success 已关注.active
+        .button
+            if collect.isCollect
+                button.u-btn.active 已关注
+            eles
+                button.u-btn.success + 关注
+if level
+    // 评分评论信息
+    .comment
+        // 综合评分
+        ul.score
+            li
+                em 商品 #{level.goodsRating}分
+                span !{formatAvgRating(level.goodsRating, level.avgGoodsRating)}
+            li
+                em 服务 #{level.serviceRating}分
+                span !{formatAvgRating(level.serviceRating, level.avgServiceRating)}
+            li
+                em 物流 #{level.logisticsRating}分
+                span !{formatAvgRating(level.logisticsRating, level.avgLogisticsRating)}
+        // 点评用户
+        a.flex-center.u-arrow.right(href='/store/assess/'+ basicInfo.shopId)
+            ul.people
+                each people, i in comment.people
+                    li
+                        img(src=people.memberHeadPic + '@50w_50h_100q.jpg')
+            dl.rating
+                dd
+                    sub
+                        sup(style='width: ' + comment.rating / 5 * 100 + '%;')
+                dt #{comment.commentCount}人点评
+// 位置服务配送信息 收起/.up
+.basic.js-store-basic.up
+    dl.addr
+        dt.u-arrow.right
+            strong #{basicInfo.shopAddr}
+            //span 4.1km 门店详情页面距离计算;
+        dd
+            a(href='tel:'+ basicInfo.shopTel) 联系电话
+    if shopServiceLabels && shopServiceLabels.length
+        .service.u-arrow.right(class="js-service", data-json=JSON.stringify(shopServiceLabels))
+            ul
+                each label, i in shopServiceLabels
+                    li
+                        img(src = label.tagPic + '@40w_40h_100q.jpg')
+                        em #{label.tagTitle}
+    if shippingRange
+        .range
+            strong 配送区域：
+            | #{shippingRange}
+    button.tools.js-more
+        span 更多
+
+if workingTime
+    // 其他城市门店
+    .other
+        dl
+            dt 营业时间：
+            dd
+                | 工作日 #{workingTime.beginOpenTime}--#{workingTime.endOpenTime}
+                br
+                | 节假日 #{workingTime.holidayBeginOpenTime}--#{workingTime.holidayEndOpenTime}
+        dl
+            dt 销售范围：
+            dd #{formatArrayText(firstType, "typeName")}
+
+
+

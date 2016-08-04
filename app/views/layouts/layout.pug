@@ -1,10 +1,12 @@
 doctype html
 html(lang="en")
     head
-        include ../includes/head
-        include ../includes/mixin
+        include ../includes/head.pug
 
     body(ontouchstart)
+
+        //-公用代码块
+        include ../includes/mixin.pug
 
         //- 主内容区域，被#app包裹
         #app.flex-column
@@ -14,4 +16,4 @@ html(lang="en")
         block extra
 
         //- 公用页面底部元素
-        include ../includes/foot
+        include ../includes/foot.pug

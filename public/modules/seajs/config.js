@@ -6,8 +6,9 @@
 
         // 路径配置
         paths: {
-            app: '/modules/app',
-            jquery: '/modules/jquery'
+            "app": '/modules/app',
+            "jquery": '/modules/jquery',
+            "3rd": '/modules/3rd'
         },
 
         // 设置别名，方便调用
@@ -45,7 +46,11 @@
     //一些常量配置
     window.CONST = {
         local_location: 'mmh_location',     //地理位置信息
-        local_qualityPic: 'mmh_qualityPic'  //质检担保图片
+        local_search_history: 'mmh_search_history',     //历史搜素关键字
+        local_search_params: 'mmh_search_params',     //搜索商品需要的参数
+        local_qualityPic: 'mmh_qualityPic',  //质检担保图片
+        local_cartId:'mmh_cartId',   // 购物车ID
+        local_storeAddr: 'mmh_store_address'    // 门店用户收货地址
     };
 
 })();

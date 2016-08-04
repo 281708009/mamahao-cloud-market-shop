@@ -76,6 +76,22 @@ define(function (require, exports, module) {
             }
             return b
         };
+
+        //数组去重，支持数组内存储的是对象
+        Array.prototype.unique = function () {
+            var res = [], json = {}, len = this.length;
+            for (var i = 0; i < len; i++) {
+                var key = this[i];
+                if (Object.prototype.toString.call(this[i]) == '[object Object]') {
+                    key = JSON.stringify(this[i]);
+                }
+                if (!json[key]) {
+                    res.push(this[i]);
+                    json[key] = 1;
+                }
+            }
+            return res;
+        };
     })();
 
 
@@ -144,6 +160,9 @@ define(function (require, exports, module) {
                         c.isAjax = false;
                         if (res.error_code) {
                             var errorMsg = res.msg;
+                            if(params.error){
+                                return params.error.call(this, res);
+                            }
                             if (/^(-1|1001)$/.test(res.error_code)) {
                                 //未登录
                                 return MMH.tips({
@@ -567,7 +586,11 @@ define(function (require, exports, module) {
                         //懒加载
                         var defaults = {
                             threshold: 200,
-                            effect: "fadeIn"
+                            effect: "fadeIn",
+                            load: function (elements_left, settings) {
+                                //移出节点上的图片源地址
+                                $(this).removeAttr('data-' + settings.data_attribute);
+                            }
                         };
                         var params = $.extend({}, defaults, options || {});
                         require.async('lazyload', function () {
@@ -581,13 +604,31 @@ define(function (require, exports, module) {
             }(),
             /*处理url*/
             url: function () {
+
+                //Parse url params to JSON
+                function getParams(search) {
+                    return search ? JSON.parse('{"' + decodeURIComponent(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}') : {};
+                }
+
                 var util = {
+                    /*
+                     * Parse url params to JSON
+                     * */
+                    params: (function () {
+                        var search = location.search.substring(1);
+                        return getParams(search);
+                    })(),
+                    /*
+                     * Query url params
+                     * */
                     query: function (key) {
                         var value = location.search.match(new RegExp("[\?\&]" + key + "=([^\&]*)(\&?)", "i"));
                         return value ? decodeURIComponent(value[1]) : "";
                     }
                 };
                 return {
+                    getParams: getParams,
+                    params: util.params,
                     query: util.query
                 };
             }(),
@@ -735,7 +776,7 @@ define(function (require, exports, module) {
 
         $.page = {
             defaults: {
-                "keys": {"page": "page", "count": "pageSize"}, //分页参数关键字
+                "keys": {"page": "page", "count": "pageSize", "index": "index"}, //分页参数关键字
                 "scrollBox": null,    //触发分页的滚动容器
                 "flex": 40,     // 距离底部距离，加载分页数据
                 "api": null,    //api接口，分页数据请求地址
@@ -788,23 +829,13 @@ define(function (require, exports, module) {
                 /*滚动到底部*/
                 var currScrollBox = o.scrollBox ? $(o.scrollBox) : me.currContainer();
                 var scrollTop = currScrollBox.scrollTop(),
-                    diff = getHeight(currScrollBox.children()) - (currScrollBox.height() + scrollTop);
+                    diff = currScrollBox[0].scrollHeight - (currScrollBox.height() + scrollTop);
 
                 if (diff < o.flex) {
                     var ajax_info = $this.data('params') || {};
                     ajax_info[o.keys.page] = ($this.data('page') || 1) + 1;
 
                     me.ajax(ajax_info);
-                }
-
-
-                /*计算所有元素总宽*/
-                function getHeight(eles) {
-                    var result = 0;
-                    $.each(eles, function () {
-                        result += $(this).outerHeight(true);
-                    });
-                    return result;
                 }
 
             },
@@ -823,13 +854,14 @@ define(function (require, exports, module) {
 
                 //默认参数
                 var defaults = {
-                    "index": me.$ele.children().length,   //索引值
                     "ajax": true    //表明是分页ajax请求过来的
                 };
+
                 defaults[o.keys.page] = 1;
                 defaults[o.keys.count] = params.count || 20;   //默认页数和条数
+                defaults[o.keys.index] = me.$ele.children().length;   //索引值
 
-                var ajax_info = $.extend({}, defaults, params || {});
+                var ajax_info = $.extend(true, defaults, params || {}, me.opts.params || {});
 
                 console.log('ajax_info--->', ajax_info);
 
@@ -837,7 +869,7 @@ define(function (require, exports, module) {
                 if (!o.fnLoading) {
                     me.$ele.append('<div class="tc pagination-loading">正在加载中...</div>');
                 } else {
-                    o.fnLoading();
+                    o.fnLoading.call(this, me.$ele);
                 }
 
                 //do ajax

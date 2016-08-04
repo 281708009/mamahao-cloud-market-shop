@@ -7,11 +7,12 @@ var app_secret = config_wechat.app_secret;
 // 微信授权和回调
 var OAuth = require('wechat-oauth');
 var client = new OAuth(app_id, app_secret);
+var request = require('request');
 
 var weChat = {
     //获取微信code
     toWechat: function(req, res, next) {
-        var url = client.getAuthorizeURL('http://' + domain + '/weixin/callback','','snsapi_userinfo');
+        var url = client.getAuthorizeURL('http://' + domain + '/weixin/callback','','snsapi_base');
         console.log("wechat url:"+url);
         res.redirect(url)
     },

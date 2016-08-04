@@ -31,18 +31,19 @@ var HttpClient = {
         var baseUrl = 'http://' + config_api.host + ':' + config_api.port + config_api.root; //baseUrl
         var session = req && req.session || {};  //session
 
+        var headers = {"User-Agent": "[node request], MamHao V2.5.6 2016072803"};
+        if(session.user){
+            //已登录用户
+            headers.memberId = session.user.id;
+            headers.token = session.user.token;
+        }
+
         /*参数*/
         var options = {
             method: params.type || 'POST',
-            baseUrl: baseUrl,
-            uri: params.url || '/',
-            headers: params.headers || session.user
-                ? {
-                "User-Agent": "[node request],MamHao V2.5.6 2016072803",
-                memberId: session.user.id,
-                token: session.user.token
-            }
-                : {},
+            baseUrl: '',  //基础路径设置为空
+            uri: /^http/.test(params.url) ? params.url : (baseUrl + params.url || '/'),
+            headers: $.extend({}, headers, params.headers || {}),
             form: params.data || {}
         };
 
@@ -56,7 +57,7 @@ var HttpClient = {
         // API请求日志打印;
         console.log("\r\n\r\nAPI请求日志打印开始");
         console.log("session: " + JSON.stringify(session));
-        console.log("url: " + baseUrl + options.uri);
+        console.log("url: " + options.uri);
         console.log("headers: " + JSON.stringify(options.headers));
         console.log("form: " + JSON.stringify(options.form));
         console.log("\r\nAPI请求日志打印结束\r\n\r\n");
@@ -88,9 +89,9 @@ var HttpClient = {
                     }
 
                     //处理错误，区分来源是否为ajax请求
-                    if(isAjax){
+                    if (isAjax) {
                         res.status(errorInfo.status).json(errorInfo);
-                    }else{
+                    } else {
                         res.render('error', errorInfo);
                     }
                 } else {
@@ -99,10 +100,10 @@ var HttpClient = {
             } else {
                 //request error
                 var errorInfo = {};
-                if(error){
+                if (error) {
                     console.warn(error);
                     errorInfo = {status: error.code, error_code: error.code, msg: error.errno};
-                }else if (response) {
+                } else if (response) {
                     console.log('response--->' + JSON.stringify(response));
                     errorInfo = {
                         status: response.statusCode,
@@ -115,9 +116,9 @@ var HttpClient = {
                 }
 
                 //处理错误，区分来源是否为ajax请求
-                if(isAjax){
+                if (isAjax) {
                     res.status(errorInfo.status).json(errorInfo);
-                }else{
+                } else {
                     res.render('error', errorInfo);
                 }
             }

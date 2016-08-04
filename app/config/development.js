@@ -8,12 +8,18 @@ module.exports = {
         port:80,
         name:"mamahao-mobile-site",
         api:{
-            host : "101.69.254.214",    // 促销
-            port: "11001",
-            //host : "172.28.1.107",
-            // host : "localhost",
+            // 本地环境
+            //host : "localhost",
             //port: "8080",
-            root: "/mamahao-app-api"
+            //root: "/mamahao-app-api",
+            // 测试环境
+            host : "172.28.1.107",
+            port: "8080",
+            root: "/mamahao-app-api",
+            // 正式环境
+            //host : "api.mamhao.cn",
+            //port: "80",
+            //root: ""
         },
         wechat:{
             domain:"test.darentong.net",//微信回调地址

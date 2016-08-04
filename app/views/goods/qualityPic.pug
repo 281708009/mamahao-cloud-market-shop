@@ -1,15 +1,16 @@
-extends ../layouts/simple
+extends ../layouts/layout.pug
 block title
     title 质检报告
 block css
     link(rel='stylesheet', href='http://s.mamhao.cn/m/common/css/reset.css')
 block js
     script.
-        var pics = JSON.parse(localStorage.getItem('qualityPic')) || {}, templateId = queryURL('templateId'), qualityPic = pics[templateId];
+        var pics = JSON.parse(localStorage.getItem(CONST.local_qualityPic)) || {}, templateId = queryURL('templateId'), qualityPic = pics[templateId];
         if (qualityPic) {
             var $content = document.querySelector('.u-report'), context = [], len = qualityPic.length;
             for (var i = 0; i < len; i++) context.push('<img src="' + qualityPic[i] + '">');
             $content.innerHTML = context.join('');
+            M.lazyLoad.init();
         }
         function queryURL(key) {
             var value = location.search.match(new RegExp("[\?\&]" + key + "=([^\&]*)(\&?)", "i"));

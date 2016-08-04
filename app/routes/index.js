@@ -30,6 +30,11 @@ router
 router
     .get("/store", storeCtrl.index)
     .post("/api/storeList", storeCtrl.storeList)
+    .post("/api/storeDetail", storeCtrl.storeDetail)
+    .post("/api/myServerStore", storeCtrl.myServerStore)
+    .post("/api/myShowStore", storeCtrl.myShowStore)
+    .post("/api/myAddress", storeCtrl.myAddress)
+    .all("/store/assess/:shopId", storeCtrl.storeAssess)
 ;
 
 /**
@@ -37,14 +42,19 @@ router
  */
 router
     .get("/goods", goodsCtrl.index)
-    .get("/goods/list", goodsCtrl.list)
     .get("/goods/brand", goodsCtrl.brand)
     .get("/goods/detail", goodsCtrl.detail)
     .get("/goods/qualityPic", goodsCtrl.qualityPic)
-    .get("/goods/search", goodsCtrl.search)
-    .get("/goods/search/result", goodsCtrl.search_result)
-    .get("/goods/filter", goodsCtrl.filter)
+
+    .post("/api/goods_type", goodsCtrl.goodsType)
+    .post("/api/goods_list", goodsCtrl.list)
     .post("/api/goodsTypeTree", goodsCtrl.getGoodsTypeTree)
+    .post("/api/search", goodsCtrl.search)
+    .post("/api/searchKeywordTips", goodsCtrl.searchKeywordTips)
+    .post("/api/filter", goodsCtrl.filter)
+
+    .post("/api/addToCart", goodsCtrl.addToCart)
+
 ;
 
 /**
@@ -53,8 +63,13 @@ router
 router
     .get("/cart", cartCtrl.index)
     .get("/settlement", cartCtrl.settlement)
-    .get("/pay/:orderNo?", cartCtrl.pay)
+    .get("/pay/", cartCtrl.pay)
+    .get("/pay/alipay/pay.htm", cartCtrl.payTips)
     .post("/api/cart", cartCtrl.list)
+    .post("/api/aliPay", cartCtrl.aliPay)
+    .post("/api/wxPrePay", cartCtrl.wxPrePay)
+    .post("/api/wxPay", cartCtrl.wxPay)
+    .post('/api/cart/:option', cartCtrl.cartOption)
 ;
 
 

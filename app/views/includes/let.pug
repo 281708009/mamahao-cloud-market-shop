@@ -1,0 +1,14 @@
+//- 全局变量
+- var placeholderPic = 'http://s.mamhao.cn/common/images/placeholder.jpg';   //商品占位图
+
+//- 全局方法
+//- 格式化价格
+- function formatPrice(price){return price.toFixed(2)}
+//- 格式化日期
+- function formatDate(date, pattern){Date.prototype.format=function(a){var c,b={"M+":this.getMonth()+1,"d+":this.getDate(),"h+":this.getHours(),"m+":this.getMinutes(),"s+":this.getSeconds(),"q+":Math.floor((this.getMonth()+3)/3),S:this.getMilliseconds()};/(y+)/.test(a)&&(a=a.replace(RegExp.$1,(this.getFullYear()+"").substr(4-RegExp.$1.length)));for(c in b)new RegExp("("+c+")").test(a)&&(a=a.replace(RegExp.$1,1==RegExp.$1.length?b[c]:("00"+b[c]).substr((""+b[c]).length)));return a};return new Date(date).format(pattern)}
+//- 距离转换
+- function formatDistance(a){var b=Number(a),c=b;return b>=1e3&&(c=(b/1e3).toFixed(1)+"k"),c+"m"}
+//- 处理数组对象返回文本;
+- function formatArrayText(a,b,c){for(var d=0,e=a.length,f=[];e>d;d++)f.push(a[d][b]);return f.join(c||"、")}
+//- 计算返回门店评分高、平、低  根据所有门店评分的均值做对比的，高于所有门店平均值显示为高，低、平以此类推;
+- function formatAvgRating(a,b){var c="";return c=a>b?"<sup>高</sup>":a==b?"<sup>平</sup>":"<sub>低</sub>"}

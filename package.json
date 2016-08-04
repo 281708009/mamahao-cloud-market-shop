@@ -7,6 +7,7 @@
   },
   "main": "./bin/www",
   "dependencies": {
+    "ali-oss": "^4.4.4",
     "async": "^1.5.2",
     "body-parser": "~1.13.2",
     "connect-flash": "^0.1.1",
@@ -27,13 +28,12 @@
     "redis": "^2.6.1",
     "request": "^2.72.0",
     "serve-favicon": "~2.3.0",
+    "thenjs": "^2.0.3",
     "wechat-oauth": "^1.1.1"
   },
   "devDependencies": {
-    "ali-oss": "^4.4.4",
     "co": "^4.6.0",
     "mocha": "latest",
-    "supertest": "latest",
-    "thenjs": "^2.0.3"
+    "supertest": "latest"
   }
 }

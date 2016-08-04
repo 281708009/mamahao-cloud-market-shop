@@ -1,0 +1,9 @@
+include ../../includes/mixin.pug
+.goods
+    .tab.js-goods-tab
+        ul
+            each t, i in tab
+                li(class=(i == 0 && "active"), data-id=t.id)
+                    a(href='javascript:;') #{t.name}
+    ul.u-goods-list.pagination.clearfix
+        +goodsList(goodsList)

@@ -165,7 +165,19 @@ var task = {
                 pug: '/lists/goods.pug'
             }
         ]
+    },
+    // 门店详情
+    "storeDetail": {
+        common: {},
+        module: [
+            {
+                selector: ".node-stores-detail-info",
+                api: API.queryShopBasicInfo,
+                pug: '/store/components/detailInfo.pug'
+            }
+        ]
     }
+
 
 
 };

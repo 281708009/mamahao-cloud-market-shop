@@ -7,7 +7,7 @@ if data && data.length
             if item.data &&  item.data.length
                 each detail in item.data
                     li
-                        - var href = '/goods/list?entry=' + item.type;
+                        - var href = '#/list/entry=' + item.type;
                         - href += (item.type == 0 ? '&brandIds=' : '&categoryId=') + detail.typeId;
                         a(href= href)
                             .pic

@@ -1,10 +1,11 @@
 //- 商品列表;
+include ../includes/let.pug
 if rows && rows.length
     each item in rows
         li
-            a(href='/goods/detail?inlet=6&templateId=' + item.templateId + '&itemId=' + item.itemNumId)
+            a(href='/goods/detail?inlet=6&templateId=' + item.templateId + '&itemId=' + (item.itemNumId || item.itemId))
                 .pic
-                    img(data-original=item.goodsPic, src=placeholderPic, alt=item.itemName)
+                    img(data-original=item.goodsPic + '@1e_400w_400h_0c_0i_0o_100q_1x.jpg', src=placeholderPic, alt=item.itemName)
                     //- topRightTag，枚举：0不显示 1 赠 2 券
                     case item.topRightTag
                         when 1
@@ -32,4 +33,4 @@ if rows && rows.length
                         else if item.price < item.minPrice
                             em 直降
 
-                    .sales 已售#{item.totalSale}件
+                    .sales(class={"vi-hidden": !item.totalSale}) 已售#{item.totalSale}件

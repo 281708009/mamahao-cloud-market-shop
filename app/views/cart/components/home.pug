@@ -1,263 +1,159 @@
-include ../../includes/mixin
-section.m-cart.flex
-    // 头部公告
-    dl.notice
-        dt #{deliveDesc}
-        dd
-            each promotion in cartTopDesc
-                a.u-arrow.right(href='javascript:;') #{promotion.desc}
-    // 主要商品
-    .content
-        // 单品无促销 .single
-        each item in wholeItems
-            if item.pmtType == 6
-                .item.full
-                    .header
-                        a.u-arrow.right
+include ../../includes/let.pug
+include ../../includes/mixin.pug
+
+if wholeItems && wholeItems.length
+    section.m-cart.flex
+        // 头部公告
+        dl.notice
+            dt #{deliveDesc}
+            if cartTopDesc.length > 0
+                dd
+                    each promotion in cartTopDesc
+                        a.u-arrow.right(href='javascript:;') #{promotion.desc}
+        // 主要商品
+        .content
+            // 单品无促销 .single
+            each item in wholeItems
+                if item.pmtType == 6
+                    //- 赠品
+                    .item.full(class=item.invalid ? 'fail' : '',data-compoent-id=item.compoentId, data-compoent-type=item.compoentType)
+                        .header
+                            a.u-arrow.right
+                                ol
+                                    li.li-1
+                                        if item.selected
+                                            input.u-checkbox(type='checkbox',checked='checked')
+                                        else
+                                            input.u-checkbox(type='checkbox')
+                                        li.li-2
+                                            strong #{item.pmtDesc}
+                        .body
+                            each goods in item.cartCompoents
+                                ul
+                                    if goods.isGift
+                                        li.li-1
+                                    else
+                                        li.li-1
+                                            if goods.selected
+                                                input.u-checkbox(type='checkbox',checked='checked')
+                                            else
+                                                input.u-checkbox(type='checkbox')
+                                    li.li-2
+                                        .pic
+                                            img(src= goods.itemPic + '@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
+                                    li.li-3
+                                        h3 #{goods.itemName}
+                                        p
+                                            each sp in goods.spec
+                                                | #{sp.value}&nbsp;
+                                        if goods.isGift
+                                            p #{goods.compoentCount}件
+                                        else
+                                            .u-quantity
+                                                a.decrement.js-update(href='javascript:;',data-count=item.compoentCount-1,class=item.compoentCount==1?'disabled':'') -
+                                                .number #{goods.compoentCount}
+                                                a.increment.js-update(href='javascript:;',data-count=item.compoentCount+1) +
+                                    if goods.isGift
+                                        li.li-4
+                                            .price
+                                                em 赠品
+                                    else
+                                        li.li-4
+                                            .price
+                                                strong ￥#{formatPrice(goods.pmtPrice)}
+                                                if goods.pmtPrice < goods.price
+                                                    del ￥#{formatPrice(goods.price)}
+                                            .delete.js-del 删除
+                        dl.footer
+                            dt 小计：￥#{formatPrice(item.pmtPrice)}
+                else if item.pmtType == 4
+                    //- 套餐
+                    .item.group(class=item.invalid ? 'fail' : '',data-compoent-id=item.compoentId, data-compoent-type=item.compoentType)
+                        .header
                             ol
                                 li.li-1
-                                    input.u-checkbox(type='checkbox')
+                                    if item.selected
+                                        input.u-checkbox(type='checkbox',checked='checked')
+                                    else
+                                        input.u-checkbox(type='checkbox')
                                 li.li-2
                                     strong #{item.pmtDesc}
-                    .body
-                        each goods in item.cartCompoents
+                                li.li-3
+                                    .u-quantity
+                                        a.decrement.js-update(href='javascript:;',data-count=item.compoentCount-1,class=item.compoentCount==1?'disabled':'') -
+                                        .number #{item.compoentCount}
+                                        a.increment.js-update(href='javascript:;',data-count=item.compoentCount+1) +
+                                li.li-4
+                                    .delete.js-del 删除
+                        .body
+                            each goods in item.cartCompoents
+                                ul
+                                    li.li-1
+                                    li.li-2
+                                        .pic
+                                            img(src= goods.itemPic + '@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
+                                    li.li-3
+                                        h3 #{goods.itemName}
+                                        p
+                                            each sp in goods.spec
+                                                | #{sp.value}&nbsp;
+                                        p #{goods.compoentCount}件
+                                    li.li-4
+                                        .price
+                                            strong ￥#{formatPrice(goods.pmtPrice)}
+                                            if goods.pmtPrice < goods.price
+                                                del ￥#{formatPrice(goods.price)}
+                        dl.footer
+                            dd 已优惠 ￥#{formatPrice(item.discountPrice)}
+                            dt 小计：￥#{formatPrice(item.pmtPrice)}
+                else
+                    .item.single(class=item.invalid ? 'fail' : '',data-compoent-id=item.compoentId, data-compoent-type=item.compoentType)
+                        .body
                             ul
                                 li.li-1
-                                    if goods.selected
+                                    if item.selected
                                         input.u-checkbox(type='checkbox',checked='checked')
                                     else
                                         input.u-checkbox(type='checkbox')
                                 li.li-2
                                     .pic
-                                        img(src='#{goods.itemPic}@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
+                                        img(src= item.itemPic + '@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
                                 li.li-3
-                                    h3 #{goods.itemName}
+                                    h3 #{item.itemName}
                                     p
-                                        each sp in goods.spec
+                                        each sp in item.spec
                                             | #{sp.value}&nbsp;
-                                    .u-quantity
-                                        a.decrement(href='javascript:;') -
-                                        .number #{goods.compoentCount}
-                                        a.increment(href='javascript:;') +
+                                    .u-quantity(class=item.invalid ? 'disabled' : '')
+                                        a.decrement.js-update(href='javascript:;',data-count=item.compoentCount-1,class=item.compoentCount==1?'disabled':'') -
+                                        .number #{item.compoentCount}
+                                        a.increment.js-update(href='javascript:;',data-count=item.compoentCount+1) +
                                 li.li-4
                                     .price
-                                        strong ￥#{formatPrice(goods.pmtPrice)}
-                                        del ￥#{formatPrice(goods.price)}
-                                    .delete 删除
-                    dl.footer
-                        dt 小计：￥#{formatPrice(item.pmtPrice)}
-
-            else
-                .item.single
-                    .body
-                        ul
-                            li.li-1
-                                if item.selected
-                                    input.u-checkbox(type='checkbox',checked='checked')
-                                else
-                                    input.u-checkbox(type='checkbox')
-                            li.li-2
-                                .pic
-                                    img(src='#{item.itemPic}@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
-                            li.li-3
-                                h3 #{item.itemName}
-                                p
-                                    each sp in item.spec
-                                        | #{sp.value}&nbsp;
-                                .u-quantity
-                                    a.decrement(href='javascript:;') -
-                                    .number #{item.compoentCount}
-                                    a.increment(href='javascript:;') +
-                            li.li-4
-                                .price
-                                    strong ￥#{formatPrice(item.pmtPrice)}
-                                    del ￥#{formatPrice(item.price)}
-                                .delete 删除
-        // 其他促销 .full
-        .item.full
-            .header
-                a.u-arrow.right(href='javascript:;')
-                    ol
-                        li.li-1
-                            input.u-checkbox(type='checkbox')
-                        li.li-2
-                            strong 买好孩子婴儿床，赠落地蚊帐
-            .body
-                ul
-                    li.li-1
-                        input.u-checkbox(type='checkbox')
-                    li.li-2
-                        .pic
-                            img(src='http://img.mamhao.cn/CS910-PI/sku_1CS910PIK116.jpg@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
-                    li.li-3
-                        h3 好孩子“空军一号”汽车儿童安全座椅CS910-PI（ISOFIX接口）
-                        p 灰橙 445*442*670mm
-                        .u-quantity
-                            a.decrement(href='javascript:;') -
-                            .number 2
-                            a.increment(href='javascript:;') +
-                    li.li-4
-                        .price
-                            strong ￥3242
-                            del ￥3333
-                        .delete 删除
-                ul
-                    li.li-1
-                    li.li-2
-                        .pic
-                            img(src='http://img.mamhao.cn/CS910-PI/sku_1CS910PIK116.jpg@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
-                    li.li-3
-                        h3 好孩子“空军一号”汽车儿童安全座椅CS910-PI（ISOFIX接口）
-                        p 灰橙 445*442*670mm
-                        p 1件
-                    li.li-4
-                        .price
-                            em 赠品
-            dl.footer
-                dt 小计：￥321.00
-        // 组合套装 .group
-        .item.group
-            .header
-                ol
-                    li.li-1
-                        input.u-checkbox(type='checkbox')
-                    li.li-2
-                        strong 套装
-                    li.li-3
-                        .u-quantity
-                            a.decrement(href='javascript:;') -
-                            .number 2
-                            a.increment(href='javascript:;') +
-                    li.li-4
-                        .delete 删除
-            .body
-                ul
-                    li.li-1
-                    li.li-2
-                        .pic
-                            img(src='http://img.mamhao.cn/CS910-PI/sku_1CS910PIK116.jpg@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
-                    li.li-3
-                        h3 好孩子“空军一号”汽车儿童安全座椅CS910-PI（ISOFIX接口）
-                        p 灰橙 445*442*670mm
-                        p 2件
-                    li.li-4
-                        .price
-                            strong ￥3242
-                            del ￥3333
-                ul
-                    li.li-1
-                    li.li-2
-                        .pic
-                            img(src='http://img.mamhao.cn/CS910-PI/sku_1CS910PIK116.jpg@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
-                    li.li-3
-                        h3 好孩子“空军一号”汽车儿童安全座椅CS910-PI（ISOFIX接口）
-                        p 灰橙 445*442*670mm
-                        p 1件
-                    li.li-4
-                        .price
-                            strong ￥3242
-            dl.footer
-                dd 已优惠￥100.00
-                dt 小计：￥321.00
-        // 单品失效 .fail
-        .item.single.fail
-            .body
-                ul
-                    li.li-1
-                    li.li-2
-                        .pic
-                            img(src='http://img.mamhao.cn/CS910-PI/sku_1CS910PIK116.jpg@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
-                    li.li-3
-                        h3 好孩子“空军一号”汽车儿童安全座椅CS910-PI（ISOFIX接口）
-                        p 灰橙 445*442*670mm
-                        .u-quantity.disabled
-                            a.decrement(href='javascript:;') -
-                            .number 1
-                            a.increment(href='javascript:;') +
-                    li.li-4
-                        .price
-                            strong ￥3242
-                            del ￥3333
-                        .delete 删除
-        // 其他促销失效 .fail
-        .item.full.fail
-            .header
-                a.u-arrow.right(href='javascript:;')
-                    ol
-                        li.li-1
-                            input.u-checkbox(type='checkbox')
-                        li.li-2
-                            strong 这里是促销的名称
-            .body
-                ul
-                    li.li-1
-                        input.u-checkbox(type='checkbox')
-                    li.li-2
-                        .pic
-                            img(src='http://img.mamhao.cn/CS910-PI/sku_1CS910PIK116.jpg@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
-                    li.li-3
-                        h3 好孩子“空军一号”汽车儿童安全座椅CS910-PI（ISOFIX接口）
-                        p 灰橙 445*442*670mm
-                        .u-quantity
-                            a.decrement(href='javascript:;') -
-                            .number 2
-                            a.increment(href='javascript:;') +
-                    li.li-4
-                        .price
-                            strong ￥3242
-                            del ￥3333
-                        .delete 删除
-            dl.footer
-                dt 小计：￥321.00
-        // 组合套装失效 .fail
-        .item.group.fail
-            .header
-                ol
-                    li.li-1
-                        input.u-checkbox(type='checkbox')
-                    li.li-2
-                        strong 套装
-                    li.li-3
-                        .u-quantity
-                            a.decrement(href='javascript:;') -
-                            .number 2
-                            a.increment(href='javascript:;') +
-                    li.li-4
-                        .delete 删除
-            .body
-                ul
-                    li.li-1
-                    li.li-2
-                        .pic
-                            img(src='http://img.mamhao.cn/CS910-PI/sku_1CS910PIK116.jpg@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
-                    li.li-3
-                        h3 好孩子“空军一号”汽车儿童安全座椅CS910-PI（ISOFIX接口）
-                        p 灰橙 445*442*670mm
-                        p 2件
-                    li.li-4
-                        .price
-                            strong ￥3242
-                            del ￥3333
-            dl.footer
-                dd 已优惠￥100.00
-                dt 小计：￥321.00
-
-// 底部合计
-.m-cart-footer
-    ul.field
-        li.li-1
-            label
-                input.u-checkbox(type='checkbox')
-                |  全选
-        li.li-2
-            dl
-                dt
-                    | 合计：
-                    strong ￥#{formatPrice(totalPrice)}
-                dd
-                    | 为您节省
-                    span ￥#{formatPrice(disPrice)}
-        li.li-3
-            button.u-btn.success
-                | 结算
-                span (1)
+                                        strong ￥#{formatPrice(item.pmtPrice)}
+                                        if item.pmtPrice < item.price
+                                            del ￥#{formatPrice(item.price)}
+                                    .delete.js-del 删除
+        // 底部合计
+    .m-cart-footer
+        ul.field
+            li.li-1()
+                label
+                    if allSelected
+                        input.u-checkbox(type='checkbox',checked='checked',id='selectAll')
+                    else
+                        input.u-checkbox(type='checkbox',id='selectAll')
+                    |  全选
+            li.li-2
+                dl
+                    dt
+                        | 合计：
+                        strong ￥#{formatPrice(totalPrice)}
+                    dd
+                        | 为您节省
+                        span ￥#{formatPrice(disPrice)}
+            li.li-3
+                a.u-btn.success(href=goodsCount ? '/settlement' : 'javascript:;',class=goodsCount ? '' : 'ban') 结算
+                    span (#{goodsCount})
+else
+    +blank('06','您还没有为您可爱的宝宝挑选商品哦')
+        a.u-btn.checked(href='/') 随便逛逛
