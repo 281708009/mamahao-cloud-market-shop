@@ -53,6 +53,7 @@ var api = {
 
     "cart":"/V2/shop/cart/getCart.htm",  //购物车列表
     "cartTopDesc":"/V1/pmt/getCartTopDesc.htm",  //购物车顶部描述
+    "cartItemCount":"/V2/shop/cart/getCartItemCount.htm",  //获取购物车商品数量
     "pay":"/V1/order/basic/pay2.htm",   // 立即付款
     "settlement": "/V4/order/basic/toSettlement.htm",    // 结算
     "checkPay": "/V1/order/basic/checkPay.htm",     // 校验是否可以支付操作

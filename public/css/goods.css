@@ -32,7 +32,6 @@
 .m-goods-detail{overflow: auto}
 #swipe-banner,#swipe-detail{ background-color: #FFF;}
 #swipe-banner .ui-swipe-wrap,#swipe-detail .ui-swipe-wrap{ position: static;}
-#swipe-detail .ui-swipe-item{height:calc(100vh - 95px)}
 #swipe-tab-banner{position: absolute;bottom: 10px;left: 0;width: 100%;text-align: center;z-index: 2;}
 #swipe-tab-banner ul li{margin: 0 5px;background-color: #000;width: 8px;height: 8px;display: inline-block;border-radius: 100%;opacity: .2;}
 #swipe-tab-banner ul li.active{background-color: #ff4d61;opacity: 1;}

@@ -4,7 +4,7 @@ define(function(require, exports, module) {
             // ajax向node请求的url;
             api: {
                 index: '/api/cart/',
-                select:'/api/cart/selectedCart'
+                settlement:'/api/settlement'
             }
         },
         init: function () {
@@ -106,7 +106,19 @@ define(function(require, exports, module) {
                 }
             };
 
+            var settlement = {
+                url: '/settlement',
+                render: function(callback){
+                    var params = this.params;
+                    page.renderModule('settlement', callback, params);
+                },
+                bind: function(){
+
+                }
+            };
+
             router.push(home)
+                .push(settlement)
                 .setDefault('/').init();
 
         },

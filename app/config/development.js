@@ -13,13 +13,13 @@ module.exports = {
             //port: "8080",
             //root: "/mamahao-app-api",
             // 测试环境
-            host : "172.28.1.107",
-            port: "8080",
-            root: "/mamahao-app-api",
+            // host : "172.28.1.107",
+            // port: "8080",
+            // root: "/mamahao-app-api",
             // 正式环境
-            //host : "api.mamhao.cn",
-            //port: "80",
-            //root: ""
+            host : "api.mamhao.cn",
+            port: "80",
+            root: ""
         },
         wechat:{
             domain:"test.darentong.net",//微信回调地址

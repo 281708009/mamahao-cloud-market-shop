@@ -258,7 +258,7 @@ define(function (require, exports, module) {
                         var o = fun.elements;
 
                         var tpl = ['<div class="ui-mask ui-dialog-mask"></div>', '<div class="ui-dialog-wrap">', '<div class="ui-dialog-inner">', '<div class="ui-dialog-hd"></div>', '<div class="ui-dialog-bd"></div>', '<div class="ui-dialog-ft"></div>', '</div></div>'];
-                        o.dialog = $(tpl.join('')).appendTo(document.body);
+                        o.dialog = $(tpl.join('')).appendTo($('.spa')[0] ? $('.spa') : document.body);
 
                         o.mask = $('.ui-dialog-mask');
                         o.wrapper = $('.ui-dialog-wrap');
@@ -495,7 +495,7 @@ define(function (require, exports, module) {
                             o.placeholder_hd.css({"height": c.navHeight, "display": "none"});
 
                             /*绑定touchmove和scroll事件*/
-                            $("#nav").on('scroll touchmove', function () {
+                            $(document).on('scroll touchmove', function () {
                                 util.fixNav();//固定导航
                             });
                         }
@@ -506,7 +506,7 @@ define(function (require, exports, module) {
                         if (o.nav[0]) {
                             var nav = o.nav,
                                 holder = o.placeholder_hd,
-                                scrollTop = $("#nav").scrollTop();
+                                scrollTop = $("body").scrollTop();
                             if (scrollTop > c.navTop) {
                                 holder.show();
                                 nav.addClass(c.fixTopClass);

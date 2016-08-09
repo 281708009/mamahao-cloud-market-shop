@@ -54,7 +54,7 @@ bigPipe.prototype.render = function () {
     //    }
     //};
 
-    var script = '<script>function bigPipeRender(selector, context) {$(selector).empty().append(context);}</script>';
+    var script = '<script>function bigPipeRender(selector, context) {document.querySelector(selector).innerHTML = context;}</script>';
     this.scripts.push(script);   //最终返回的数据
     me.chunked && res.write(script);
 

@@ -91,11 +91,12 @@ define(function (require, exports, module) {
                     $(".pagination").data('params', {
                         lat: page.config.gps.lat,
                         lng: page.config.gps.lng,
-                        areaId: page.config.gps.areaId
+                        areaId: page.config.gps.areaId,
+                        isLocal: page.config.gps.isLocal
                     });  //存储分页所需的参数
                     $.pagination({
                         keys: {count: "count"},
-                        scrollBox: '.spa',
+                        scrollBox: '.m-stores',
                         api: page.config.api['index'],
                         fnSuccess: function (res, ele) {
                             var data = res.data;
@@ -267,7 +268,8 @@ define(function (require, exports, module) {
                         self.setAddress();
                     }
                     //console.log(res);
-                }
+                },
+                error: function (res) {}
             });
         },
         // 切换地址

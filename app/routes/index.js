@@ -62,9 +62,9 @@ router
  */
 router
     .get("/cart", cartCtrl.index)
-    .get("/settlement", cartCtrl.settlement)
     .get("/pay/", cartCtrl.pay)
     .get("/pay/alipay/pay.htm", cartCtrl.payTips)
+    .post("/api/settlement", cartCtrl.settlement)
     .post("/api/cart", cartCtrl.list)
     .post("/api/aliPay", cartCtrl.aliPay)
     .post("/api/wxPrePay", cartCtrl.wxPrePay)

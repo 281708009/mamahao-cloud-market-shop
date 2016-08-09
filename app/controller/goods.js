@@ -85,7 +85,7 @@ var store = {
         var data = req.query;
         var params = {
             inlet: data.inlet,
-            jsonTerm: JSON.stringify({templateId: data.templateId, itemId: data.itemId})
+            jsonTerm: JSON.stringify(data)
         };
         //异步流程控制
         Thenjs(function (cont) {
@@ -102,7 +102,13 @@ var store = {
         }).then(function () {
             var task = bigPipeTask.goodsDetail;
             task.common.data = {
+                inlet: params.inlet,
                 templateId: data.templateId
+            };
+
+            //sku需要的参数
+            task.module[3].data = {
+                reservedNo: 0
             };
 
             new bigPipe(task, args, true);

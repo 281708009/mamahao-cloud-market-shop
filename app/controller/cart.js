@@ -46,22 +46,27 @@ var cart = {
     },
     /* 结算 */
     settlement: function (req, res, next) {
-        var args = arguments;
         var params = req.params; // 请求参数值;
+        var args = arguments;
         Thenjs(function(cont){
             HttpClient.request(args, {
                 url: API.getDefaultDeliveryAddr,
                 success: function (data) {
-                    cont(null, data);
+                    cont(null,data);
                 }
             });
-        }).then(function (info) {
-            console.log(info);
+        }).then(function (cont, arg) {
             HttpClient.request(args, {
                 url: API.settlement,
                 data: {inlet: 1},
                 success: function (data) {
-                    res.render('cart/settlement', data);
+                    var json = data;
+                    if(arg && arg.deliveryAddrId){
+                        json = $.extend(data,{deliveryAddr:arg});
+                    }
+                    res.render('cart/settlement', json,function (err, html) {
+                        res.json({template: html});
+                    });
                 }
             });
         }, function (cont, err) {

@@ -152,6 +152,12 @@ var task = {
                     page: 1,
                     pageSize: 2
                 }
+            },
+            //SKU
+            {
+                selector: ".u-sku .content",
+                api: API.querySku,
+                pug: '/lists/goods_sku.pug'
             }
         ]
     },

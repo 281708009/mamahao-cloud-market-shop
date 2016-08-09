@@ -11,9 +11,21 @@ define(function(require, exports, module) {
                 callback(null, template);
             },
             error: function (res) {
-                var template = res.status + 'error';
-                callback(null, template);
-                console.log('show error template')
+                if (/^(-1|1001)$/.test(res.error_code)) {
+                    //未登录
+                    return M.tips({
+                        body: "您还未登录，请登录后再试！",
+                        callback: function () {
+                            location.href = '/login?origin=' + location.href;
+                        }
+                    });
+                }
+                var tips = res.statusText || res.msg || res.status + ' error';
+                var arr = ['<div class="u-null-all"><div class="u-null"><dl><dt class="n-01"></dt>'];
+                arr.push('<dd><p>'+ tips +'</p>');
+                arr.push('<a class="u-btn checked" href="javascript:location.reload();">刷新试试</a>');
+                arr.push('</dd></dl></div></div>');
+                callback(null, arr.join(''));
             }
         });
     };

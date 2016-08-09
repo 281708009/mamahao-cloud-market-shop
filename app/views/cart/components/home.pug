@@ -152,7 +152,7 @@ if wholeItems && wholeItems.length
                         | 为您节省
                         span ￥#{formatPrice(disPrice)}
             li.li-3
-                a.u-btn.success(href=goodsCount ? '/settlement' : 'javascript:;',class=goodsCount ? '' : 'ban') 结算
+                a.u-btn.success(href=goodsCount ? '#/settlement' : 'javascript:;',class=goodsCount ? '' : 'ban') 结算
                     span (#{goodsCount})
 else
     +blank('06','您还没有为您可爱的宝宝挑选商品哦')

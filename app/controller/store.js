@@ -27,7 +27,7 @@ var store = {
                 url: API.queryMemberShopIndex,
                 data: params,
                 success: function (data) {
-                    res.render("lists/store", {rows: data.nearShopList}, function (err, html) {
+                    res.render("lists/store", {rows: data.nearShopList, request: params}, function (err, html) {
                         console.log(err);
                         res.json({template: html});
                     });
