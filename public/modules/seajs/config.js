@@ -14,6 +14,7 @@
         // 设置别名，方便调用
         alias: {
             "jquery": "jquery/jq.2.1.min.js",
+            "cookie": "jquery/jquery.cookie.js",
             "fastclick": "jquery/fastclick.min.js",
             "headroom": "jquery/headroom.js",
             "router": "jquery/router.min.js",

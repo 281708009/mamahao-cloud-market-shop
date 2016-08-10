@@ -6,6 +6,7 @@ var HttpClient = require("../utils/http_client"),
 /*到个人主页*/
 var center = {
     index: function (req, res, next) {
+        
         HttpClient.request(arguments, {
             url: API.center,
             success: function (data) {

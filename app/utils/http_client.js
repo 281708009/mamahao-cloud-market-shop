@@ -101,10 +101,10 @@ var HttpClient = {
                 //request error
                 var errorInfo = {};
                 if (error) {
-                    console.warn(error);
+                    console.warn('[error]', error);
                     errorInfo = {status: error.code, error_code: error.code, msg: error.errno};
                 } else if (response) {
-                    console.log('response--->' + JSON.stringify(response));
+                    console.log('[error response]' + JSON.stringify(response));
                     errorInfo = {
                         status: response.statusCode,
                         error_code: response.statusCode,

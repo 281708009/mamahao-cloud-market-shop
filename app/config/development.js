@@ -5,7 +5,7 @@
 module.exports = {
     env:'development',
     site:{
-        port:80,
+        port: 3000,
         name:"mamahao-mobile-site",
         api:{
             // 本地环境
@@ -16,15 +16,15 @@ module.exports = {
             // host : "172.28.1.107",
             // port: "8080",
             // root: "/mamahao-app-api",
-            // 正式环境
-            host : "api.mamhao.cn",
+            // 测试环境
+            host : "api.mamhao.com",
             port: "80",
-            root: ""
+            root: "/mamahao-app-api/"
         },
         wechat:{
-            domain:"test.darentong.net",//微信回调地址
-            app_id:"wx54e8641b0560a8b1",
-            app_secret:"44daafd58e556faeb3479e53a56d8850"
+            //domain:"test.darentong.net",//微信回调地址
+            app_id:"wx230909e739bb72fd",
+            //app_secret:"44daafd58e556faeb3479e53a56d8850"
         },
         channel:{
             id:8,//渠道，写死

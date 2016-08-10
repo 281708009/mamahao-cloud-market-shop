@@ -1,14 +1,14 @@
 //- 商品SKU
 .info
     .pic
-        img(src='http://img.mamhao.cn/CS910-PI/sku_1CS910PIK116.jpg', alt='')
+        img(src=def.itemPic + '@100w_100q.png', alt='')
     dl
-        dt ￥799
+        dt #{def.price}
         dd
             span "白色"
             span "无尺寸"
     del.js-close x
-.sku
+.sku(data-sku-map=skuInfo)
     if skuView && skuView.length
         each views, index in skuView
             each val, key in views
@@ -16,7 +16,7 @@
                     dt #{key}
                     dd
                         each v,i in val
-                            a(class={active: i === 0}, href='javascript:;', data-key=key, data-value=skuMap[v]) #{skuMap[v]}
+                            a(class={active: i === 0}, href='javascript:;', data-value=v) #{skuMap[v]}
 
 .quantity
     dl

@@ -5,7 +5,10 @@
 
 var api = {
     "login": "/V1/member/login.htm",    //登录
-    "vcode": "/V1/sms/vcode/sendSmsVcodeForLoginOrReg.htm",     //获取验证码
+    "bind": "/V1/weixin/oauth/bind.htm",    //绑定
+    "vcode": "/V1/sms/vcode/sendSmsVcodeForLoginOrReg.htm",     //登录获取验证码
+    "bindVcode": "/V1/sms/vcode/sendSmsVcodeForBindMobile.htm",     //绑定获取验证码
+
     "center": "/V1/member/center/getMemberCenterCountInfo.htm",     //个人中心
     "MBeanList": "/V1/mbean/queryMBeanList.htm",     //获取妈豆记录
     "integral": "/V1/member/center/queryMemberPoint.htm",     //积分

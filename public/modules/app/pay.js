@@ -10,27 +10,28 @@ define(function(require, exports, module) {
             $('.js-weixin').hide();
             $('.code').hide();
         }else{
-            $.ajax({
-                data: {
-                    url: window.location.href,
-                    r: Math.random()
-                },
-                dataType: "jsonp",
-                url: "http://localhost:8080/mamahao-app-api/pay/weixin/config.htm",  //这个地址需要动态配置
-                success: function(data) {
-                    wx.config({
-                        debug: false,
-                        appId: data.appId,
-                        timestamp: data.time,
-                        nonceStr: data.none,
-                        signature: data.sign,
-                        jsApiList: ['checkJsApi', 'onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'hideMenuItems', 'showMenuItems', 'hideAllNonBaseMenuItem', 'getLocation', 'getNetworkType','chooseWXPay']
-                    });
-                    wx.ready(function() {
-
-                    });
-                }
-            });
+            //微信页面支付获取配置信息
+        //    $.ajax({
+        //        data: {
+        //            url: window.location.href,
+        //            r: Math.random()
+        //        },
+        //        dataType: "jsonp",
+        //        url: "http://api.mamhao.com/mamahao-app-api/pay/weixin/config.htm",  //这个地址需要动态配置
+        //        success: function(data) {
+        //            wx.config({
+        //                debug: false,
+        //                appId: data.appId,
+        //                timestamp: data.time,
+        //                nonceStr: data.none,
+        //                signature: data.sign,
+        //                jsApiList: ['checkJsApi', 'onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'hideMenuItems', 'showMenuItems', 'hideAllNonBaseMenuItem', 'getLocation', 'getNetworkType','chooseWXPay']
+        //            });
+        //            wx.ready(function() {
+        //
+        //            });
+        //        }
+        //    });
         }
     })(wx);
 
@@ -177,7 +178,8 @@ define(function(require, exports, module) {
         });*/
         //移除原有的图片
         $('.code').find('p > img').remove();
-        $('.code').find('p.img').append('<img src="http://i-banchun.wicp.net/mamahao-app-api/pay/weixin/makeWeixinScanCode.htm?batchNo='+orderNo+'&openId='+openId+'&size=240" style="width:200px;height:200px;"/>');
+        //TODO 二维码地址暂时写死，回头再改
+        $('.code').find('p.img').append('<img src="http://api.mamhao.com/mamahao-app-api/pay/weixin/makeWeixinScanCode.htm?batchNo='+orderNo+'&openId='+openId+'&size=240" style="width:200px;height:200px;"/>');
     });
 
 });

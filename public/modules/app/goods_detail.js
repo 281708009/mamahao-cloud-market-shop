@@ -38,6 +38,7 @@ define(function (require, exports, module) {
                 }
             });
 
+
             //点击sku选项
             $('.sku').on('dd a', function () {
 
@@ -53,6 +54,10 @@ define(function (require, exports, module) {
             $('.js-addToCart').on('click', page.addToCart);
             $('.js-buy').on('click', function () {
                 $('.u-sku').addClass('show');
+                require.async('app/sku', function (sku) {
+                    var skuMap = $('.sku').data('sku-map');
+                    sku.init(skuMap);
+                });
             });
 
         },
@@ -87,5 +92,11 @@ define(function (require, exports, module) {
         }
     };
 
-    page.init();
+    /*
+    * 这里确保页面加载完后再绑定相应的事件，否则会出事数据缺失的问题
+    * 比如sku的选择
+    * */
+    $(function () {
+        page.init();
+    });
 });

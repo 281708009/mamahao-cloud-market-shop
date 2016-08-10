@@ -13,9 +13,9 @@ module.exports = {
             root: "/"
         },
         wechat:{
-            domain:"test.darentong.net",//微信回调地址
-            app_id:"wx54e8641b0560a8b1",
-            app_secret:"44daafd58e556faeb3479e53a56d8850"
+            //domain:"test.darentong.net",//微信回调地址
+            app_id:"wx230909e739bb72fd",
+            //app_secret:"44daafd58e556faeb3479e53a56d8850"
         },
         channel:{
             id:8,

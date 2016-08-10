@@ -18,12 +18,14 @@ if rows && rows.length
                     h3 #{item.itemName}
                     .tools
                         strong ￥#{item.price}
-
+                        //- (1,"直降促销"),(3,"满赠促销"),(4,"组合促销"),(5,"满减促销"),(6,"赠品促销"),(-99,"促销类型错误");
                         if item.proTag && item.proTag.length
                             if item.proTag.length > 1
                                 em 多重优惠
                             else
                                 case item.proTag[0]
+                                    when 1
+                                        em 直降
                                     when 3
                                         //- em 满赠
                                     when 4
@@ -32,7 +34,5 @@ if rows && rows.length
                                         em 满减
                                     when 6
                                         //- em 赠品
-                        else if item.price < item.minPrice
-                            em 直降
 
                     .sales(class={"vi-hidden": !item.totalSale}) 已售#{item.totalSale}件

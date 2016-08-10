@@ -14,6 +14,8 @@ var indexCtrl = require("../controller/index"),           //首页
     orderCtrl = require("../controller/order"),           //订单
     weChatCtrl = require("../controller/wechat");         //微信相关
 
+//所有路由先经过微信授权，优先级最高，放在路由的最前面
+router.get("*", weChatCtrl.auth);
 
 /**
  * 网站主页
@@ -77,11 +79,14 @@ router
  * 用户登录
  */
 router
+    .get('/wxOauth', accountCtrl.wxOauth)
     .get("/login", accountCtrl.toLogin)
     .get("/account/bind", accountCtrl.toBind)
     .get("/logout", accountCtrl.logout)
     .post("/api/login", accountCtrl.doLogin)
-    .post("/api/sendMessage", accountCtrl.sendMessage);
+    .post("/api/bind", accountCtrl.doBind)
+    .post("/api/sendMessage", accountCtrl.sendMessage)
+    .post("/api/sendBindMessage", accountCtrl.sendBindMessage);
 
 
 /**

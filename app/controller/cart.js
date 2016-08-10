@@ -3,7 +3,6 @@
 * */
 var HttpClient = require("../utils/http_client");
 var API = require('../config/api');
-var config_wechat = AppConfig.site.wechat;
 var Thenjs = require('thenjs');
 var request = require('request');
 var cart = {

@@ -67,13 +67,6 @@ app.use(function (req, res, next) {
     });
     reqDomain.run(next);
 });
-/**
- * 简单过滤器
- */
-app.use(function (req, res, next) {
-    console.log("session_id:" + req.sessionID);
-    next();
-});
 
 
 app.set('views', path.join(__dirname, './app/views'));
