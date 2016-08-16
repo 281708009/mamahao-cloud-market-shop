@@ -1,23 +1,23 @@
 .flex
-    ul.u-form.fm-addr-info(data-id='#{deliveryAddrId}')
+    ul.u-form.fm-addr-info(data-id=deliveryAddrId)
         li
             em 收货人：
             .field
-                input.name(name='name',type='text', placeholder='请输入收货人的姓名',maxlength='64',value='#{consignee}')
+                input.name(name='name',type='text', placeholder='请输入收货人的姓名',maxlength='64',value=consignee)
         li
             em 手机号：
             .field
-                input.mobile(name='mobile',type='tel',data-type='mobile', placeholder='请输入收货人的手机号码',maxlength='11',value='#{phone}')
+                input.mobile(name='mobile',type='tel',data-type='mobile', placeholder='请输入收货人的手机号码',maxlength='11',value=phone)
         li.u-arrow.right
             em 地　区：
-            input.district.js-district(name='district',type='text',data-area-id='#{areaId}', placeholder='请选择省份、城市、区域',maxlength='255',value= '#{prv}#{city}#{area}',readonly)
+            input.district.js-district(name='district',type='text',data-area-id=areaId,laceholder='请选择省份、城市、区域',maxlength='255',value= prv+city+area,readonly)
         li
             em 街　道：
-            input.street.js-street(name='street',type='text',data-lat='#{lat}',data-lng='#{lng}', placeholder='请选择小区/写字楼等',maxlength='255',value='#{gpsAddr}',readonly)
+            input.street.js-street(name='street',type='text',data-lat=lat,data-lng=lng, placeholder='请选择小区/写字楼等',maxlength='255',value=gpsAddr,readonly)
             .gps.js-gps 定位
         li
             em 门牌号：
-            input.house-number(name='house_number',type='text', placeholder='请填写具体单元号 楼层等',maxlength='255',value='#{addrDetail}')
+            input.house-number(name='house_number',type='text', placeholder='请填写具体单元号 楼层等',maxlength='255',value=addrDetail)
         li
             span.tip 设为默认
             input.isDefault.u-switch(type='checkbox',checked= isDefault ? true : false)

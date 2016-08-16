@@ -1,6 +1,6 @@
 /*
-* 购物车
-* */
+ * 购物车
+ * */
 var HttpClient = require("../utils/http_client");
 var API = require('../config/api');
 var Thenjs = require('thenjs');
@@ -23,8 +23,8 @@ var cart = {
             error: function () {
 
                 res.render('cart/components/home', {}, function (err, html) {
-                res.json({template: html});
-            });
+                    res.json({template: html});
+                });
             }
         });
 
@@ -47,36 +47,72 @@ var cart = {
     settlement: function (req, res, next) {
         var params = req.params; // 请求参数值;
         var args = arguments;
-        Thenjs(function(cont){
+
+        Thenjs(function (cont) {
+            if (params.deliveryAddrId) {
+                cont(null, {deliveryAddrId: params.deliveryAddrId});
+            }
             HttpClient.request(args, {
                 url: API.getDefaultDeliveryAddr,
                 success: function (data) {
-                    cont(null,data);
+                    cont(null, data);
                 }
             });
         }).then(function (cont, arg) {
+            var data = {inlet: 1, stockTip: 1};
+            if (arg && arg.deliveryAddrId) {
+                data.deliveryAddrId = arg.deliveryAddrId;
+            }
+            if (arg && arg.areaId) {
+                data.areaId = arg.areaId;
+            }
             HttpClient.request(args, {
                 url: API.settlement,
-                data: {inlet: 1},
+                data: data,
                 success: function (data) {
                     var json = data;
-                    if(arg && arg.deliveryAddrId){
-                        json = $.extend(data,{deliveryAddr:arg});
+                    if (arg && arg.deliveryAddrId) {
+                        json = $.extend(data, {deliveryAddr: arg});
                     }
-                    res.render('cart/settlement', json,function (err, html) {
+                    res.render('cart/settlement', json, function (err, html) {
                         res.json({template: html});
                     });
+
+                    if(json.coupon){
+                        // 请求其他优惠券,返回有的话需要显示
+                    }
                 }
             });
         }, function (cont, err) {
             console.log(err)
         })
     },
+    delivery: function (req, res, next) {
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+
+        var data = {inlet: 1, stockTip: 1};
+        if (params.deliveryAddrId) {
+            data.deliveryAddrId = params.deliveryAddrId;
+        }
+        HttpClient.request(arguments, {
+            url: API.settlement,
+            data: data,
+            success: function (data) {
+                var json = data;
+                res.render('cart/delivery', json, function (err, html) {
+                    res.json({template: html});
+                });
+            }
+        });
+    },
+    coupon: function (req, res, next) {
+
+    },
     /* 支付 */
-    pay:function (req, res, next) {
+    pay: function (req, res, next) {
         var args = arguments;
         var params = req.query; // 请求参数值;
-        Thenjs(function(cont){
+        Thenjs(function (cont) {
             HttpClient.request(args, {
                 url: API.checkPay,
                 data: {orderNo: params.orderNo},
@@ -87,7 +123,7 @@ var cart = {
         }).then(function () {
             HttpClient.request(args, {
                 url: API.pay,
-                data: {orderBatchNo: params.orderNo,openid:params.openid},
+                data: {orderBatchNo: params.orderNo, openid: params.openid},
                 success: function (data) {
                     data.openid = params.openid;
                     res.render('cart/pay', data);
@@ -97,7 +133,42 @@ var cart = {
             console.log(err)
         })
     },
-    aliPay:function (req, res, next) {
+    /* 确认订单 */
+    check: function (req, res, next) {
+        var args = arguments;
+        var params = req.body.data; // 请求参数值;
+        HttpClient.request(args, {
+            url: API.check,
+            data: params,
+            success: function (data) {
+                //data.openid = params.openid;
+                console.log('支付响应结果----------', data);
+                res.render('cart/pay', data);
+            }
+        });
+        /*Thenjs(function (cont) {
+         HttpClient.request(args, {
+         url: API.checkPay,
+         data: {orderNo: params.orderNo},
+         success: function (data) {
+         cont();
+         }
+         });
+         }).then(function () {
+         HttpClient.request(args, {
+         url: API.check,
+         data: params,
+         success: function (data) {
+         //data.openid = params.openid;
+         console.log('支付响应结果----------',data);
+         res.render('cart/pay', data);
+         }
+         });
+         }, function (cont, err) {
+         console.log(err)
+         })*/
+    },
+    aliPay: function (req, res, next) {
         var params = req.body;
         HttpClient.request(arguments, {
             url: API.aliPay,
@@ -108,28 +179,28 @@ var cart = {
         });
 
     },
-    payTips:function (req, res, next) {
+    payTips: function (req, res, next) {
         res.render('payTips');
     },
     //准备微信支付，获取openID
-    wxPrePay:function (req, res, next) {
+    wxPrePay: function (req, res, next) {
         HttpClient.request(arguments, {
-             url: API.wxPay,
-             type:'get',
-            data:{batchNo:params.orderNo,openId:params.openId},
-             success: function (data) {
+            url: API.wxPay,
+            type: 'get',
+            data: {batchNo: params.orderNo, openId: params.openId},
+            success: function (data) {
                 res.json({openID: data});
-             }
-         });
+            }
+        });
 
     },
     //获取微信prePayId
-    wxPay:function (req,res,next) {
+    wxPay: function (req, res, next) {
         var params = req.body;
         HttpClient.request(arguments, {
             url: API.wxPay,
-            type:'get',
-            data:params,
+            type: 'get',
+            data: params,
             success: function (data) {
                 res.json(data);
             }

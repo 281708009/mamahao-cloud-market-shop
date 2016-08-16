@@ -22,7 +22,7 @@ var HttpClient = {
         var request = require("request");
         var req = args[0], res = args[1], next = args[2];  //取参数
 
-        var isAjax = req.headers['ajax'] ? true : false;
+        var isAjax = req.get('ajax') ? true : false;
 
         //console.log('req---->',req);
 
@@ -32,26 +32,25 @@ var HttpClient = {
         var session = req && req.session || {};  //session
 
         var headers = {"User-Agent": "[node request], MamHao V2.5.6 2016072803"};
-        if(session.user){
+        if (session.user) {
             //已登录用户
             headers.memberId = session.user.id;
             headers.token = session.user.token;
         }
 
         /*参数*/
+        var formData = $.extend(req.get('areaid') && {areaId: req.get('areaid')} || {}, params.data || {});
         var options = {
             method: params.type || 'POST',
             baseUrl: '',  //基础路径设置为空
             uri: /^http/.test(params.url) ? params.url : (baseUrl + params.url || '/'),
             headers: $.extend({}, headers, params.headers || {}),
-            form: params.data || {}
+            form: formData
         };
 
         /*区分request方式*/
-        if (options.method.toLowerCase() === 'get') {
-            if (params.data) {
-                options.uri += '?' + querystring.stringify(params.data);
-            }
+        if (options.method.toLowerCase() === 'get' && querystring.stringify(formData)) {
+            options.uri += '?' + querystring.stringify(formData);
         }
 
         // API请求日志打印;

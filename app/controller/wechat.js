@@ -39,7 +39,7 @@ var weChat = {
         if (isWeChat && !openId) {
             var originalUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
             var baseUrl = 'http://' + AppConfig.site.api.host + AppConfig.site.api.root; //baseUrl
-            var redirect_uri = encodeURIComponent(baseUrl + 'V1/weixin/oauth/callback.htm?resouce=1' + '&go=' + encodeURIComponent(originalUrl));
+            var redirect_uri = encodeURIComponent(baseUrl + '/V1/weixin/oauth/callback.htm?resouce=1' + '&go=' + encodeURIComponent(originalUrl));
             var authUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + AppConfig.site.wechat.app_id + '&redirect_uri=' + redirect_uri + '&response_type=code&scope=snsapi_base&state=12345465#wechat_redirect';
             return res.redirect(authUrl);
         }

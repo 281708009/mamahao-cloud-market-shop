@@ -147,52 +147,84 @@ define(function (require, exports, module) {
                     c.isAjax && c.showLoading && MMH.showLoading();  //200ms之后显示loading遮罩
                 }, c.loadingDelay);
 
+
+                //是否需要地理位置
+                if (typeof params.location === 'boolean' && !params.location) {
+                    doAjax();
+                } else {
+                    $.when(getLocation()).always(doAjax);//Deferred
+                }
+
+
+                //处理地理位置信息
+                function getLocation() {
+                    var dtd = $.Deferred();
+                    require.async('app/location', function (obj) {
+                        new obj().getLocation({
+                            success: function (res) {
+                                var data = {
+                                    //lat: res.lat,
+                                    //lng: res.lng,
+                                    areaId: res.areaId
+                                };
+                                dtd.resolve(data);
+                            },
+                            fail: function () {
+                                dtd.reject();
+                            }
+                        });
+                    });
+                    return dtd.promise();
+                }
+
                 /*do ajax*/
-                $.ajax({
-                    type: params.type || "POST",
-                    url: params.url || "/",
-                    headers: {ajax: true},
-                    data: params.data || {},
-                    dataType: params.dataType || "json",
-                    timeout: 2e4,  //20s
-                    success: function (res) {
-                        //console.log('success', JSON.stringify(res))
-                        c.isAjax = false;
-                        if (res.error_code) {
-                            var errorMsg = res.msg;
-                            if(params.error){
-                                return params.error.call(this, res);
+                function doAjax(data) {
+                    $.ajax({
+                        type: params.type || "POST",
+                        url: params.url || "/",
+                        headers: $.extend({ajax: true}, data || {}),
+                        data: params.data || {},
+                        dataType: params.dataType || "json",
+                        timeout: 2e4,  //20s
+                        success: function (res) {
+                            //console.log('success', JSON.stringify(res))
+                            c.isAjax = false;
+                            if (res.error_code) {
+                                var errorMsg = res.msg;
+                                if (params.error) {
+                                    return params.error.call(this, res);
+                                }
+                                if (/^(-1|1001)$/.test(res.error_code)) {
+                                    //未登录
+                                    return MMH.tips({
+                                        body: "您还未登录，请登录后再试！",
+                                        callback: function () {
+                                            location.href = '/login?origin=' + location.href;
+                                        }
+                                    });
+                                }
+                                return MMH.tips(errorMsg);
                             }
-                            if (/^(-1|1001)$/.test(res.error_code)) {
-                                //未登录
-                                return MMH.tips({
-                                    body: "您还未登录，请登录后再试！",
-                                    callback: function () {
-                                        location.href = '/login?origin=' + location.href;
-                                    }
-                                });
+                            params.success && params.success.call(this, res);
+                        },
+                        error: function (res) {
+                            console.log('error--->', res)
+                            c.isAjax = false;
+                            if (params.error) {
+                                params.error.call(this, res);
+                            } else {
+                                var errorMsg = res.msg || res.statusText;
+                                console.log('xxx', res)
+                                MMH.tips(errorMsg);
                             }
-                            return MMH.tips(errorMsg);
+                        },
+                        complete: function (res) {
+                            //console.log('complete--->', res)
+                            MMH.hideLoading();
+                            params.complete && params.complete.call(this, res);
                         }
-                        params.success && params.success.call(this, res);
-                    },
-                    error: function (res) {
-                        console.log('error--->', res)
-                        c.isAjax = false;
-                        if (params.error) {
-                            params.error.call(this, res);
-                        } else {
-                            var errorMsg = res.msg || res.statusText;
-                            console.log('xxx', res)
-                            MMH.tips(errorMsg);
-                        }
-                    },
-                    complete: function (res) {
-                        //console.log('complete--->', res)
-                        MMH.hideLoading();
-                        params.complete && params.complete.call(this, res);
-                    }
-                });
+                    });
+                }
             },
             /*tips提示框*/
             tips: function (args) {
@@ -647,7 +679,8 @@ define(function (require, exports, module) {
                         MMH.ajax({
                             data: {url: window.location.href, r: Math.random()},
                             dataType: "jsonp",
-                            url: "http://api.mamhao.cn/V1/basic/weixin/secret.htm",
+                            //url: "http://api.mamhao.cn/V1/basic/weixin/secret.htm",
+                            url: "http://api.mamhao.com" + (/mamhao/g.test(location.host) ? "/mamahao-app-api" : "") + "/pay/weixin/config.htm",  //区分是否为测试环境
                             success: function (data) {
                                 console.log(data);
                                 wx.config({

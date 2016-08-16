@@ -1,4 +1,4 @@
-define(function(require, exports, module) {
+define(function (require, exports, module) {
 
     module.exports = function (api_url, callback, params) {
         M.ajax({
@@ -22,7 +22,7 @@ define(function(require, exports, module) {
                 }
                 var tips = res.statusText || res.msg || res.status + ' error';
                 var arr = ['<div class="u-null-all"><div class="u-null"><dl><dt class="n-01"></dt>'];
-                arr.push('<dd><p>'+ tips +'</p>');
+                arr.push('<dd><p>' + tips + '</p>');
                 arr.push('<a class="u-btn checked" href="javascript:location.reload();">刷新试试</a>');
                 arr.push('</dd></dl></div></div>');
                 callback(null, arr.join(''));

@@ -182,8 +182,21 @@ var task = {
                 pug: '/store/components/detailInfo.pug'
             }
         ]
-    }
+    },
 
+    "settlement":{
+        common:{
+            api: API.settlement,
+            pug: '/cart/settlement.pug',
+        },
+        module: [
+            {
+                selector: ".m-pay-coupon .list",
+                api: API.usefulCoupon,
+                pug: '/cart/coupon.pug',
+            }
+        ]
+    }
 
 
 };

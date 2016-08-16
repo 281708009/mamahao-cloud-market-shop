@@ -66,12 +66,15 @@ router
     .get("/cart", cartCtrl.index)
     .get("/pay/", cartCtrl.pay)
     .get("/pay/alipay/pay.htm", cartCtrl.payTips)
+    .post("/api/pay", cartCtrl.check)
     .post("/api/settlement", cartCtrl.settlement)
+    .post("/api/delivery", cartCtrl.delivery)
     .post("/api/cart", cartCtrl.list)
     .post("/api/aliPay", cartCtrl.aliPay)
     .post("/api/wxPrePay", cartCtrl.wxPrePay)
     .post("/api/wxPay", cartCtrl.wxPay)
     .post('/api/cart/:option', cartCtrl.cartOption)
+    .post('/api/coupon', cartCtrl.coupon)
 ;
 
 
@@ -123,7 +126,6 @@ router
     .post('/api/order_result', orderCtrl.orderResult)
     .post('/api/order/:option', orderCtrl.orderOption)
 ;
-
 
 
 module.exports = router;

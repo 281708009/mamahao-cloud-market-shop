@@ -39,64 +39,69 @@ define(function (require, exports, module) {
             });
 
 
-            //点击sku选项
-            $('.sku').on('dd a', function () {
-
-            });
-
-
             //点击遮罩或关闭按钮
             $('.mask, .js-close').on('click', function () {
                 $(this).closest('.u-fixed').removeClass('show');
             });
 
-            //加入购物车
-            $('.js-addToCart').on('click', page.addToCart);
-            $('.js-buy').on('click', function () {
+            //加入购物车、立即购买
+            $('.js-addToCart, .js-buy').on('click', function () {
                 $('.u-sku').addClass('show');
                 require.async('app/sku', function (sku) {
                     var skuMap = $('.sku').data('sku-map');
                     sku.init(skuMap);
                 });
             });
-
+            //选完sku，点击确定
+            $('.js-sku-confirm').on('click', page.addToCart);
         },
         //添加商品到购物车
         addToCart: function () {
-            var c = page.config, urlParams = c.params;
-            var local_cartId = localStorage.getItem(CONST.local_cartId);   //本地购物车ID
-            var local_location = localStorage.getItem(CONST.local_location); //本地存储的位置信息
-            var params = {
-                areaId: local_location.areaId,
-                cartId: local_cartId,
-                jsonTerm: JSON.stringify([{
-                    "isBindShop": false,
-                    "itemId": urlParams.itemId,
-                    "shopId": urlParams.shopId,
-                    "templateId": urlParams.templateId,
-                    "companyId": urlParams.companyId,
-                    "count": 1
-                }]),
-                pmtType: 0
-            };
-            M.ajax({
-                url: '/api/addToCart',
-                data: {data: JSON.stringify(params)},
-                success: function (res) {
-                    if (res.success_code == 200) {
-                        localStorage.setItem(CONST.local_cartId, res.cartId);  //更新本地购物车ID
-                        M.tips('商品已成功添加到购物车');
-                    }
+            //获取当前选中的sku信息
+            require.async('app/sku', function (sku) {
+                var skuInfo = sku.selected();
+
+                if (!skuInfo.itemId) {
+                    return M.tips('请选择SKU');
                 }
+
+                var c = page.config, urlParams = c.params;
+                var local_cartId = localStorage.getItem(CONST.local_cartId);   //本地购物车ID
+                var local_location = localStorage.getItem(CONST.local_location); //本地存储的位置信息
+                var params = {
+                    areaId: local_location.areaId,
+                    cartId: local_cartId,
+                    jsonTerm: JSON.stringify([{
+                        "isBindShop": false,
+                        "itemId": skuInfo.itemId,
+                        "shopId": urlParams.shopId,
+                        "templateId": urlParams.templateId,
+                        "companyId": urlParams.companyId,
+                        "count": 1
+                    }]),
+                    pmtType: 0
+                };
+                M.ajax({
+                    url: '/api/addToCart',
+                    data: {data: JSON.stringify(params)},
+                    success: function (res) {
+                        if (res.success_code == 200) {
+                            localStorage.setItem(CONST.local_cartId, res.cartId);  //更新本地购物车ID
+                            M.tips('商品已成功添加到购物车');
+                            $('.u-sku .js-close').trigger('click');
+                        }
+                    }
+                });
             });
         }
     };
 
     /*
-    * 这里确保页面加载完后再绑定相应的事件，否则会出事数据缺失的问题
-    * 比如sku的选择
-    * */
+     * 这里确保页面加载完后再绑定相应的事件，否则会出事数据缺失的问题
+     * 比如sku的选择
+     * */
     $(function () {
         page.init();
+        M.lazyLoad.init();
     });
 });

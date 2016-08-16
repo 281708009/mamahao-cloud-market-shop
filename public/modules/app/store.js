@@ -119,6 +119,8 @@ define(function (require, exports, module) {
                 bind: function () {
                     var $module = $(this), o = page.info;
                     //console.log();
+                    // 关注门店;
+                    
                     // 点击查看服务详情;
                     page.setService($module);
                     // 展开显示更多详情;

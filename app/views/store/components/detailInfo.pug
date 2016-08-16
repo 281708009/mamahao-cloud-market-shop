@@ -33,7 +33,7 @@ if level
                 em 物流 #{level.logisticsRating}分
                 span !{formatAvgRating(level.logisticsRating, level.avgLogisticsRating)}
         // 点评用户
-        a.flex-center.u-arrow.right(href='/store/assess/'+ basicInfo.shopId)
+        a.flex-center.u-arrow.right(href='/store/assess/'+ basicInfo.shopId )
             ul.people
                 each people, i in comment.people
                     li

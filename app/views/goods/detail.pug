@@ -10,6 +10,7 @@ block content
     //- 商品详情
     //- inlet(入口): 1.门店 2.妈豆尊享  3.预售  4.订单  5.口碑  6.类目 7.条形码
     //- jsonTerm: {"templateId":"182972","itemId":"326588"}
+    include ../includes/let.pug
     section.m-goods-detail.flex
 
         //- 商品主图
@@ -18,7 +19,7 @@ block content
                 ol.ui-swipe-wrap
                     each pic_url in pic
                         li.ui-swipe-item
-                            img(src= pic_url + '@1e_600w_0c_0i_0o_100q_1x.jpg')
+                            img(data-original= pic_url + '@600w_100q.jpg', src=placeholderPic)
 
                 // 点点点
                 .ui-swipe-tab#swipe-tab-banner(data-target='#swipe-banner')

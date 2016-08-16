@@ -10,26 +10,23 @@ if wholeItems && wholeItems.length
                 dd
                     each promotion in cartTopDesc
                         a.u-arrow.right(href='javascript:;') #{promotion.desc}
-        // 主要商品
         .content
-            // 单品无促销 .single
             each item in wholeItems
                 if item.pmtType == 6
-                    //- 赠品
+                    //- 赠品类促销
                     .item.full(class=item.invalid ? 'fail' : '',data-compoent-id=item.compoentId, data-compoent-type=item.compoentType)
                         .header
-                            a.u-arrow.right
-                                ol
-                                    li.li-1
-                                        if item.selected
-                                            input.u-checkbox(type='checkbox',checked='checked')
-                                        else
-                                            input.u-checkbox(type='checkbox')
-                                        li.li-2
-                                            strong #{item.pmtDesc}
+                            ol
+                                li.li-1
+                                    if item.selected
+                                        input.u-checkbox(type='checkbox',checked='checked')
+                                    else
+                                        input.u-checkbox(type='checkbox')
+                                    li.li-2
+                                        strong #{item.pmtDesc}
                         .body
                             each goods in item.cartCompoents
-                                ul
+                                ul.js-jump(url='/goods/detail?inlet=6&templateId=' + goods.templateId + '&itemId=' + goods.itemId)
                                     if goods.isGift
                                         li.li-1
                                     else
@@ -41,6 +38,8 @@ if wholeItems && wholeItems.length
                                     li.li-2
                                         .pic
                                             img(src= goods.itemPic + '@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
+                                            if goods.vipDesc
+                                                .vip 会员#{goods.vipDesc}折
                                     li.li-3
                                         h3 #{goods.itemName}
                                         p
@@ -50,9 +49,9 @@ if wholeItems && wholeItems.length
                                             p #{goods.compoentCount}件
                                         else
                                             .u-quantity
-                                                a.decrement.js-update(href='javascript:;',data-count=item.compoentCount-1,class=item.compoentCount==1?'disabled':'') -
+                                                a.decrement.js-update(href='javascript:;',data-count=item.compoentCount - 1,class=item.compoentCount == 1 ? 'disabled' : '') -
                                                 .number #{goods.compoentCount}
-                                                a.increment.js-update(href='javascript:;',data-count=item.compoentCount+1) +
+                                                a.increment.js-update(href='javascript:;',data-count=item.compoentCount + 1) +
                                     if goods.isGift
                                         li.li-4
                                             .price
@@ -72,26 +71,29 @@ if wholeItems && wholeItems.length
                         .header
                             ol
                                 li.li-1
-                                    if item.selected
-                                        input.u-checkbox(type='checkbox',checked='checked')
-                                    else
-                                        input.u-checkbox(type='checkbox')
+                                    unless item.invalid
+                                        if item.selected
+                                            input.u-checkbox(type='checkbox',checked='checked')
+                                        else
+                                            input.u-checkbox(type='checkbox')
                                 li.li-2
                                     strong #{item.pmtDesc}
                                 li.li-3
                                     .u-quantity
-                                        a.decrement.js-update(href='javascript:;',data-count=item.compoentCount-1,class=item.compoentCount==1?'disabled':'') -
+                                        a.decrement.js-update(href='javascript:;',class=item.compoentCount == 1 || item.invalid ? 'disabled' : '',data-count=item.compoentCount - 1,data-max-count=item.maxCount) -
                                         .number #{item.compoentCount}
-                                        a.increment.js-update(href='javascript:;',data-count=item.compoentCount+1) +
+                                        a.increment.js-update(href='javascript:;',class=item.invalid ? 'disabled' : '',data-count=item.compoentCount + 1) +
                                 li.li-4
                                     .delete.js-del 删除
                         .body
                             each goods in item.cartCompoents
-                                ul
+                                ul.js-jump(url='/goods/detail?inlet=6&templateId=' + goods.templateId + '&itemId=' + goods.itemId)
                                     li.li-1
                                     li.li-2
                                         .pic
                                             img(src= goods.itemPic + '@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
+                                            if goods.vipDesc
+                                                .vip 会员#{goods.vipDesc}折
                                     li.li-3
                                         h3 #{goods.itemName}
                                         p
@@ -109,7 +111,7 @@ if wholeItems && wholeItems.length
                 else
                     .item.single(class=item.invalid ? 'fail' : '',data-compoent-id=item.compoentId, data-compoent-type=item.compoentType)
                         .body
-                            ul
+                            ul.js-jump(url='/goods/detail?inlet=6&templateId=' + item.templateId + '&itemId=' + item.itemId)
                                 li.li-1
                                     if item.selected
                                         input.u-checkbox(type='checkbox',checked='checked')
@@ -118,15 +120,17 @@ if wholeItems && wholeItems.length
                                 li.li-2
                                     .pic
                                         img(src= item.itemPic + '@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
+                                        if item.vipDesc
+                                            .vip 会员#{item.vipDesc}折
                                 li.li-3
                                     h3 #{item.itemName}
                                     p
                                         each sp in item.spec
                                             | #{sp.value}&nbsp;
                                     .u-quantity(class=item.invalid ? 'disabled' : '')
-                                        a.decrement.js-update(href='javascript:;',data-count=item.compoentCount-1,class=item.compoentCount==1?'disabled':'') -
+                                        a.decrement.js-update(href='javascript:;',data-count=item.compoentCount - 1,class=item.compoentCount == 1 ? 'disabled' : '') -
                                         .number #{item.compoentCount}
-                                        a.increment.js-update(href='javascript:;',data-count=item.compoentCount+1) +
+                                        a.increment.js-update(href='javascript:;',data-count=item.compoentCount + 1) +
                                 li.li-4
                                     .price
                                         strong ￥#{formatPrice(item.pmtPrice)}

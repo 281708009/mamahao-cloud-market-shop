@@ -7,7 +7,7 @@ if rows && rows.length
                         strong #{item.consignee}
                         em #{item.phone}
                     dd #{item.prv}#{item.city}#{item.area}#{item.gpsAddr}#{item.addrDetail}
-                a.edit(href='#/address/edit/#{item.deliveryAddrId}') 编辑
+                a.edit(href='#/address/edit/' + item.deliveryAddrId) 编辑
 
     section.u-footer-button
         ul

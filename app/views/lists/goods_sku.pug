@@ -1,12 +1,12 @@
 //- 商品SKU
+include ../includes/let.pug
 .info
     .pic
-        img(src=def.itemPic + '@100w_100q.png', alt='')
+        img.sku-pic(data-original= def.itemPic + '@100w_100q.png', src= placeholderPic, alt='')
     dl
-        dt #{def.price}
-        dd
-            span "白色"
-            span "无尺寸"
+        dt.sku-price #{def.price}
+        dd.sku-desc
+
     del.js-close x
 .sku(data-sku-map=skuInfo)
     if skuView && skuView.length
@@ -16,7 +16,7 @@
                     dt #{key}
                     dd
                         each v,i in val
-                            a(class={active: i === 0}, href='javascript:;', data-value=v) #{skuMap[v]}
+                            a.sku-key(href='javascript:;', data-value=v) #{skuMap[v]}
 
 .quantity
     dl
@@ -27,4 +27,4 @@
                 .number 1
                 a.increment(href='javascript:;') +
 .button
-    button.u-btn.success.max.alone.js-close 关闭
+    button.u-btn.success.max.alone.js-sku-confirm 确定

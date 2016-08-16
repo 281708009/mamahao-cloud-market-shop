@@ -1,7 +1,6 @@
 //- 首页模板
 include ../../includes/mixin.pug
 section.m-stores.flex
-    p
     //- 如果附近门店列表返回空，那么直接显示 未开通门店空白提示页;
     if nearShopList && nearShopList.length
         .header
@@ -41,9 +40,10 @@ section.m-stores.flex
                 +storeList(nearShopList, request)
 
     else
-        .stores-null
-            img(src='http://s.mamhao.cn/m/v1/images/bg-stores-null.png')
-            p 当前城市暂未开通实体店，敬请期待
+        .u-null-all.m-stores-null
+            .null
+                img(src='http://s.mamhao.cn/m/v1/images/bg-stores-null.png')
+                p 当前城市暂未开通实体店，敬请期待
 
 // 门店服务标签弹出层;
 section.u-fixed.bottom.u-stores-service

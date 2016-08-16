@@ -51,21 +51,7 @@ define(function (require, exports, module) {
 
                     //与localStorage数据合并
                     var params = $.extend(JSON.parse(localStorage.getItem(CONST.local_search_params)), hashParams);
-
-                    //获取地理位置信息
-                    require.async('app/location', function (obj) {
-                        new obj().getLocation({
-                            success: function (res) {
-                                params.lat = res.lat;
-                                params.lng = res.lng;
-                                params.areaId = res.areaId;
-                                page.renderModule('goods_list', callback, params);
-                            },
-                            fail: function () {
-                                page.renderModule('goods_list', callback, params);
-                            }
-                        });
-                    });
+                    page.renderModule('goods_list', callback, params);
                 },
                 bind: function () {
                     require.async('app/goods_list', function (page) {
