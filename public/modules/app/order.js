@@ -134,6 +134,69 @@ define(function(require, exports, module) {
                 this.hide();
             });
         });
+
+        $this.on('click','.refund-explain',function(){
+            M.dialog({
+                body: '如需退换货请您下载并登录“妈妈好APP"申请', buttons: [{
+                    "text": "我知道了", "class": "", "onClick": function () {
+                        this.hide();
+                    }
+                }, {
+                    "text": "下载APP", "class": "success", "onClick": function () {
+                        this.hide();
+                        location.href='http://app.mamahao.com'
+                    }
+                }]
+            })
+        });
+        // 提交再次购买请求
+        var rebuy = function(goodsList){
+            var local_cartId = localStorage.getItem(CONST.local_cartId);   //本地购物车ID
+            var local_location = localStorage.getItem(CONST.local_location); //本地存储的位置信息
+            var params = {
+                areaId: local_location.areaId,
+                cartId: local_cartId,
+                jsonTerm: JSON.stringify(goodsList),
+                pmtType: 0
+            };
+            console.log(params);
+            M.ajax({
+                url: '/api/addToCart',
+                data: {data: JSON.stringify(params)},
+                success: function (res) {
+                    if (res.success_code == 200) {
+                        localStorage.setItem(CONST.local_cartId, res.cartId);  //更新本地购物车ID
+                        //location.href = '/cart'
+                    }
+                }
+            });
+        }
+        // 再次购买选择页 点击确定
+        $this.on('click','.js-rebuy',function(){
+            var goodsArr = [];
+            $('.js-goods').each(function(){
+                if($(this).find(':checked').length){
+                    var goods = $(this).data('infos');
+                    goods.count = 1;
+                    goods.isBindShop = false;
+                    goodsArr.push(goods);
+                }
+            });
+            rebuy(goodsArr);
+        })
+
+        // 订单详情页 点击单个商品的'再次购买'
+        $this.on('click','.js-single-rebuy',function(){
+            var goodsArr = [];
+            var $goods = $(this).closest('.js-goods')
+            var goods = $goods.data('infos');
+            goods.count = 1;
+            goods.isBindShop = false;
+            goodsArr.push(goods);
+            rebuy(goodsArr);
+        })
+
+
     };
 
 

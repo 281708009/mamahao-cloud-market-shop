@@ -50,6 +50,20 @@ var order = {
             }
         });
     },
+    /* 再次购买 */
+    orderRebuy: function (req, res, next) {
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        HttpClient.request(arguments, {
+            url: API.orderDetail,
+            data: params,
+            success: function (data) {
+                var json = data;
+                res.render('order/rebuy', json, function (err, html) {
+                    res.json({template: html});
+                });
+            }
+        });
+    },
     /* 订单物流详情 */
     orderExpress: function (req, res, next) {
         var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;

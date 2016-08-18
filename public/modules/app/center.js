@@ -22,7 +22,8 @@ define(function (require, exports, module) {
                 integral: "/api/integral",
                 orderExpress: "/api/order_express",
                 orderReview: "/api/order_review",
-                orderReviewDetail:"/api/order_review_detail"
+                orderReviewDetail:"/api/order_review_detail",
+                orderRebuy:"/api/order_rebuy"
             }
         },
         init: function () {
@@ -76,6 +77,21 @@ define(function (require, exports, module) {
                     this.params.queryType && (this.params.queryType = +this.params.queryType);
                     var params = this.params;
                     page.renderModule('orderDetail', callback, params);
+                },
+                bind: function () {
+                    var $module = $(this);
+                    require.async('app/order', function (func) {
+                        new func(page, $module).render();
+                    });
+                }
+            };
+            /* 再次购买 */
+            var order_rebuy = {
+                url:'/order/rebuy/:orderNo/:queryType?',
+                render: function (callback) {
+                    this.params.queryType && (this.params.queryType = +this.params.queryType);
+                    var params = this.params;
+                    page.renderModule('orderRebuy', callback, params);
                 },
                 bind: function () {
                     var $module = $(this);
@@ -165,10 +181,12 @@ define(function (require, exports, module) {
 
             /*地址列表*/
             var address = {
-                url: '/address',
+                url: '/address/:params?',
                 className: 'm-address',
                 render: function (callback) {
-                    page.renderModule('address', callback);
+                    //hash值后的url参数
+                    var hashParams = M.url.getParams(this.params.params);  //json params
+                    page.renderModule('address', callback, hashParams);
                 },
                 bind: function () {
                     var $spa = $("#app"), $module = $(this);
@@ -338,6 +356,7 @@ define(function (require, exports, module) {
                 .push(order_review)
                 .push(order_review_detail)
                 .push(order_result)
+                .push(order_rebuy)
                 .setDefault('/').init();
         },
         /*拼接地址表单数据*/

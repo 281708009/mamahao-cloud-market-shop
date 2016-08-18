@@ -149,10 +149,10 @@ define(function (require, exports, module) {
 
 
                 //是否需要地理位置
-                if (typeof params.location === 'boolean' && !params.location) {
-                    doAjax();
-                } else {
+                if (params.location) {
                     $.when(getLocation()).always(doAjax);//Deferred
+                } else {
+                    doAjax();
                 }
 
 
@@ -954,7 +954,78 @@ define(function (require, exports, module) {
     })(window.jQuery);
 
 
+    /*=================================
+     * 数据加减控件
+     * 使用方式： $('.u-quantity .number').spinner();
+     * by xqs 160817
+     *==================================
+     * */
+    ;
+    (function ($) {
+        $.fn.spinner = function (opts) {
+            return this.each(function () {
+                var defaults = {
+                    value: 1,                       //默认值
+                    min: 1,                         //最小值
+                    num: '.number',                //数字对象
+                    decrement: '.decrement',     //减按钮对象
+                    increment: '.increment',     //加按钮对象
+                    disabled: 'disabled',       //禁用按钮class
+                };
+                var options = $.extend({}, defaults, opts || {});
+
+                var $this = $(this),
+                    $decrement = $(this).siblings(options.decrement),
+                    $increment = $(this).siblings(options.increment);
+
+                //初始化
+                calcInit();
+
+                //初始化计数器
+                function calcInit() {
+                    //赋值
+                    !$this.text() && $this.text(options.value);
+
+                    //绑定事件
+                    $this.siblings(options.decrement + ',' + options.increment).on('click', calc);
+                }
+
+                //计算逻辑
+                function calc() {
+                    var $that = $(this), $num = $that.siblings(options.num);
+
+                    if ($that.hasClass(options.disabled)) return false;
+
+                    var count = +$num.text(),
+                        maxCount = +$num.data('max'),
+                        minCount = +($num.data('min') || options.min);
+
+                    if ($that.is(options.decrement)) --count;
+                    else  ++count;
+
+                    if (!isNaN(minCount) && count <= minCount) {
+                        $decrement.addClass(options.disabled);
+                        count = minCount;
+                    } else {
+                        $decrement.removeClass(options.disabled);
+                    }
+
+                    if (!isNaN(maxCount) && count >= maxCount) {
+                        count = maxCount;
+                        $increment.addClass(options.disabled);
+                    } else {
+                        $increment.removeClass(options.disabled);
+                    }
+
+                    $num.text(count);
+
+                }
+            })
+        };
+
+    })(window.jQuery);
+
+
 });
 
-;
 

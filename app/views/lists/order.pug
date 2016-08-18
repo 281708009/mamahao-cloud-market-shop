@@ -65,7 +65,7 @@ each order, index in rows
                                 a.u-btn(href='#/order/express/' + order.orderNo) 查看物流
                         if(order.allowBuy)
                             li
-                                button.u-btn.checked 再次购买
+                                a.u-btn.checked(href='#/order/rebuy/' + order.orderNo + '/' + (request.queryType ? request.queryType : '')) 再次购买
                     when 1
                         li
                             button.u-btn.js-btn-del 删除订单

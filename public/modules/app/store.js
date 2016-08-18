@@ -10,7 +10,9 @@ define(function (require, exports, module) {
                 detail: '/api/storeDetail',
                 myServerStore: '/api/myServerStore',
                 myShowStore: '/api/myShowStore',
-                myAddress: '/api/myAddress'
+                myAddress: '/api/myAddress',
+                addCollect: '/api/addCollect',
+                delCollect: '/api/delCollect'
             }
         },
         info: {},
@@ -120,7 +122,22 @@ define(function (require, exports, module) {
                     var $module = $(this), o = page.info;
                     //console.log();
                     // 关注门店;
-                    
+                    o.collect = $(".js-collect");
+                    o.collect.on("click", ".u-btn", function () {
+                        var thas = $(this), data = {
+                            collectid: o.collect.data("collectid"), // 收藏id;
+                            collectItemId: o.collect.data("id"), // 门店id;
+                            collectType: 3 // 类型 1_商品2_品牌3_门店
+                        };
+                        if(thas.hasClass("active")){
+                            // 已关注;
+                            data.status = 1;
+                        }else{
+                            // 未关注;
+                            data.status = 0;
+                        }
+                        page.setCollect(data);
+                    });
                     // 点击查看服务详情;
                     page.setService($module);
                     // 展开显示更多详情;
@@ -302,6 +319,43 @@ define(function (require, exports, module) {
                     console.log(res);
                 }
             });
+        },
+        // 设置门店关注;
+        setCollect: function (params) {
+            var o = page.info;
+            if(params.status){
+                // 取消关注门店;
+                var data = JSON.stringify($.extend({}, {
+                    collectIds: params.collectid
+                }));
+                M.ajax({
+                    url: page.config.api['delCollect'],
+                    data: {data: data},
+                    success:function(res){
+                        if(res.success_code == 200){
+                            o.collect.find(".u-btn").removeClass("active").addClass("success").html("+ 关注");
+                        }
+                        M.tips(res.msg);
+                    }
+                });
+            }else{
+                // 关注门店;
+                var data = JSON.stringify($.extend({}, {
+                    collectType: params.collectType,
+                    collectItemId: params.collectItemId
+                }));
+                M.ajax({
+                    url: page.config.api['addCollect'],
+                    data: {data: data},
+                    success:function(res){
+                        if(res.success_code == 200){
+                            o.collect.data("collectid", res.data.collectId).find(".u-btn").removeClass("success").addClass("active").html("已关注");
+                        }
+                        M.tips(res.msg);
+                    }
+                });
+            }
+
         }
         
     };

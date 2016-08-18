@@ -36,6 +36,8 @@ router
     .post("/api/myServerStore", storeCtrl.myServerStore)
     .post("/api/myShowStore", storeCtrl.myShowStore)
     .post("/api/myAddress", storeCtrl.myAddress)
+    .post("/api/addCollect", storeCtrl.addCollect)
+    .post("/api/delCollect", storeCtrl.delCollect)
     .all("/store/assess/:shopId", storeCtrl.storeAssess)
 ;
 
@@ -125,6 +127,7 @@ router
     .post('/api/order_review_detail', orderCtrl.orderReviewDetail)
     .post('/api/order_result', orderCtrl.orderResult)
     .post('/api/order/:option', orderCtrl.orderOption)
+    .post('/api/order_rebuy',orderCtrl.orderRebuy)
 ;
 
 

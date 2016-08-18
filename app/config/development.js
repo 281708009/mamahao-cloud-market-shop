@@ -15,7 +15,7 @@ module.exports = {
             // 测试环境
             // host : "172.28.1.107",
             // port: "8080",
-            // root: "/mamahao-app-api",
+            // root: "/mamahao-app-api/",
             // 测试环境
             host : "api.mamhao.com",
             port: "80",

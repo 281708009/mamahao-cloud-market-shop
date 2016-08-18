@@ -185,13 +185,10 @@ var task = {
     },
 
     "settlement":{
-        common:{
-            api: API.settlement,
-            pug: '/cart/settlement.pug',
-        },
+        common:{},
         module: [
             {
-                selector: ".m-pay-coupon .list",
+                selector: ".more-coupon",
                 api: API.usefulCoupon,
                 pug: '/cart/coupon.pug',
             }

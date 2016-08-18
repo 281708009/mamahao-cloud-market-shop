@@ -2,6 +2,7 @@ define(function (require, exports, module) {
 
     module.exports = function (api_url, callback, params) {
         M.ajax({
+            location: true,  //获取地理位置作为参数
             loadingDelay: typeof callback.loadingDelay === 'number' ? callback.loadingDelay : 300,
             url: api_url,
             data: params ? {data: JSON.stringify(params)} : {},

@@ -13,10 +13,10 @@ include ../../includes/let.pug
                 em 集团自营
                 span #{collect.count}人关注
         // 未关注.success 已关注.active
-        .button
+        div.button.js-collect(data-id=basicInfo.shopId, data-collectid=collect.collectId)
             if collect.isCollect
                 button.u-btn.active 已关注
-            eles
+            else
                 button.u-btn.success + 关注
 if level
     // 评分评论信息
@@ -33,7 +33,7 @@ if level
                 em 物流 #{level.logisticsRating}分
                 span !{formatAvgRating(level.logisticsRating, level.avgLogisticsRating)}
         // 点评用户
-        a.flex-center.u-arrow.right(href='/store/assess/'+ basicInfo.shopId )
+        a.flex-center.u-arrow.right(href='/store/assess/'+ basicInfo.shopId)
             ul.people
                 each people, i in comment.people
                     li

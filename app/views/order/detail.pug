@@ -53,7 +53,7 @@ section.m-order-detail
                 else
                     .header 妈妈好平台
                 each goods in item.goodsList
-                    .content
+                    .content.js-goods(data-infos={itemId:goods.itemId,templateId:goods.templateId,shopId:item.shopId,companyId:item.companyId})
                         .pic
                             img(src=goods.itemPic)
                         figure
@@ -71,6 +71,9 @@ section.m-order-detail
                                     if goods.oPrice && goods.oPrice != goods.itemPrice
                                         del ￥#{formatPrice(goods.oPrice)}
                             dd x#{goods.quantity}
+                            if goods.allowBuy
+                                dd
+                                    button.u-btn.checked.js-single-rebuy 再次购买
                             //- if(detail.allowRefund && !goods.isRefunded)
                                 dd
                                     button.u-btn 退款退货
@@ -116,20 +119,23 @@ section.m-order-detail
                         em 已删除
                     when 9
                         em 退款退货
-            li 订单来源:
+            li 订单来源：#{detail.pickShopName}
     // 底导
     footer.footer
         if detail.orderStatus == 3 && detail.failureMillisecond <= 0
             dl
                 dt
                     time 订单已失效，请重新生成。
-        else if detail.allowRefund
+        else
             dl
-                dt
-                    em 退款/退货说明
+                if detail.allowRefund
+                    dt.refund-explain
+                        em 退款/退货说明
                 dd
                 case detail.orderStatus
                     when 0
+                        unless detail.deliveryId == 2
+                            a.u-btn(href='#/order/express/' + detail.orderNo) 查看物流
                     when 1
                         button.u-btn.js-btn-del 删除订单
                     when 2
@@ -152,5 +158,5 @@ section.m-order-detail
                     default
                         | &nbsp;
                 if detail.allowBuy
-                    button.u-btn.success 再次购买
+                    a.u-btn.success(href='#/order/rebuy/' + detail.orderNo) 再次购买
         .f-space

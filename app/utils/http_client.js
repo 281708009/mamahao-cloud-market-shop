@@ -94,6 +94,7 @@ var HttpClient = {
                         res.render('error', errorInfo);
                     }
                 } else {
+                    info.request = options.form;  //请求参数返回
                     params.success && params.success.call(this, info);
                 }
             } else {

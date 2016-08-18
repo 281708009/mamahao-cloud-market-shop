@@ -171,6 +171,30 @@ var store = {
                 });
             }
         });
+    },
+    // 收藏门店
+    addCollect: function (req, res, next) {
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;.
+        //console.log(params);
+        HttpClient.request(arguments, {
+            url: API.addMemberCollect,
+            data: params,
+            success: function (data) {
+                res.json(data);
+            }
+        });
+    },
+    // 取消收藏门店
+    delCollect: function (req, res, next) {
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;.
+        //console.log(params);
+        HttpClient.request(arguments, {
+            url: API.deleteMemberCollect,
+            data: params,
+            success: function (data) {
+                res.json(data);
+            }
+        });
     }
 
 };

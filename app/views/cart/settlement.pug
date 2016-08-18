@@ -3,8 +3,6 @@ block content
     include ../includes/let.pug
     include ../includes/mixin.pug
     section.m-pay#settlement
-        input(type='hidden',name='orderNo',value=orderNo)
-        input(type='hidden',name='deliveryAddrId',value=deliveryAddr ? deliveryAddr.deliveryAddrId : '')
         if stockOut
             if stockOut == -10001
                 script(type='text/javascript').
@@ -23,7 +21,7 @@ block content
             else if stockOut == -10002
                 script(type='text/javascript').
                     M.dialog({
-                        body: '商品在该区域暂时缺货', buttons: [{
+                        body: '您选购的以下商品缺货', buttons: [{
                             "text": "找相似商品", "class": "", "onClick": function () {
                                 location.href = '/'
                             }
@@ -35,6 +33,8 @@ block content
                         }]
                     });
         else
+            input(type='hidden',name='orderNo',value=orderNo)
+            input(type='hidden',name='deliveryAddrId',value=deliveryAddr ? deliveryAddr.deliveryAddrId : '')
             if notice
                 .u-alert
                     p #{notice}
@@ -121,29 +121,29 @@ block content
                         li#mbean
                             p 可用
                                 span #{useCouponlimit.mbeanMaxLimit}
-                                input(type='tel', value=useCouponlimit.mbeanMaxLimit, data-max=useCouponlimit.mbeanMaxLimit, data-ratio=ratio.mbeanRatio)
+                                input(type='tel', name='mbean',value=useCouponlimit.mbeanMaxLimit, data-max=useCouponlimit.mbeanMaxLimit, data-ratio=ratio.mbeanRatio)
                                 | 妈豆，抵
-                                em.js-point-discount-display(data-max=useCouponlimit.mbeanMaxLimit / ratio.mbeanRatio) ￥#{formatPrice(useCouponlimit.mbeanMaxLimit / ratio.mbeanRatio)}
+                                em ￥#{formatPrice(useCouponlimit.mbeanMaxLimit / ratio.mbeanRatio)}
                             label
                                 input.u-switch(type='checkbox')
                     if useCouponlimit.gbMaxLimit > 0
                         li#gbPoint
                             p 可用
                                 span #{useCouponlimit.gbMaxLimit}
-                                input(type='tel', value=useCouponlimit.gbMaxLimit, data-max=useCouponlimit.gbMaxLimit, data-ratio=ratio.gbRatio)
+                                input(type='tel', name='gbCount',value=useCouponlimit.gbMaxLimit, data-max=useCouponlimit.gbMaxLimit, data-ratio=ratio.gbRatio)
                                 | GB积分，抵
-                                em.js-point-discount-display(data-max=useCouponlimit.gbMaxLimit / ratio.gbRatio) ￥#{formatPrice(useCouponlimit.gbMaxLimit / ratio.gbRatio)}
+                                em ￥#{formatPrice(useCouponlimit.gbMaxLimit / ratio.gbRatio)}
                             label
                                 input.u-switch(type='checkbox')
                     if useCouponlimit.mcMaxLimit > 0
                         li#mcPoint
                             p 可用
                                 span #{useCouponlimit.mcMaxLimit}
-                                input(type='tel', value=useCouponlimit.mcMaxLimit, data-min=100, data-max=useCouponlimit.mcMaxLimit, data-ratio=ratio.mcRatio)
+                                input(type='tel', name='mcCount', value=useCouponlimit.mcMaxLimit, data-max=useCouponlimit.mcMaxLimit, data-ratio=ratio.mcRatio)
                                 | MC积分，抵
-                                em.js-point-discount-display(data-max=useCouponlimit.mcMaxLimit / ratio.mcRatio) ￥#{formatPrice(useCouponlimit.mcMaxLimit / ratio.mcRatio)}
+                                em ￥#{formatPrice(useCouponlimit.mcMaxLimit / ratio.mcRatio)}
                             label
-                                input.u-switch(type='checkbox')
+                                input.u-switch(type='checkbox',chekced='')
             //- 结算金额明细
             ul.total
                 each money in price
@@ -175,104 +175,107 @@ block content
                         em.js-finalPrice ￥#{formatPrice(payPrice + mailPrice)}
                     button.u-btn.success.js-pay 去付款
             .f-space
-    // 配送方式选择弹出层
-    section.u-fixed.bottom.m-pay-courier#delivery-ways
-        .mask
-        .content
-            each item in data
-                .item.js-delivery-item(data-id=item.shopId ? item.shopId : item.warehouseId,data-type=item.shopId ? 1 : 2)
-                    dl.header.flex-center
-                        if item.shopId
-                            dt.flex #{item.shopName}
-                                span 集团自营
-                        else
-                            dt.flex 妈妈好
-                    if item.goodsList.length > 1
-                        .content.ditto.flex-box
-                            ul.pic
-                                each goods in item.goodsList
-                                    li
-                                        img(src=goods.itemPic + '@1e_400w_400h_0c_0i_0o_100q_1x.jpg')
-                            .number
-                                em 共#{item.goodsList.length}件
-                    else
-                        - var goods = item.goodsList[0]
-                        .content.flex-box
-                            ul.pic
-                                li
-                                    img(src=goods.itemPic + '@1e_400w_400h_0c_0i_0o_100q_1x.jpg')
-                            dl
-                                dt #{goods.itemName}
-                                dd
-                                    each sp in goods.spec
-                                        | #{sp.value}&nbsp;
-                            .money
-                                strong #{goods.itemPrice}
-                                    //-del #{goods.oPrice}
-                                p x#{goods.quantity}
-                    .footer
-                        dl.courier
-                            dt 配送方式
-                            dd
-                                each de in item.delivery
-                                    if (item.shopId && de.id == 1) || !item.shopId
-                                        button.u-btn.mini.js-btn-delivery.checked(data-type=de.id) #{de.name}
-                                    else
-                                        button.u-btn.mini.js-btn-delivery(data-type=de.id) #{de.name}
 
-                        each de in item.delivery
-                            case de.id
-                                when 1
-                                    .tip.js-tips(for=1) 预计将在今天#{de.deliveryTime.arriveTime}前送达
-                                when 2
-                                    .take.js-tips(for=2)
-                                        strong 自提地点：
-                                        p #{de.shopInfo.addr}
-                                        strong 时间：
-                                        p 工作日：#{de.shopInfo.workTime}<br>节假日：#{de.shopInfo.holiday}
-                                when 3
-                                    .tip.js-tips(for=3) 预计将在今天#{de.deliveryTime.arriveTime}前发货
-            section.u-footer-button
-                ul
-                    li
-                        button.u-btn.max.alone.js-cancel 取消
-                    li
-                        button.u-btn.max.success.alone.js-ok 确定
-                .f-space
-    if coupon
-        // 优惠券选择弹出层
-        section.u-fixed.bottom.m-pay-coupon#coupon
+    unless stockOut
+        // 配送方式选择弹出层
+        section.u-fixed.bottom.m-pay-courier#delivery-ways
             .mask
             .content
-                h3 选择优惠券
-                .list
-                    label.item.js-coupon-item(data-id=coupon.discountList[0].voucherId,data-discount=coupon.discount)
-                        .flex-center
-                            input.u-radio(type='radio',name='coupon',checked='checked',value=coupon.discountList[0].voucherId)
-                        dl
-                            dt
-                                strong
-                                    sub ￥
-                                    | #{coupon.discount}
-                                p
-                                    em 推荐
-                            dd
-                                p #{coupon.discountList[0].voucherDes}
-                    //label.item
-                        .flex-center
-                            input.u-radio(type='radio',name='coupon')
-                        dl
-                            dt
-                                strong
-                                    sub ￥
-                                    | 20
-                                p 满300元可用
-                            dd
-                                p 适用范围：全场通用优惠劵
-                    label.item.js-coupon-item
-                        .flex-center
-                            input.u-radio(type='radio',name='coupon')
-                        .not 不使用优惠券
+                each item in data
+                    .item.js-delivery-item(data-id=item.shopId ? item.shopId : item.warehouseId,data-type=item.shopId ? 1 : 2)
+                        dl.header.flex-center
+                            if item.shopId
+                                dt.flex #{item.shopName}
+                                    span 集团自营
+                            else
+                                dt.flex 妈妈好
+                        if item.goodsList.length > 1
+                            .content.ditto.flex-box
+                                ul.pic
+                                    each goods in item.goodsList
+                                        li
+                                            img(src=goods.itemPic + '@1e_400w_400h_0c_0i_0o_100q_1x.jpg')
+                                .number
+                                    em 共#{item.goodsList.length}件
+                        else
+                            - var goods = item.goodsList[0]
+                            .content.flex-box
+                                ul.pic
+                                    li
+                                        img(src=goods.itemPic + '@1e_400w_400h_0c_0i_0o_100q_1x.jpg')
+                                dl
+                                    dt #{goods.itemName}
+                                    dd
+                                        each sp in goods.spec
+                                            | #{sp.value}&nbsp;
+                                .money
+                                    strong #{goods.itemPrice}
+                                        //-del #{goods.oPrice}
+                                    p x#{goods.quantity}
+                        .footer
+                            dl.courier
+                                dt 配送方式
+                                dd
+                                    each de in item.delivery
+                                        if (item.shopId && de.id == 1) || !item.shopId
+                                            button.u-btn.mini.js-btn-delivery.checked(data-type=de.id) #{de.name}
+                                        else
+                                            button.u-btn.mini.js-btn-delivery(data-type=de.id) #{de.name}
 
-                .footer
-                    button.u-btn.success.max.alone.js-cancel 关闭
+                            each de in item.delivery
+                                case de.id
+                                    when 1
+                                        .tip.js-tips(for=1) 预计将在今天#{de.deliveryTime.arriveTime}前送达
+                                    when 2
+                                        .take.js-tips(for=2)
+                                            strong 自提地点：
+                                            p #{de.shopInfo.addr}
+                                            strong 时间：
+                                            p 工作日：#{de.shopInfo.workTime}<br>节假日：#{de.shopInfo.holiday}
+                                    when 3
+                                        .tip.js-tips(for=3) 预计将在今天#{de.deliveryTime.arriveTime}前发货
+                section.u-footer-button
+                    ul
+                        li
+                            button.u-btn.max.alone.js-cancel 取消
+                        li
+                            button.u-btn.max.success.alone.js-ok 确定
+                    .f-space
+    unless stockOut
+        if coupon
+            // 优惠券选择弹出层
+            section.u-fixed.bottom.m-pay-coupon#coupon
+                .mask
+                .content
+                    h3 选择优惠券
+                    .list
+                        label.item.js-coupon-item(data-id=coupon.discountList[0].voucherId,data-discount=coupon.discount)
+                            .flex-center
+                                input.u-radio(type='radio',name='coupon',checked='checked',value=coupon.discountList[0].voucherId)
+                            dl
+                                dt
+                                    strong
+                                        sub ￥
+                                        | #{coupon.discount}
+                                    p
+                                        em 推荐
+                                dd
+                                    p #{coupon.discountList[0].voucherDes}
+                        //label.item
+                            .flex-center
+                                input.u-radio(type='radio',name='coupon')
+                            dl
+                                dt
+                                    strong
+                                        sub ￥
+                                        | 20
+                                    p 满300元可用
+                                dd
+                                    p 适用范围：全场通用优惠劵
+                        label.item.js-coupon-item
+                            .flex-center
+                                input.u-radio(type='radio',name='coupon')
+                            .not 不使用优惠券
+
+                    .footer
+                        button.u-btn.success.max.alone.js-cancel 关闭

@@ -1,0 +1,20 @@
+// -再次购买商品选择页
+section.m-order-select
+    ul.list
+        each item in data
+            each goods in item.goodsList
+                li.js-goods(data-infos={itemId:goods.itemId,templateId:goods.templateId,shopId:item.shopId,companyId:item.companyId})
+                    .pic
+                        img(src=goods.itemPic + '@1e_400w_400h_0c_0i_0o_100q_1x.jpg')
+                    figure
+                        figcaption #{goods.itemName}
+                        p
+                            each sp in goods.spec
+                                | #{sp.value}&nbsp;
+                    .tools
+                        input.u-checkbox(type='checkbox',checked='checked')
+
+    footer.footer
+        .btn
+            button.u-btn.mini.success.js-rebuy 确定
+        f-space

@@ -5,6 +5,8 @@ var HttpClient = require("../utils/http_client");
 var API = require('../config/api');
 var Thenjs = require('thenjs');
 var request = require('request');
+var bigPipe = require("../utils/bigPipe"),
+    bigPipeTask = require('../config/bigPipeTask');
 var cart = {
     index: function (req, res, next) {
         res.render("cart/index");
@@ -59,6 +61,8 @@ var cart = {
                 }
             });
         }).then(function (cont, arg) {
+
+
             var data = {inlet: 1, stockTip: 1};
             if (arg && arg.deliveryAddrId) {
                 data.deliveryAddrId = arg.deliveryAddrId;
@@ -66,6 +70,7 @@ var cart = {
             if (arg && arg.areaId) {
                 data.areaId = arg.areaId;
             }
+
             HttpClient.request(args, {
                 url: API.settlement,
                 data: data,
@@ -74,15 +79,22 @@ var cart = {
                     if (arg && arg.deliveryAddrId) {
                         json = $.extend(data, {deliveryAddr: arg});
                     }
-                    res.render('cart/settlement', json, function (err, html) {
-                        res.json({template: html});
-                    });
 
-                    if(json.coupon){
-                        // 请求其他优惠券,返回有的话需要显示
-                    }
+                    var task = bigPipeTask.settlement;
+                    task.common.data = {orderNo : json.orderNo};
+                    new bigPipe(task, args);
+                    bigPipe.prototype.succeed = function () {
+                        var me = this;
+                        res.render('cart/settlement', json, function (err, html) {
+                            console.log(err)
+                            var template = html + me.scripts.join('');
+                            res.json({template: template});
+                        });
+                    };
+
                 }
             });
+
         }, function (cont, err) {
             console.log(err)
         })
@@ -143,7 +155,7 @@ var cart = {
             success: function (data) {
                 //data.openid = params.openid;
                 console.log('支付响应结果----------', data);
-                res.render('cart/pay', data);
+                res.json(data);
             }
         });
         /*Thenjs(function (cont) {

@@ -71,17 +71,21 @@ define(function (require, exports, module) {
         var deliveryWays = $this.find('.js-delivery').data('delivery'),
             $deliveryAddrId = $this.find('[name="deliveryAddrId"]'),
             $vouchers = $this.find('.js-vouchers'),
+            $mbean = $('.open input[name="mbean"]'),
+            $gbCount = $('.open input[name="gbCount"]'),
+            $mcCount = $('.open input[name="mcCount"]'),
+
             data = {
                 orderBatchNo: $this.find('[name="orderNo"]').val(),
                 dealingType: 1,      // 支付方式 1 线上支付 2 线下支付
-                madouCount: 0,       // 妈豆数
-                gbCount: 0,          // gb积分
-                mothercareCount: 0,  // mc积分
+                madouCount: $mbean.length ? +$mbean.val() : 0,       // 妈豆数
+                gbCount: $gbCount.length ? +$mbean.val() : 0,          // gb积分
+                mothercareCount: $mcCount.length ? +$mbean.val() : 0,  // mc积分
                 deliveryAddrId: $deliveryAddrId.length ? $deliveryAddrId.val() : '', // 收货地址id
                 deliveryWays: JSON.stringify(deliveryWays),    // 配送方式
             };
         if ($vouchers.length && $vouchers.data('ids')) {
-            data.vouchers = $vouchers.data('ids');    // 优惠券ids
+            data.vouchers = '' + $vouchers.data('ids');    // 优惠券ids
         }
         return data;
     };
@@ -214,12 +218,12 @@ define(function (require, exports, module) {
             if (!data.orderBatchNo) {
                 return alert('请填写收货地址');
             }
-            return console.log('支付提交数据--------', data);
+            console.log('支付提交数据--------', data);
             M.ajax({
                 url: '/api/pay',
                 data: {data: data},
                 success: function (res) {
-                    $spa.html(res.template);
+                    console.log(res);
                 }
             });
 

@@ -7,9 +7,6 @@ define(function (require, exports, module) {
 
     'use strict';
 
-    //分隔符
-    var DELIMITER = 'b';
-
     //按钮样式class
     var className = {
         sku: 'sku-key',
@@ -18,17 +15,25 @@ define(function (require, exports, module) {
     };
 
     //sku对象
-    var sku = {};
+    var sku = {
+        delimiter: 'b',      //分隔符
+        initialized: false  //是否初始化标识
+    };
 
     //sku结果集
     var skuMap = {};
 
 
     //初始化，组合新的结果集
-    sku.init = function (data) {
+    sku.init = function (container) {
+
+        if (sku.initialized) return false;
 
         console.time('skuInit time');
 
+        sku.container = $(container);  //存储skuData的外容器
+
+        var data = $(container).data('sku-map');
         if (!data) return;
         //console.log(JSON.stringify(data))
 
@@ -41,7 +46,7 @@ define(function (require, exports, module) {
 
         //转换成数组后，排列组合计算出所有的可能，存储在skuMap中
         $.each(skuKeys, function (i, v) {
-            var keyArr = v.split(DELIMITER).sort(function (a, b) {
+            var keyArr = v.split(sku.delimiter).sort(function (a, b) {
                     return parseInt(a) - parseInt(b);
                 }),
                 combArr = sku.combineArr(keyArr);
@@ -62,12 +67,14 @@ define(function (require, exports, module) {
             });
 
             //已有的skuMap中的信息存储到skuMap中,替换原有的key
-            skuMap[keyArr.join(DELIMITER)] = $.extend(null, {
+            skuMap[keyArr.join(sku.delimiter)] = $.extend(null, {
                 count: skuInfo.count,
                 prices: [skuInfo.price]
             }, skuInfo);
 
         });
+
+        sku.initialized = true;    //初始化完成
 
         //打印一下sku字典拼装花费的时间
         console.timeEnd('skuInit time');
@@ -81,7 +88,7 @@ define(function (require, exports, module) {
             showPic = $('.sku-pic').attr('src');
 
         //未选择之前，先检查一下状态
-        $('.' + className.sku).each(function () {
+        sku.container.find('.' + className.sku).each(function () {
             //先初始化一下，看看是否所有的按钮都可选
             var $this = $(this);
             if (!skuMap[$this.data('value')]) {
@@ -89,7 +96,7 @@ define(function (require, exports, module) {
             } else {
                 $this.removeClass(className.disabled);
             }
-        }).on('click', function () {
+        }).end().off('click').on('click', '.' + className.sku, function () {
             //添加click事件
             var $this = $(this);
 
@@ -101,7 +108,7 @@ define(function (require, exports, module) {
             //已选择的sku按钮信息
             var skuSelected = sku.selected();
             if (skuSelected.keys.length) {
-                var skuSelectedKey = skuSelected.keys.join(DELIMITER);
+                var skuSelectedKey = skuSelected.keys.join(sku.delimiter);
                 //console.info('skuKey==', skuSelectedKey);
 
                 //显示价格区间及sku描述等信息
@@ -131,9 +138,9 @@ define(function (require, exports, module) {
                         return parseInt(a) - parseInt(b);
                     });
 
-                    //console.info('othersArr==', othersArr.join(DELIMITER));
+                    //console.info('othersArr==', othersArr.join(sku.delimiter));
 
-                    if (!skuMap[othersArr.join(DELIMITER)]) {
+                    if (!skuMap[othersArr.join(sku.delimiter)]) {
                         $that.addClass(className.disabled);
                     } else {
                         $that.removeClass(className.disabled);
@@ -173,7 +180,7 @@ define(function (require, exports, module) {
             index = index || 0;
             if (index == len)return;
             for (var i = index; i < len; i++) {
-                var newItem = (item ? [item, DELIMITER, arr[i]] : [item, arr[i]]).join('');
+                var newItem = (item ? [item, sku.delimiter, arr[i]] : [item, arr[i]]).join('');
                 result.push(newItem);
                 combine(newItem, ++index);
             }
@@ -200,8 +207,8 @@ define(function (require, exports, module) {
                 return $(v).text();
             });
 
-            if (skuMap[result.keys.join(DELIMITER)].itemId) {
-                result.itemId = skuMap[result.keys.join(DELIMITER)].itemId;
+            if (skuMap[result.keys.join(sku.delimiter)].itemId) {
+                result.itemId = skuMap[result.keys.join(sku.delimiter)].itemId;
             }
 
         }

@@ -21,7 +21,7 @@ var center = {
 
     /*地址列表*/
     address: function (req, res, next) {
-        //列表
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
         HttpClient.request(arguments, {
             url: API.addressList,
             success: function (data) {
@@ -116,7 +116,6 @@ var center = {
                 url: API.integral,
                 data: params,
                 success: function (data) {
-                    data.request = params;
                     res.render('lists/integral', data, function (err, html) {
                         res.json({template: html});
                     });
@@ -146,7 +145,6 @@ var center = {
                 url: API.coupons,
                 data: params,
                 success: function (data) {
-                    data.request = params;
                     res.render('lists/coupon', data, function (err, html) {
                         res.json({template: html});
                     });

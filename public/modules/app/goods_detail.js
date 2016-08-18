@@ -46,14 +46,31 @@ define(function (require, exports, module) {
 
             //加入购物车、立即购买
             $('.js-addToCart, .js-buy').on('click', function () {
+                var action = $(this).is('.js-buy') ? 'buy' : 'addToCart';
+                $('.js-sku-confirm').data('action', action);
+
                 $('.u-sku').addClass('show');
                 require.async('app/sku', function (sku) {
-                    var skuMap = $('.sku').data('sku-map');
-                    sku.init(skuMap);
+                    sku.init($('.sku'));
                 });
             });
+
             //选完sku，点击确定
-            $('.js-sku-confirm').on('click', page.addToCart);
+            $('.js-sku-confirm').on('click', function () {
+                var action = $(this).data('action');
+                switch (action) {
+                    case 'buy':
+                        page.buyNow();
+                        break;
+                    case 'addToCart':
+                        page.addToCart();
+                        break;
+                }
+            });
+
+            //改变数量控制
+            $('.u-quantity .number').spinner();
+
         },
         //添加商品到购物车
         addToCart: function () {
@@ -77,7 +94,7 @@ define(function (require, exports, module) {
                         "shopId": urlParams.shopId,
                         "templateId": urlParams.templateId,
                         "companyId": urlParams.companyId,
-                        "count": 1
+                        "count": +$('.u-sku .u-quantity .number').text()
                     }]),
                     pmtType: 0
                 };
@@ -92,6 +109,31 @@ define(function (require, exports, module) {
                         }
                     }
                 });
+            });
+        },
+        //立即购买
+        buyNow: function () {
+            //获取当前选中的sku信息
+            require.async('app/sku', function (sku) {
+                var skuInfo = sku.selected();
+
+                if (!skuInfo.itemId) {
+                    return M.tips('请选择SKU');
+                }
+
+                var c = page.config, urlParams = c.params;
+
+                var params = {
+                    inlet: 2,  //1 购物车  2 商品详情 4 麻豆尊享
+                    jsonTerm: {
+                        "itemId": skuInfo.itemId,
+                        "count": +$('.u-sku .u-quantity .number').text(),
+                        "templateId": urlParams.templateId,
+                        "isBindShop": false
+                    }
+                };
+                location.href = '/cart#/settlement/' + $.param(params);
+
             });
         }
     };
