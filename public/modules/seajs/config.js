@@ -33,7 +33,7 @@
 
         //use之前，预加载
         preload: [
-            'fastclick', 'common'
+            'common'
         ],
 
         // 调试模式
@@ -51,7 +51,8 @@
         local_search_params: 'mmh_search_params',     //搜索商品需要的参数
         local_qualityPic: 'mmh_qualityPic',  //质检担保图片
         local_cartId:'mmh_cartId',   // 购物车ID
-        local_storeAddr: 'mmh_store_address'    // 门店用户收货地址
+        local_storeAddr: 'mmh_store_address',    // 门店用户收货地址
+        local_settlement_addr: 'mmh_settlement_addr',    // 结算选择地址
     };
 
 })();

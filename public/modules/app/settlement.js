@@ -18,7 +18,16 @@ define(function (require, exports, module) {
     // 填充页面数据
     pageFunc.prototype.fillData = function (data) {
         var me = this, $this = me.container;
-        // 地址信息
+        // 地址信息 {"deliveryAddrId":27442,"addr":"浙江宁波市海曙区天宁大厦1111","consignee":"网瘾少年","phone":"15267436078","areaId":330203}
+
+        var htmlArr = [
+            '<a class="u-arrow right" href="/center#/address/f=1&amp;id=' ,data.deliveryAddrId + '">',
+            '<dl class="default"><dt><strong>',data.consignee,'</strong><em>',data.phone,'</em></dt><dd>',data.addr,
+            '</dd></dl></a>'
+        ];
+
+        $('.js-address').html(htmlArr.join(''));
+        $this.find('[name="deliveryAddrId"]').val(data.deliveryAddrId);
         // 配送方式信息
         /*var deliveryWays = data.deliveryWays;
 
@@ -38,31 +47,7 @@ define(function (require, exports, module) {
         // gb积分
         // mc积分
     };
-    // 获取页面结算显示信息
-    pageFunc.prototype.getPageData = function () {
-        var me = this, $this = me.container;
-        var deliveryAddr = $this.find('.js-address').data('addr'),
-            $vouchers = $this.find('.js-vouchers'),
-            data = {
-                orderNo: $this.find('[name="orderNo"]').val(),
-                dealingType: 1,      // 支付方式 1 线上支付 2 线下支付
-                madouCount: 0,       // 妈豆数
-                gbCount: 0,          // gb积分
-                mothercareCount: 0,  // mc积分
-                deliveryAddr: deliveryAddr ? deliveryAddr : '', // 收货地址信息
-                deliveryWays: $this.find('.js-delivery').data('delivery'),    // 配送方式
-            };
-        if ($vouchers.length) {
-            data.vouchers = {ids: $vouchers.data('ids'), discount: $vouchers.data('discount')};    // 优惠券ids
-        }
-        //deliveryAddrId: $this.find('[name="deliveryAddrId"]').val(),  // 收货地址id
-        //deliveryWays:[{
-        //"type":2,   // 1门店 2仓库
-        //"sid":2,    // 相应的id
-        //"deliveryWay":1     // 1门店配送 2上门自提 3快递配送
-        //}],    // 配送方式
-        return data;
-    };
+
     /* 获取页面结算请求数据
      * return data 支付请求参数
      * */
@@ -85,7 +70,7 @@ define(function (require, exports, module) {
                 deliveryWays: JSON.stringify(deliveryWays),    // 配送方式
             };
         if ($vouchers.length && $vouchers.data('ids')) {
-            data.vouchers = '' + $vouchers.data('ids');    // 优惠券ids
+            data.voucherIds = '' + $vouchers.data('ids');    // 优惠券ids
         }
         return data;
     };
@@ -115,17 +100,13 @@ define(function (require, exports, module) {
 
         var $this = me.container, $spa = $('.spa');
         // 获取本地结算信息
-        var localData = localStorage.getItem('mmh_settlementData');
+        var localData = localStorage.getItem(CONST.local_settlement_addr);
         if (localData) {
             localData = JSON.parse(localData);
             // 渲染页面
             me.fillData(localData);
-
+            localStorage.removeItem(CONST.local_settlement_addr);
             // 配送方式
-        } else {
-            // 获取页面结算信息,存储到本地
-            //console.log(me.getPageData());
-            localStorage.setItem('mmh_settlementData', JSON.stringify(me.getPageData()));
         }
 
         me.calcu(); // 计算优惠后最终金额
@@ -207,15 +188,21 @@ define(function (require, exports, module) {
         });
 
         //
-        $this.on('change', '.js-point input[type="tel"]', function () {
+        $this.on('input', '.js-point input[type="tel"]', function () {
             var $input = $(this);
-            $input.next().html('￥' + $input.val() / $input.data('ratio'));
+            var max = $input.data('max');
+            if($input.val() == ''){
+
+            }else if($input.val() > max || !/^[1-9]+\d*$/.test($input.val())){
+                $input.val(max);
+            }
+            $input.next().html('￥' + ($input.val() / $input.data('ratio')).toFixed(2));
             me.calcu();
         });
         // 点去付款, 跳转支付方式选择页
         $this.on('click', '.js-pay', function () {
             var data = me.getFormData();
-            if (!data.orderBatchNo) {
+            if (!data.deliveryAddrId) {
                 return alert('请填写收货地址');
             }
             console.log('支付提交数据--------', data);
@@ -223,7 +210,10 @@ define(function (require, exports, module) {
                 url: '/api/pay',
                 data: {data: data},
                 success: function (res) {
-                    console.log(res);
+                    if(res.success_code == 200){
+                        // 跳转支付方式选择页
+                        location.href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx230909e739bb72fd&redirect_uri=http://api.mamhao.com/mamahao-app-api/pay/weixin/getOpenId.htm?orderNo='+res.orderBatchNo+'&response_type=code&scope=snsapi_base&state=123456#wechat_redirect';
+                    }
                 }
             });
 

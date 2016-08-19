@@ -5,7 +5,6 @@ define(function (require, exports, module) {
             api: {
                 index: '/api/cart/',
                 settlement: '/api/settlement',
-                delivery: '/api/delivery'
             }
         },
         init: function () {
@@ -113,9 +112,16 @@ define(function (require, exports, module) {
 
             /* 结算页 */
             var settlement = {
-                url: '/settlement/:deliveryAddrId?/:areaId?',
+                url: '/settlement/:params?',
                 render: function (callback) {
-                    var params = this.params;
+                    var params = {};    //this.params;
+                    var hashParams = M.url.getParams(this.params.params);  //json params
+                    if(!$.isEmptyObject(hashParams)) {
+                        var jsonTerm = JSON.parse(hashParams.jsonTerm);
+                        params.inlet = hashParams.inlet;
+                        params.jsonTerm = jsonTerm;
+                    }
+                    console.log(params);
                     page.renderModule('settlement', callback, params);
                 },
                 bind: function () {
@@ -127,61 +133,9 @@ define(function (require, exports, module) {
                 }
             };
 
-            /* 配送方式选择页 */
-            var delivery = {
-                url: '/delivery/:deliveryAddrId?',
-                render: function (callback) {
-                    var params = this.params;
-                    page.renderModule('delivery', callback, params);
-                },
-                bind: function () {
-                    var $this = $(this), $spa = $('.spa');
-                    // 获取本地存储的配送方式 当前选中,其他置灰
-                    var settlementData = JSON.parse(localStorage.getItem('mmh_settlementData')),
-                        deliveryWays = settlementData.deliveryWays;
-
-                    $this.find('.js-item').each(function (i, ele) {
-                        var $e = $(ele);
-                        for (j = 0; j < deliveryWays.length; j++) {
-                            if (deliveryWays[j].sid == $e.data('id')) {
-                                var deliveryType = deliveryWays[j].deliveryWay;
-                                $e.find('button[data-type=' + deliveryType + ']').addClass('checked').siblings().removeClass('checked');
-                                $e.find('.js-tips[for=' + deliveryType + ']').show().siblings('.js-tips').hide();
-                                break;
-                            }
-                        }
-                    });
-
-                    $this.on('click', '.js-btn-delivery', function () {
-                        if ($(this).is('.checked')) return;
-                        var $item = $(this).closest('.js-item'),
-                            deliveryType = $(this).data('type');
-                        $item.find('button[data-type=' + deliveryType + ']').addClass('checked').siblings().removeClass('checked');
-                        $item.find('.js-tips[for=' + deliveryType + ']').slideDown().siblings('.js-tips').slideUp();
-                    });
-                    // 保存 更新本地存储 返回结算页
-                    $this.on('click', '.js-ok', function () {
-                        var ways = [];
-                        $this.find('.js-item').each(function () {
-                            var $ele = $(this), $item = $ele.closest('.js-item');
-                            ways.push({
-                                type: $item.data('type'),
-                                sid: $item.data('id'),
-                                deliveryWay: $ele.find('button.checked').data('type')
-                            });
-                        });
-                        settlementData.deliveryWays = ways;
-                        localStorage.setItem('mmh_settlementData', JSON.stringify(settlementData));
-                        //history.go(-1);
-                        location.href = '/cart#/settlement'
-
-                    });
-                }
-            };
 
             router.push(home)
                 .push(settlement)
-                .push(delivery)
                 .setDefault('/').init();
 
         },

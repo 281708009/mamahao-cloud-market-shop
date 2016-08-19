@@ -26,7 +26,8 @@ var center = {
             url: API.addressList,
             success: function (data) {
                 var json = {
-                    rows: data.data
+                    rows: data.data,
+                    request: data.request
                 };
                 res.render('users/components/address', json, function (err, html) {
                     res.json({template: html});
@@ -47,6 +48,7 @@ var center = {
                         break;
                     }
                 }
+                json.request = params;
                 res.render('users/components/address_edit', json, function (err, html) {
                     res.json({template: html});
                 });

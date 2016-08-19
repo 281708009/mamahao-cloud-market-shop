@@ -28,50 +28,48 @@ define(function (require, exports, module) {
             lat: 30.22965,
             lng: 120.192567
         };
+
     }
 
     /*微信获取经纬度*/
     Location.prototype.wxLocation = function (params) {
         var me = this, params = params || {};
 
-        /*初始化，引用微信和高德的jsAPI*/
-        require('AMap');   //加载高德sdk
-
         //不是在微信内部打开
         if (!me.isWeChat) {
 
             //判断浏览器是否支持Geoloaction（基于浏览器的定位服务）
             //https://developer.mozilla.org/zh-CN/docs/Web/API/Geolocation/Using_geolocation
-            /*if (navigator.geolocation) {
-             navigator.geolocation.getCurrentPosition(
-             //success
-             function (res) {
-             me.location.lat = res.coords.latitude;
-             me.location.lng = res.coords.longitude;
-             console.info(res.address);
-             },
-             //error
-             function (error) {
-             switch (error.code) {
-             //PERMISSION_DENIED: 1
-             case error.PERMISSION_DENIED :
-             console.warn('您拒绝了使用位置共享服务，查询已取消');
-             break;
-             //POSITION_UNAVAILABLE: 2
-             case error.POSITION_UNAVAILABLE :
-             console.warn('位置不可知');
-             break;
-             //TIMEOUT: 3
-             case error.TIMEOUT :
-             console.warn('获取信息超时');
-             break;
-             }
-             console.warn(error.message);
-             }
-             );
-             } else {
-             console.info('地理位置服务不可用');
-             }*/
+            //if (navigator.geolocation) {
+            //    navigator.geolocation.getCurrentPosition(
+            //        //success
+            //        function (res) {
+            //            me.location.lat = res.coords.latitude;
+            //            me.location.lng = res.coords.longitude;
+            //            console.info(res.address);
+            //        },
+            //        //error
+            //        function (error) {
+            //            switch (error.code) {
+            //                //PERMISSION_DENIED: 1
+            //                case error.PERMISSION_DENIED :
+            //                    console.warn('您拒绝了使用位置共享服务，查询已取消');
+            //                    break;
+            //                //POSITION_UNAVAILABLE: 2
+            //                case error.POSITION_UNAVAILABLE :
+            //                    console.warn('位置不可知');
+            //                    break;
+            //                //TIMEOUT: 3
+            //                case error.TIMEOUT :
+            //                    console.warn('获取信息超时');
+            //                    break;
+            //            }
+            //            console.warn(error.message);
+            //        }
+            //    );
+            //} else {
+            //    console.info('地理位置服务不可用');
+            //}
 
             params.success && params.success.call(me, me.location);
             return false;
@@ -114,7 +112,6 @@ define(function (require, exports, module) {
     /*搜索周边*/
     Location.prototype.searchNearBy = function (params) {
         var me = this, params = params || {};
-
         me.wxLocation({
             success: function (res) {
                 AMap.service(["AMap.PlaceSearch"], function () {
@@ -202,7 +199,7 @@ define(function (require, exports, module) {
     };
 
 
-    module.exports = Location;
+    module.exports = new Location();
 
 });
 

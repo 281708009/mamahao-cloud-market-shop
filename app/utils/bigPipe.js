@@ -86,7 +86,8 @@ bigPipe.prototype.fetch = function (item, callback) {
         data: params.data,
         success: function (result) {
             var data = me.reform(result, params);
-            //此处有坑，由于多个请求回来的数据时间顺序不一致，data中的顺序不对            me.data.push(data);
+            //此处有坑，由于多个请求回来的数据时间顺序不一致，data中的顺序不对
+            me.data.push(data);
 
             var context = (pug.renderFile(viewPath + params.pug, data) || blank).replace(/"/g, '\\"');     //内容
             var script = '<script>bigPipeRender("' + params.selector + '","' + context + '");</script>';

@@ -125,12 +125,14 @@ define(function (require, exports, module) {
 
                 var params = {
                     inlet: 2,  //1 购物车  2 商品详情 4 麻豆尊享
-                    jsonTerm: {
+                    jsonTerm: JSON.stringify({
                         "itemId": skuInfo.itemId,
-                        "count": +$('.u-sku .u-quantity .number').text(),
                         "templateId": urlParams.templateId,
-                        "isBindShop": false
-                    }
+                        "count": +$('.u-sku .u-quantity .number').text(),
+                        "shopId": urlParams.shopId,
+                        "companyId": urlParams.companyId,
+                        "isBindShop": 0
+                    })
                 };
                 location.href = '/cart#/settlement/' + $.param(params);
 

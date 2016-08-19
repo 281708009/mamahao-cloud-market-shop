@@ -1,20 +1,23 @@
 if rows && rows.length
     ul.list.flex
         each item, index in rows
-            li(class={default : item.isDefault == true})
-                dl
-                    dt
-                        strong #{item.consignee}
-                        em #{item.phone}
-                    dd #{item.prv}#{item.city}#{item.area}#{item.gpsAddr}#{item.addrDetail}
-                a.edit(href='#/address/edit/' + item.deliveryAddrId) 编辑
+            li.flex-center(class={default: item.isDefault == true})
+                label.detail.flex.flex-center(data-info=item)
+                    if request.f
+                        input.u-checkbox(type='radio',name='address',checked=request.id == item.deliveryAddrId)
+                    dl.flex
+                        dt
+                            strong #{item.consignee}
+                            em #{item.phone}
+                        dd #{item.prv}#{item.city}#{item.area}#{item.gpsAddr}#{item.addrDetail}
+                a.edit(href='#/addressEdit/' + item.deliveryAddrId + (request.f ? '/f=' + request.f : '')) 编辑
 
     section.u-footer-button
         ul
             li
-                a.u-btn.max.success.alone(href='#/address/add') + 新增收货地址
+                a.u-btn.max.success.alone(href='#/addressAdd' + (request.f ? '/f=' + request.f : '')) + 新增收货地址
 
 else
     include ../../includes/mixin.pug
     +blank('03', '您还没有添加收货地址哦~')
-        a.u-btn.checked(href='#/address/add') 添加地址
+        a.u-btn.checked(href='#/addressAdd' + (request.f ? '/f=' + request.f : '')) 添加地址

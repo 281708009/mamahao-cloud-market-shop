@@ -40,14 +40,17 @@ app.use(session({
     store: new MemcachedStore({//session存储方式
         hosts: AppConfig.memcached_session_store.hosts,
         prefix: AppConfig.memcached_session_store.prefix,
-        ttl: AppConfig.memcached_session_store.ttl
+        ttl: AppConfig.memcached_session_store.timeout,
+        retries: AppConfig.memcached_session_store.retires,
+        poolSize: AppConfig.memcached_session_store.poolSize
     }),
     name: AppConfig.session_settings.name,
     proxy: AppConfig.session_settings.proxy,
     secret: AppConfig.session_settings.secret,//用户hash加盐，cookie防篡改
     cookie: AppConfig.cookie_settings.base,//cookie设置
     resave: AppConfig.session_settings.resave,//每次请求后都延长session存活时间，默认为true
-    saveUninitialized: AppConfig.session_settings.save_uninitialized//是指无论有没有session cookie，每次请求都设置个session cookie
+    saveUninitialized: AppConfig.session_settings.save_uninitialized, //是指无论有没有session cookie，每次请求都设置个session cookie
+    rolling: AppConfig.session_settings.rolling
 }));
 /**
  * 捕获全局未捕获的error(优先级1)

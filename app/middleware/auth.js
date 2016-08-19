@@ -5,12 +5,16 @@
 //登录验证
 exports.requiredAuthentication = function (req, res, next) {
     var originalUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+    var isWeChat = /micromessenger/gi.test(req.header("user-agent"));
 
-    if (req.session.user) {
+    var user_session = req.session.user;
+
+    if (user_session && user_session.token) {
+        console.log(">>>>>>>>>>>>>>>session_id:" + req.session.id);
         next();
     } else {
-        // 是微信浏览器
-        if (/micromessenger/gi.test(req.header("user-agent"))) {
+        if (isWeChat) {
+            // 是微信浏览器
             res.redirect('/account/bind?origin=' + originalUrl);
         } else {
             req.session.error = 'Access denied!';

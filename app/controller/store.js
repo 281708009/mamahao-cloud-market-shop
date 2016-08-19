@@ -20,6 +20,12 @@ var store = {
         var data = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
         var params = $.extend({}, defaults, data);
 
+        // 本地缓存的城市与当前定位的城市是否相同;
+        var querystring = require("querystring");
+        var locationInfo = querystring.parse(req.get('location') || null);  //header中的定位信息
+        if (params.city == locationInfo.city) {
+            params.isLocal = 0;
+        }
         //来源为ajax翻页请求
         if (data.ajax) {
             params = $.extend({}, params, data);
@@ -27,7 +33,8 @@ var store = {
                 url: API.queryMemberShopIndex,
                 data: params,
                 success: function (data) {
-                    res.render("lists/store", {rows: data.nearShopList, request: params}, function (err, html) {
+                    data.rows = data.nearShopList;
+                    res.render("lists/store", data, function (err, html) {
                         console.log(err);
                         res.json({template: html});
                     });
@@ -38,7 +45,6 @@ var store = {
                 url: API.queryMemberShopIndex,
                 data: params,
                 success: function (data) {
-                    data.request = params;
                     res.render('store/components/home', data, function (err, html) {
                         res.json({template: html});
                     });

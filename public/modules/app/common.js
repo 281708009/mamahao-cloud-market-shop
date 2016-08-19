@@ -102,16 +102,14 @@ define(function (require, exports, module) {
      * */
     (function () {
         var MMH = {
-            config: {},
+            config: {
+                isAjax: {} //正在ajax的api对象
+            },
             init: function () {
-                /*FastClick 解决click事件移动端300ms延迟的问题*/
-                if ('addEventListener' in document && FastClick) {
-                    document.addEventListener('DOMContentLoaded', function () {
-                        FastClick.attach(document.body);
-                    }, false);
-                }
 
                 $(function () {
+                    /*FastClick 解决click事件移动端300ms延迟的问题*/
+                    FastClick.attach(document.body);
                     /*初始化回到顶部按钮*/
                     MMH.toTop.init();
                     /*初始化自动滑动导航条*/
@@ -140,11 +138,11 @@ define(function (require, exports, module) {
                 c.loadingDelay = typeof params.loadingDelay === 'number' ? params.loadingDelay : 300;
 
                 /*超时显示loading*/
-                if (c.isAjax) return false;
-                c.isAjax = true;  //正在ajax请求
+                if (c.isAjax[params.url]) return false;
+                c.isAjax[params.url] = true;  //正在ajax请求
                 var timer = setTimeout(function () {
                     clearTimeout(timer);
-                    c.isAjax && c.showLoading && MMH.showLoading();  //200ms之后显示loading遮罩
+                    c.isAjax[params.url] && c.showLoading && MMH.showLoading();  //200ms之后显示loading遮罩
                 }, c.loadingDelay);
 
 
@@ -159,15 +157,11 @@ define(function (require, exports, module) {
                 //处理地理位置信息
                 function getLocation() {
                     var dtd = $.Deferred();
-                    require.async('app/location', function (obj) {
-                        new obj().getLocation({
+                    require.async('app/location', function (fun) {
+                        fun.getLocation({
                             success: function (res) {
-                                var data = {
-                                    //lat: res.lat,
-                                    //lng: res.lng,
-                                    areaId: res.areaId
-                                };
-                                dtd.resolve(data);
+                                console.log(res)
+                                dtd.resolve({location: $.param(res)});
                             },
                             fail: function () {
                                 dtd.reject();
@@ -188,7 +182,7 @@ define(function (require, exports, module) {
                         timeout: 2e4,  //20s
                         success: function (res) {
                             //console.log('success', JSON.stringify(res))
-                            c.isAjax = false;
+                            c.isAjax[params.url] = false;
                             if (res.error_code) {
                                 var errorMsg = res.msg;
                                 if (params.error) {
@@ -209,7 +203,7 @@ define(function (require, exports, module) {
                         },
                         error: function (res) {
                             console.log('error--->', res)
-                            c.isAjax = false;
+                            c.isAjax[params.url] = false;
                             if (params.error) {
                                 params.error.call(this, res);
                             } else {
@@ -695,11 +689,37 @@ define(function (require, exports, module) {
                                         'onMenuShareAppMessage',
                                         'onMenuShareQQ',
                                         'onMenuShareWeibo',
+                                        'onMenuShareQZone',
                                         'hideMenuItems',
                                         'showMenuItems',
                                         'hideAllNonBaseMenuItem',
+                                        'showAllNonBaseMenuItem',
+                                        'translateVoice',
+                                        'startRecord',
+                                        'stopRecord',
+                                        'onVoiceRecordEnd',
+                                        'playVoice',
+                                        'onVoicePlayEnd',
+                                        'pauseVoice',
+                                        'stopVoice',
+                                        'uploadVoice',
+                                        'downloadVoice',
+                                        'chooseImage',
+                                        'previewImage',
+                                        'uploadImage',
+                                        'downloadImage',
+                                        'getNetworkType',
+                                        'openLocation',
                                         'getLocation',
-                                        'getNetworkType'
+                                        'hideOptionMenu',
+                                        'showOptionMenu',
+                                        'closeWindow',
+                                        'scanQRCode',
+                                        'chooseWXPay',
+                                        'openProductSpecificView',
+                                        'addCard',
+                                        'chooseCard',
+                                        'openCard'
                                     ]
                                 });
 
@@ -908,6 +928,7 @@ define(function (require, exports, module) {
                 //do ajax
                 M.ajax({
                     showLoading: false,
+                    location: true,
                     url: ajax_info.url || o.api,
                     data: {data: JSON.stringify(ajax_info)},
                     success: function (res) {

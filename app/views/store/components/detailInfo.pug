@@ -11,7 +11,9 @@ include ../../includes/let.pug
             dt #{basicInfo.shopName}
             dd
                 em 集团自营
-                span #{collect.count}人关注
+                span
+                    sub.js-collect-count #{collect.count}
+                    | 人关注
         // 未关注.success 已关注.active
         div.button.js-collect(data-id=basicInfo.shopId, data-collectid=collect.collectId)
             if collect.isCollect
@@ -46,7 +48,7 @@ if level
 // 位置服务配送信息 收起/.up
 .basic.js-store-basic.up
     dl.addr
-        dt.u-arrow.right
+        dt.u-arrow.right.js-open-location(data-basic=JSON.stringify(basicInfo))
             strong #{basicInfo.shopAddr}
             //span 4.1km 门店详情页面距离计算;
         dd

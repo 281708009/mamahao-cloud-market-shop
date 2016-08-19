@@ -4,7 +4,9 @@
  * */
 define(function(require, exports, module) {
     var page = {
-        config: {},
+        config: {
+            
+        },
         init: function () {
             page.bindEvents();
         },

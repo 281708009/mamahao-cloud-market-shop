@@ -1,6 +1,25 @@
 /*渲染首页*/
+var HttpClient = require("../utils/http_client"),
+    API = require('../config/api');
+
 exports.index = function (req, res, next) {
-    res.render("index");
+    var defaults = {
+        pageSize: 10,
+        pageNo: 1
+    };
+    var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+    params = $.extend({}, defaults, req.params, params);
+    HttpClient.request(arguments, {
+        url: API.queryMainPage,
+        data: params,
+        success: function (data) {
+            if(params.ajax){
+                console.log(data);
+            }else{
+                res.render('index', data);
+            }
+        }
+    });
 };
 
 

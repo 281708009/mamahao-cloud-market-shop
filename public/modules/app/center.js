@@ -22,8 +22,8 @@ define(function (require, exports, module) {
                 integral: "/api/integral",
                 orderExpress: "/api/order_express",
                 orderReview: "/api/order_review",
-                orderReviewDetail:"/api/order_review_detail",
-                orderRebuy:"/api/order_rebuy"
+                orderReviewDetail: "/api/order_review_detail",
+                orderRebuy: "/api/order_rebuy"
             }
         },
         init: function () {
@@ -87,7 +87,7 @@ define(function (require, exports, module) {
             };
             /* 再次购买 */
             var order_rebuy = {
-                url:'/order/rebuy/:orderNo/:queryType?',
+                url: '/order/rebuy/:orderNo/:queryType?',
                 render: function (callback) {
                     this.params.queryType && (this.params.queryType = +this.params.queryType);
                     var params = this.params;
@@ -123,7 +123,7 @@ define(function (require, exports, module) {
                     var params = this.params;
                     page.renderModule('orderReview', callback, params);
                 },
-                bind: function(){
+                bind: function () {
 
                 }
             };
@@ -134,9 +134,9 @@ define(function (require, exports, module) {
                     var params = this.params;
                     page.renderModule('orderReviewDetail', callback, params);
                 },
-                bind: function(){
+                bind: function () {
                     var $this = $(this);
-                    $this.on('click','.js-review-submit',function(){
+                    $this.on('click', '.js-review-submit', function () {
                         var data = $(this).data('params');
                         data.content = $('#reviewCtn').val();
                         data.deliverySpeedStar = +$('#deliverySpeedStar').data('star');
@@ -144,33 +144,33 @@ define(function (require, exports, module) {
                         data.star = +$('#goodsStar').data('star');
                         //return console.log(data);
                         M.ajax({
-                            url:'/api/order/reviewSubmit',
-                            data:{data:JSON.stringify(data)},
-                            success:function(res){
+                            url: '/api/order/reviewSubmit',
+                            data: {data: JSON.stringify(data)},
+                            success: function (res) {
                                 // 跳转到评价成功结果页
-                                if(res.success){
+                                if (res.success) {
                                     location.href = '/center#/order/result/' + data.templateId + '/' + data.orderNo + '/' + res.mbeanGet;
-                                }else{
+                                } else {
                                     alert(res.msg);
                                 }
                             }
                         })
                     });
 
-                    $this.on('click','.js-star li',function(){
+                    $this.on('click', '.js-star li', function () {
                         var star = $(this).text();
-                        $(this).closest('ol').prev().attr('class','star star-' + star).data('star',star);
+                        $(this).closest('ol').prev().attr('class', 'star star-' + star).data('star', star);
                     })
                 }
             };
             // 评价/确认收货成功结果页
             var order_result = {
-                url:'/order/result/:templateId/:orderNo/:mbeans?',
-                render:function(callback){
+                url: '/order/result/:templateId/:orderNo/:mbeans?',
+                render: function (callback) {
                     var params = this.params;
                     //params.mbeans = M.url.query('mbeans');
-                    console.log('params=======',params);
-                    page.renderModule('orderResult',callback, params);
+                    console.log('params=======', params);
+                    page.renderModule('orderResult', callback, params);
                 },
                 bind: function () {
                     M.lazyLoad.init({
@@ -185,24 +185,45 @@ define(function (require, exports, module) {
                 className: 'm-address',
                 render: function (callback) {
                     //hash值后的url参数
-                    var hashParams = M.url.getParams(this.params.params);  //json params
-                    page.renderModule('address', callback, hashParams);
+                    address.hashParams = M.url.getParams(this.params.params);  //json params
+                    page.renderModule('address', callback, address.hashParams);
                 },
                 bind: function () {
                     var $spa = $("#app"), $module = $(this);
                     $spa.data('data', null);
+
+                    //来源为订单，有f参数
+                    if (address.hashParams.f) {
+                        $module.on('click', '.detail', function () {
+                            var info = $(this).data('info');
+                            var localAddr = {
+                                "deliveryAddrId": info.deliveryAddrId,
+                                "addr": [info.prv, info.city, info.area, info.gpsAddr, info.addrDetail].join(''),
+                                "consignee": info.consignee,
+                                "phone": info.phone,
+                                "areaId": info.areaId,
+                                "isDefult": info.isDefault
+                            };
+                            localStorage.setItem(CONST.local_settlement_addr, JSON.stringify(localAddr));
+                            location.href = '/cart#/settlement';
+                        });
+                    }
+
                 }
             };
 
             /*新增地址*/
             var address_add = {
-                url: '/address/add',
+                url: '/addressAdd/:params?',
                 className: 'm-address-edit',
                 render: function () {
+                    //hash值后的url参数
+                    address_add.hashParams = M.url.getParams(this.params.params);  //json params
                     return $('#tpl_address_add').html();
                 },
                 bind: function () {
                     var $module = $(this);
+                    $module.data('hash-params', address_add.hashParams);
                     page.updateAddressData($module);
                     page.queryAddressArea({type: 1}); //获取省份
                     page.bindAddressEvents($module); //绑定相关事件
@@ -211,15 +232,17 @@ define(function (require, exports, module) {
 
             /*编辑地址*/
             var address_edit = {
-                url: '/address/edit/:id',
+                url: '/addressEdit/:id/:params?',
                 className: 'm-address-edit',
                 render: function (callback) {
-                    this.params.id = +this.params.id;
-                    var params = this.params;
+                    //hash值后的url参数
+                    address_edit.hashParams = M.url.getParams(this.params.params);  //json params
+                    var params = $.extend({}, {id: +this.params.id}, address_edit.hashParams);
                     page.renderModule('addressEdit', callback, params);
                 },
                 bind: function () {
                     var $module = $(this);
+                    $module.data('hash-params', address_edit.hashParams);
                     page.updateAddressData($module);
                     page.queryAddressArea({type: 1}); //获取省份
                     page.bindAddressEvents($module); //绑定相关事件
@@ -228,7 +251,7 @@ define(function (require, exports, module) {
 
             /*关键字搜索地址*/
             var address_search = {
-                url: '/address/search/:areaId',
+                url: '/addressSearch/:areaId',
                 className: 'm-address-search',
                 render: function () {
                     this.params.areaId = +this.params.areaId;
@@ -245,7 +268,7 @@ define(function (require, exports, module) {
 
             /*GPS地址定位列表*/
             var address_gps = {
-                url: '/address/gps',
+                url: '/addressGps',
                 className: 'm-address-search',
                 render: function (callback) {
                     require.async('app/address_gps', function (func) {
@@ -485,13 +508,13 @@ define(function (require, exports, module) {
                     return M.tips('请先选择省市区');
                 }
                 var data = page.getAddressData($('.fm-addr-info'));
-                location.href = '/center#/address/search/' + data.areaId;
+                location.href = '/center#/addressSearch/' + data.areaId;
             });
 
             /*定位*/
             $module.on('click', '.js-gps', function () {
                 page.getAddressData($('.fm-addr-info'));
-                location.href = '/center#/address/gps';
+                location.href = '/center#/addressGps';
             });
 
             /*保存地址*/
@@ -545,7 +568,21 @@ define(function (require, exports, module) {
                             M.tips({
                                 body: '保存成功！',
                                 callback: function () {
-                                    history.go(-1);  //返回
+                                    var hashParams = $module.data('hash-params');  //json params
+                                    if (hashParams.f) {
+                                        var localAddr = {
+                                            "deliveryAddrId": res.deliveryAddrId || data.deliveryAddrId,
+                                            "addr": [data.district, data.gpsAddr, data.addrDetail].join(''),
+                                            "consignee": data.consignee,
+                                            "phone": data.phone,
+                                            "areaId": data.areaId,
+                                            "isDefult": data.isDefault
+                                        };
+                                        localStorage.setItem(CONST.local_settlement_addr, JSON.stringify(localAddr));
+                                        location.href = '/cart#/settlement';
+                                    } else {
+                                        window.history.go(-1);  //返回
+                                    }
                                 }
                             });
                         }

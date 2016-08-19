@@ -4,6 +4,7 @@
  * */
 
 var api = {
+    "queryMainPage":  "/V3/home/base/queryMainPage.htm",    // 首页
     "login": "V1/member/login.htm",    //登录
     "bind": "V1/weixin/oauth/bind.htm",    //绑定
     "vcode": "V1/sms/vcode/sendSmsVcodeForLoginOrReg.htm",     //登录获取验证码

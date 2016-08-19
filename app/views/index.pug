@@ -4,80 +4,98 @@ block title
 block meta
     meta(name='toTop',content='.container')
 block css
+    link(rel='stylesheet', href='http://s.mamhao.cn/common/style/swiper.min.css')
     link(rel='stylesheet', href='/css/index.css')
 block js
+    script(src='http://s.mamhao.cn/common/js/swiper.min.js')
     script(src='/modules/jquery/dropload.min.js')
     script seajs.use('app/index');
 
 block content
     main.main.smooth.flex
-        header
-            nav.nav.auto-scroll.auto-fix
-                ul.smooth
-                    li.active
-                        a(href='javascript:;') 首页
-                    li
-                        a(href='javascript:;') 门店
-                    li
-                        a(href='javascript:;') 童车汽座
-                    li
-                        a(href='javascript:;') 童装
-                    li
-                        a(href='javascript:;') 洗护
-                    li
-                        a(href='javascript:;') 喂养
-                    li
-                        a(href='javascript:;') 孕产
-                    li
-                        a(href='javascript:;') 寝居
-                    li
-                        a(href='javascript:;') 玩具
-
-        .container.dropload
-            .banner
-                ul
-                    li
-                        a(href='http://h5.mamahao.com/activity/20160618/01/')
-                            img(src='http://bgo.mamhao.cn/7bc19868-96f0-4fea-9bd3-53c0ebaa1924.jpg')
-                        a(href='http://h5.mamahao.com/activity/20160618/02/')
-                            img(src='http://bgo.mamhao.cn/f2664421-84f2-4793-8d8a-e779ca0134de.jpg')
-                        a(href='http://h5.mamahao.com/activity/20160618/04/')
-                            img(src='http://bgo.mamhao.cn/b4f95d76-12ca-452a-b905-6b3a4a2b31e4.jpg')
-            nav.icons-nav
-                ul
-                    li
-                        a(href='http://h5.mamahao.com/beans/v2.html')
-                            img(src='http://bgo.mamhao.cn/f1d4f075-e4ce-4d8e-bc8f-9c8440b63afc.jpg')
-                            .title
-                                span 每天摇
-                    li
-                        a(href='http://h5.mamahao.com/app/track')
-                            img(src='http://bgo.mamhao.cn/af8bf620-9cff-4715-b317-db83c03807ba.jpg')
-                            .title
-                                span 正品溯源
-                    li
-                        a(href='http://h5.mamahao.com/app/brand/')
-                            img(src='http://bgo.mamhao.cn/8e537731-7d32-4216-84bc-afbbf96ad514.jpg')
-                            .title
-                                span 品牌馆
-                    li
-                        a(href='http://h5.mamahao.com/app/brand/new/20160515/')
-                            img(src='http://bgo.mamhao.cn/9b43165d-8ce0-48e8-bade-2b2264183d81.jpg')
-                            .title
-                                span 新品预告
-                    li
-                        a(href='http://h5.mamahao.com/activity/20160106/')
-                            img(src='http://bgo.mamhao.cn/8e69a565-9de6-4597-80d6-a85277088f27.jpg')
-                            .title
-                                span 推车质造
-            .floor-list
-                section.floor
-                    .floor-item
-                        a(href='http://h5.mamahao.com/activity/20160618/home/')
-                            img(src='http://bgo.mamhao.cn/f9cb6655-25ab-468a-b570-491495911441.jpg')
-                            img(src='http://bgo.mamhao.cn/744835d7-3fdc-43d5-a8fd-b3e7abd0aadc.jpg')
-                            img(src='http://bgo.mamhao.cn/51b1cb38-7d2f-4894-9e35-d0ea8f5e1f7d.jpg')
-                            img(src='http://bgo.mamhao.cn/2437ab1c-606b-4bb7-956d-375bb84d3102.jpg')
-                            img(src='http://bgo.mamhao.cn/055e6e5f-172c-488e-8b4c-e3bafafdf0c5.jpg')
+        section.m-home
+            // 顶部搜索
+            .u-search
+                .content
+                    .sort
+                        a(href='javascript:;') 分类
+                    .field.search
+                        input(type='search', placeholder='搜索妈妈好平台商品')
+                .f-space
+            // 顶部Banner
+            #js-swiper-home.swiper
+                ol.swiper-wrapper
+                    li.swiper-slide
+                        img(src='http://bgo.mamhao.cn/f9d72e73-ccab-4d28-af7b-7cf71547140b.jpg@80q.jpg')
+                // 点点点
+                .swiper-pagination
+        //header
+        //    nav.nav.auto-scroll.auto-fix
+        //        ul.smooth
+        //            li.active
+        //                a(href='javascript:;') 首页
+        //            li
+        //                a(href='javascript:;') 门店
+        //            li
+        //                a(href='javascript:;') 童车汽座
+        //            li
+        //                a(href='javascript:;') 童装
+        //            li
+        //                a(href='javascript:;') 洗护
+        //            li
+        //                a(href='javascript:;') 喂养
+        //            li
+        //                a(href='javascript:;') 孕产
+        //            li
+        //                a(href='javascript:;') 寝居
+        //            li
+        //                a(href='javascript:;') 玩具
+        //
+        //.container.dropload
+        //    .banner
+        //        ul
+        //            li
+        //                a(href='http://h5.mamahao.com/activity/20160618/01/')
+        //                    img(src='http://bgo.mamhao.cn/7bc19868-96f0-4fea-9bd3-53c0ebaa1924.jpg')
+        //                a(href='http://h5.mamahao.com/activity/20160618/02/')
+        //                    img(src='http://bgo.mamhao.cn/f2664421-84f2-4793-8d8a-e779ca0134de.jpg')
+        //                a(href='http://h5.mamahao.com/activity/20160618/04/')
+        //                    img(src='http://bgo.mamhao.cn/b4f95d76-12ca-452a-b905-6b3a4a2b31e4.jpg')
+        //    nav.icons-nav
+        //        ul
+        //            li
+        //                a(href='http://h5.mamahao.com/beans/v2.html')
+        //                    img(src='http://bgo.mamhao.cn/f1d4f075-e4ce-4d8e-bc8f-9c8440b63afc.jpg')
+        //                    .title
+        //                        span 每天摇
+        //            li
+        //                a(href='http://h5.mamahao.com/app/track')
+        //                    img(src='http://bgo.mamhao.cn/af8bf620-9cff-4715-b317-db83c03807ba.jpg')
+        //                    .title
+        //                        span 正品溯源
+        //            li
+        //                a(href='http://h5.mamahao.com/app/brand/')
+        //                    img(src='http://bgo.mamhao.cn/8e537731-7d32-4216-84bc-afbbf96ad514.jpg')
+        //                    .title
+        //                        span 品牌馆
+        //            li
+        //                a(href='http://h5.mamahao.com/app/brand/new/20160515/')
+        //                    img(src='http://bgo.mamhao.cn/9b43165d-8ce0-48e8-bade-2b2264183d81.jpg')
+        //                    .title
+        //                        span 新品预告
+        //            li
+        //                a(href='http://h5.mamahao.com/activity/20160106/')
+        //                    img(src='http://bgo.mamhao.cn/8e69a565-9de6-4597-80d6-a85277088f27.jpg')
+        //                    .title
+        //                        span 推车质造
+        //    .floor-list
+        //        section.floor
+        //            .floor-item
+        //                a(href='http://h5.mamahao.com/activity/20160618/home/')
+        //                    img(src='http://bgo.mamhao.cn/f9cb6655-25ab-468a-b570-491495911441.jpg')
+        //                    img(src='http://bgo.mamhao.cn/744835d7-3fdc-43d5-a8fd-b3e7abd0aadc.jpg')
+        //                    img(src='http://bgo.mamhao.cn/51b1cb38-7d2f-4894-9e35-d0ea8f5e1f7d.jpg')
+        //                    img(src='http://bgo.mamhao.cn/2437ab1c-606b-4bb7-956d-375bb84d3102.jpg')
+        //                    img(src='http://bgo.mamhao.cn/055e6e5f-172c-488e-8b4c-e3bafafdf0c5.jpg')
 
     +footer_nav('index')

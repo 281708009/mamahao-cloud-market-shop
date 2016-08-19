@@ -39,13 +39,7 @@ block content
                 .u-alert
                     p #{notice}
             //- 收货地址
-            .u-send.js-address(data-addr=deliveryAddr ? {
-                deliveryAddrId: deliveryAddr.deliveryAddrId,
-                addr: deliveryAddr.prvName + deliveryAddr.cityName + deliveryAddr.areaName + deliveryAddr.gpsAddr + deliveryAddr.addrDetail,
-                consignee: deliveryAddr.consignee,
-                phone: deliveryAddr.phone,
-                areaId: deliveryAddr.areaId
-            } : '')
+            .u-send.js-address
                 if deliveryAddr
                     a.u-arrow.right(href='/center#/address/f=1&id=' + deliveryAddr.deliveryAddrId)
                         dl.default
@@ -54,7 +48,7 @@ block content
                                 em #{deliveryAddr.phone}
                             dd #{deliveryAddr.prvName}#{deliveryAddr.cityName}#{deliveryAddr.areaName}#{deliveryAddr.gpsAddr}#{deliveryAddr.addrDetail}
                 else
-                    a.u-arrow.right(href='/center#/address/add/f=1')
+                    a.u-arrow.right(href='/center#/addressAdd/f=1')
                         p.add 填写收货地址
             //- 物品信息
             - var deliveryDesc = '';

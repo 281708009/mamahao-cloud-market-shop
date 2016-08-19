@@ -39,7 +39,13 @@ var HttpClient = {
         }
 
         /*参数*/
-        var formData = $.extend(req.get('areaid') && {areaId: req.get('areaid')} || {}, params.data || {});
+        var location = querystring.parse(req.get('location') || null);  //header中的定位信息
+        var formData = $.extend({}, {
+            areaId: location.areaId,
+            lat: location.lat,
+            lng: location.lng
+        }, params.data || {});  //data参数覆盖header中的信息
+
         var options = {
             method: params.type || 'POST',
             baseUrl: '',  //基础路径设置为空
@@ -95,6 +101,7 @@ var HttpClient = {
                     }
                 } else {
                     info.request = options.form;  //请求参数返回
+                    info.location = location;   //地理位置信息
                     params.success && params.success.call(this, info);
                 }
             } else {

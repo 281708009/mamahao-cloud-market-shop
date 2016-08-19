@@ -1,7 +1,0 @@
-/* 登录 & 绑定 */
-.m-login{ padding: 10px 0;}
-.m-binding .u-submit,
-.m-login .u-submit{ padding: 25px 10px;}
-.m-binding .tip{ text-align: center; padding: 18px;}
-.m-binding .tip p{ display: inline-block; height: 40px; line-height: 38px; padding: 0 20px 0 36px; border: 1px solid #DCDCDC; border-radius: 20px; font-size: 13px; color: #666; background-color: #FFF; position: relative;}
-.m-binding .tip p:before{ content: ""; position: absolute; left: 18px; top: 12px; width: 15px; height: 15px; background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAbFBMVEUAAABmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmaB0FoYAAAAI3RSTlMA+OWXU+zWeAcEuV4kEfLLtIWAbC8f3k6moJ6MR0A3Ks+9GEtvdoIAAADYSURBVCjPtZLJcsMgEAUHCQTad8m7k/T//2MqVIqyysgnuy/MTB94UCNvwV3tsU0aaJL2aK/u0eW6U2xQ3ZoHnQDJwa7TXNfztNqDHwQN/V023Ht40PLEp3SdZa90x/JCD6hpX1+g3L97NqT70VxL6yI6W/RfmWJmiWkoKinhEn236xUqVQx731IVQBfJY7D+1EtW/49GTNAjlLJBwyiBFN8FSjiJbPw5D7vVQ+q7gIXvH/HUBSF/QDcY7YsEVcoT1RcUt1sB2SQR8kEBqLOTONWpMWklb+MXBVkXgY6yQ0sAAAAASUVORK5CYII=') no-repeat; background-size: cover;}

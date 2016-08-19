@@ -1,8 +1,6 @@
 extends ../layouts/layout.pug
 block title
     title 质检报告
-block css
-    link(rel='stylesheet', href='http://s.mamhao.cn/m/common/css/reset.css')
 block js
     script.
         var pics = JSON.parse(localStorage.getItem(CONST.local_qualityPic)) || {}, templateId = queryURL('templateId'), qualityPic = pics[templateId];

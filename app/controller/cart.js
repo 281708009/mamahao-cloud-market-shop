@@ -47,13 +47,10 @@ var cart = {
     },
     /* 结算 */
     settlement: function (req, res, next) {
-        var params = req.params; // 请求参数值;
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
         var args = arguments;
 
         Thenjs(function (cont) {
-            if (params.deliveryAddrId) {
-                cont(null, {deliveryAddrId: params.deliveryAddrId});
-            }
             HttpClient.request(args, {
                 url: API.getDefaultDeliveryAddr,
                 success: function (data) {
@@ -62,13 +59,15 @@ var cart = {
             });
         }).then(function (cont, arg) {
 
-
-            var data = {inlet: 1, stockTip: 1};
+            var data = {inlet: params.inlet || 1, stockTip: 1};
             if (arg && arg.deliveryAddrId) {
                 data.deliveryAddrId = arg.deliveryAddrId;
             }
             if (arg && arg.areaId) {
                 data.areaId = arg.areaId;
+            }
+            if(data.inlet == 2 || data.inlet == 4){
+                data.jsonTerm = JSON.stringify(params.jsonTerm);
             }
 
             HttpClient.request(args, {

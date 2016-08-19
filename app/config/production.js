@@ -69,7 +69,8 @@ module.exports = {
         proxy:true,
         secret : "ma9m6ahao4_hmm",
         resave:true,//每次请求重新设置session时间
-        save_uninitialized:false    //是否每次请求都设置session
+        save_uninitialized:false,    //是否每次请求都设置session
+        rolling: true
     },
     redis_session_store : {
         host: "localhost",
@@ -79,6 +80,8 @@ module.exports = {
     memcached_session_store : {
         hosts:['172.28.1.129:11211'],
         prefix:"mms_session_",
-        ttl:1800
+        timeout: 1800,
+        retires: 3,
+        poolSize: 10,
     }
 };

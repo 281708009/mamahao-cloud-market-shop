@@ -36,7 +36,7 @@ section.m-stores.flex
         .u-stores
             .title
                 strong 最近的实体店
-            .list.pagination
+            .list.pagination(data-params=request)
                 +storeList(nearShopList, request)
 
     else
@@ -61,9 +61,10 @@ section.u-fixed.bottom.m-select-address
             del.js-close
         .gps.js-gps-address 定位到当前位置
         ul.list
-
-.u-gps
-    .field
-        a.js-change-address(href='javascript:;') #{request.formattedAddress}
+-var formattedAddress = request.formattedAddress || location.formattedAddress;
+if formattedAddress
+    .u-gps
+        .field
+            a.js-change-address(href='javascript:;') #{formattedAddress}
 
 +footer_nav('store')
