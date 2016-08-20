@@ -8,10 +8,10 @@ block css
     link(rel='stylesheet', href='/css/index.css')
 block js
     script(src='http://s.mamhao.cn/common/js/swiper.min.js')
-    script(src='/modules/jquery/dropload.min.js')
     script seajs.use('app/index');
 
 block content
+    include includes/let.pug
     main.main.smooth.flex
         section.m-home
             // 顶部搜索
@@ -22,13 +22,97 @@ block content
                     .field.search
                         input(type='search', placeholder='搜索妈妈好平台商品')
                 .f-space
-            // 顶部Banner
-            #js-swiper-home.swiper
-                ol.swiper-wrapper
-                    li.swiper-slide
-                        img(src='http://bgo.mamhao.cn/f9d72e73-ccab-4d28-af7b-7cf71547140b.jpg@80q.jpg')
-                // 点点点
-                .swiper-pagination
+            each grid, i in rows
+                case grid.type
+                    when 14
+                        // 顶部Banner
+                        #js-swiper-home.swiper
+                            ol.swiper-wrapper
+                                each d in grid.data
+                                    li.swiper-slide
+                                        a(href=d.linkTo)
+                                            img(src=d.pic + jpgSize)
+                            // 点点点
+                            .swiper-pagination
+                    when 5
+                        // 图标ICON
+                        .home-icon(style="margin-bottom: "+ (grid.bottomPx / 2) +"px;")
+                            // 1-5个.fiex 6个.span3 7-8个.span4 9-10个.span5
+                            ul.flex
+                                each d in grid.data
+                                    li
+                                        a(href=d.linkTo)
+                                           .pic
+                                               img(data-original=d.pic + pngSize, src=placeholderPic)
+                                           em #{d.title}
+                    when 7
+                        // 组合五宫格
+                        .grid.group(style="margin-bottom: "+ (grid.bottomPx / 2) +"px;")
+                            dl
+                                each d, k in grid.data
+                                    if k == 0
+                                        dt
+                                            a(href=d.linkTo)
+                                                img(data-original=d.pic + pngSize, src=placeholderPic, alt=d.name)
+                                dd
+                                    each d, k in grid.data
+                                        if k != 0
+                                            a(href=d.linkTo)
+                                                img(data-original=d.pic + pngSize, src=placeholderPic, alt=d.name)
+                    when 9
+                        // 黄金坑位（并列两宫格）
+                        +getHomeGroup(grid)
+                    when 10
+                        // 黄金坑位（并列三宫格）
+                        +getHomeGroup(grid)
+                    when 11
+                        // 黄金坑位（并列四宫格）
+                        +getHomeGroup(grid)
+                    when 12
+                        // 黄金坑位（并列六宫格）
+                        .grid.span9(style="margin-bottom: "+ (grid.bottomPx / 2) +"px;")
+                            each d in grid.data
+                                a(href=d.linkTo)
+                                    img(data-original=d.pic + pngSize, src=placeholderPic, alt=d.name)
+                    when 13
+                        // 黄金坑位（并列九宫格）
+                        .grid.span9(style="margin-bottom: "+ (grid.bottomPx / 2) +"px;")
+                            each d in grid.data
+                                a(href=d.linkTo)
+                                    img(data-original=d.pic + pngSize, src=placeholderPic, alt=d.name)
+                    when 15
+                        // 钻展（活动Banner）
+                        +getHomeGrid(grid)
+                    when 16
+                        // 钻展（活动大型Banner）
+                        +getHomeGrid(grid)
+                    when 17
+                        // 小蛮腰
+                        +getHomeGrid(grid)
+                    when 18
+                        // 文字导航（活动横幅Banner）
+                        +getHomeGrid(grid)
+                    when 19
+                        // 吊顶栏
+                        each d in grid.data
+                            .grid.hang
+                                dl
+                                    dt
+                                        a(href=d.linkTo)
+                                            img(data-original=d.pic + pngSize, src=placeholderPicMin, alt=d.title)
+                                    dd
+                                        ol
+                                            each g in d.goods
+                                                li
+                                                    a(href='javascript:;')
+                                                        span.pic
+                                                            img(src=g.pic, alt=g.title)
+                                                        if g.linkType == 2
+                                                            strong #{g.title}
+                                                            em ￥#{g.price}
+
+
+
         //header
         //    nav.nav.auto-scroll.auto-fix
         //        ul.smooth

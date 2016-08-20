@@ -16,7 +16,7 @@ exports.index = function (req, res, next) {
             if(params.ajax){
                 console.log(data);
             }else{
-                res.render('index', data);
+                res.render('index', {rows: data});
             }
         }
     });

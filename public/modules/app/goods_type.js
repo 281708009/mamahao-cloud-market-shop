@@ -12,6 +12,11 @@ define(function (require, exports, module) {
             var $nav = $('.category .nav'), $list = $('.category .list');
             $nav.find('li:eq(0)').data('template', $list.html()); //缓存第一个分类的节点
 
+            //懒加载
+            M.lazyLoad.init({
+                container: $('.category .list')
+            });
+
             //点击一级分类
             $nav.on('click', 'li', page.getTypeTree);
         },
@@ -22,7 +27,12 @@ define(function (require, exports, module) {
 
             var template = $this.data('template');
             if (template) {
-                return $list.empty().append(template);
+                $list.empty().append(template);
+                //懒加载
+                M.lazyLoad.init({
+                    container: $('.category .list')
+                });
+                return false;
             }
 
             //获取二级分类
@@ -32,6 +42,11 @@ define(function (require, exports, module) {
                 success: function (res) {
                     $this.data('template', res.template);
                     $list.empty().append(res.template);
+
+                    //懒加载
+                    M.lazyLoad.init({
+                        container: $('.category .list')
+                    });
                 }
             });
         }

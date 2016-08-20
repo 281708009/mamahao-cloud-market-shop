@@ -1,0 +1,5 @@
+//- 首页-并列宫格;
+.grid.group(style="margin-bottom: "+ (rows.bottomPx / 2) +"px;")
+    each d in rows.data
+        a(href=d.linkTo)
+            img(data-original=d.pic + pngSize, src=placeholderPic, alt=d.name)

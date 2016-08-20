@@ -1,4 +1,5 @@
 //- 商品分类一级列表;
+include ../includes/let.pug
 if data && data.length
     each item in data
         if item.name
@@ -11,5 +12,5 @@ if data && data.length
                         - href += (item.type == 0 ? '&brandIds=' : '&categoryId=') + detail.typeId;
                         a(href= href)
                             .pic
-                                img(src=detail.pic + '@200w_200h_100q.png')
+                                img(src=placeholderPic, data-original=detail.pic + '@200w_200h_100q.png')
                             em #{detail.name}

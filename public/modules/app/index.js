@@ -8,6 +8,16 @@ define(function(require, exports, module) {
             
         },
         init: function () {
+
+            var swiper = new Swiper('#js-swiper-home', {
+                loop: true,
+                pagination: '.swiper-pagination',
+                paginationClickable: true
+            });
+            //懒加载
+            M.lazyLoad.init({
+                container: $("main.main")
+            });
             page.bindEvents();
         },
         bindEvents: function () {
