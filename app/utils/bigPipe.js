@@ -90,10 +90,11 @@ bigPipe.prototype.fetch = function (item, callback) {
             me.data.push(data);
 
             var context = (pug.renderFile(viewPath + params.pug, data) || blank).replace(/"/g, '\\"');     //内容
-            var script = '<script>bigPipeRender("' + params.selector + '","' + context + '");</script>';
-            me.scripts.push(script);
-
-            me.chunked && res.write(script);
+            if (context) {
+                var script = '<script>bigPipeRender("' + params.selector + '","' + context + '");</script>';
+                me.scripts.push(script);
+                me.chunked && res.write(script);
+            }
 
             callback && callback.call(me);
         },
@@ -101,10 +102,11 @@ bigPipe.prototype.fetch = function (item, callback) {
             me.data.push({request: params.data});
 
             var context = blank.replace(/"/g, '\\"');
-            var script = '<script>bigPipeRender("' + params.selector + '","' + context + '");</script>';
-            me.scripts.push(script);
-
-            me.chunked && res.write(script);
+            if (context) {
+                var script = '<script>bigPipeRender("' + params.selector + '","' + context + '");</script>';
+                me.scripts.push(script);
+                me.chunked && res.write(script);
+            }
 
             callback && callback.call(me, error);
         }
@@ -114,6 +116,7 @@ bigPipe.prototype.fetch = function (item, callback) {
 /*重组数据接口,可重写*/
 bigPipe.prototype.reform = function (res, req) {
     res.request = req.data;   //将请求参数回传
+    res.$data = res;   //将结果放入$data字段中
     return res;
 };
 

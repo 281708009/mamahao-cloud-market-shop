@@ -55,7 +55,7 @@ var api = {
     "goodsProLableList": "V1/pmt/proLableList.htm", // 商品促销标签
     "goodsGuessYouLike": "V1/shop/basic/guessYouLike.htm", // 商品猜你喜欢
     "goodsCouponList": "V2/coupon/getGoodsCouponList.htm", // 商品优惠券列表
-    "promotionList": "V2/promotion/queryPromotionList.htm", // 商品促销政策列表
+    "goodsPromotionList": "V2/promotion/queryPromotionList.htm", // 商品促销政策列表
 
     "querySku": "V1/goods/sku/querySku.htm", //查询sku
     "addToCart": "V2/shop/cart/addCartItem.htm ", //加入购物车

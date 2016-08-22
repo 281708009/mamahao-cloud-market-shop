@@ -111,6 +111,11 @@ var store = {
                 reservedNo: 0
             };
 
+            //促销政策需要的参数
+            task.module[5].data = {
+                styleNumId: data.templateId
+            };
+
             new bigPipe(task, args, true);
             bigPipe.prototype.succeed = function () {
                 res.end();

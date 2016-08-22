@@ -18,7 +18,7 @@ block content
             .u-search
                 .content
                     .sort
-                        a(href='javascript:;') 分类
+                        a(href='/goods#') 分类
                     .field.search
                         input(type='search', placeholder='搜索妈妈好平台商品')
                 .f-space
@@ -30,7 +30,7 @@ block content
                             ol.swiper-wrapper
                                 each d in grid.data
                                     li.swiper-slide
-                                        a(href=d.linkTo)
+                                        a(href=formatHomeLink(d))
                                             img(src=d.pic + jpgSize)
                             // 点点点
                             .swiper-pagination
@@ -38,10 +38,12 @@ block content
                         // 图标ICON
                         .home-icon(style="margin-bottom: "+ (grid.bottomPx / 2) +"px;")
                             // 1-5个.fiex 6个.span3 7-8个.span4 9-10个.span5
-                            ul.flex
+                            -var fiex = "flex", len = grid.data.length;
+                            -if(len==6){fiex="span3"}else if(len==7||len==8){fiex="span4"}else if(len==9||len==10){fiex="span5"}
+                            ul(class=fiex)
                                 each d in grid.data
                                     li
-                                        a(href=d.linkTo)
+                                        a(href=formatHomeLink(d))
                                            .pic
                                                img(data-original=d.pic + pngSize, src=placeholderPic)
                                            em #{d.title}
@@ -52,12 +54,12 @@ block content
                                 each d, k in grid.data
                                     if k == 0
                                         dt
-                                            a(href=d.linkTo)
+                                            a(href=formatHomeLink(d))
                                                 img(data-original=d.pic + pngSize, src=placeholderPic, alt=d.name)
                                 dd
                                     each d, k in grid.data
                                         if k != 0
-                                            a(href=d.linkTo)
+                                            a(href=formatHomeLink(d))
                                                 img(data-original=d.pic + pngSize, src=placeholderPic, alt=d.name)
                     when 9
                         // 黄金坑位（并列两宫格）
@@ -72,13 +74,13 @@ block content
                         // 黄金坑位（并列六宫格）
                         .grid.span9(style="margin-bottom: "+ (grid.bottomPx / 2) +"px;")
                             each d in grid.data
-                                a(href=d.linkTo)
+                                a(href=formatHomeLink(d))
                                     img(data-original=d.pic + pngSize, src=placeholderPic, alt=d.name)
                     when 13
                         // 黄金坑位（并列九宫格）
                         .grid.span9(style="margin-bottom: "+ (grid.bottomPx / 2) +"px;")
                             each d in grid.data
-                                a(href=d.linkTo)
+                                a(href=formatHomeLink(d))
                                     img(data-original=d.pic + pngSize, src=placeholderPic, alt=d.name)
                     when 15
                         // 钻展（活动Banner）
@@ -98,7 +100,7 @@ block content
                             .grid.hang
                                 dl
                                     dt
-                                        a(href=d.linkTo)
+                                        a(href=formatHomeLink(d))
                                             img(data-original=d.pic + pngSize, src=placeholderPicMin, alt=d.title)
                                     dd
                                         ol

@@ -158,6 +158,18 @@ var task = {
                 selector: ".u-sku .content",
                 api: API.querySku,
                 pug: '/lists/goods_sku.pug'
+            },
+            //优惠券列表
+            {
+                selector: ".sale .coupon",
+                api: API.goodsCouponList,
+                pug: '/goods/components/coupon_list.pug'
+            },
+            //促销列表
+            {
+                selector: ".sale .promote",
+                api: API.goodsPromotionList,
+                pug: '/goods/components/promote_list.pug'
             }
         ]
     },

@@ -52,23 +52,12 @@ block content
         .sale
             // 优惠劵
             .coupon
-                p
-                    em 领劵
-                    | 满1000元减50元
+
+
             // 满减、赠品、套餐
-            .rush
-                p
-                    em 满减
-                    | 六一儿童节，满100减10元，满200减20
-                p
-                    em 满赠
-                    | 六一儿童节，全场满100赠湿纸巾
-                p
-                    em 赠品
-                    | 好孩子海洋水润婴儿湿巾80抽
-                p
-                    em 套餐
-                    | 六一儿童节，口袋车组合优惠100元
+            .promote
+
+
         // 好妈妈说
         .guide
             dl
@@ -116,7 +105,7 @@ block content
 
         // 门店
         .shop
-            a.u-arrow.right(href='javascript:;')
+            a.u-arrow.right.js-store(href='javascript:;')
                 .pic
                     img(src='http://bgo.mamhao.cn/f8e3bb18-cd83-4f33-9171-511a8c281585.jpg@1e_200w_0c_0i_0o_100q_1x.jpg', alt='')
                 dl
@@ -171,7 +160,7 @@ block content
         .content
             .title
                 | 选择地址
-                del
+                del.js-close
             .gps 定位到当前位置
             ul.list
                 li
@@ -222,77 +211,6 @@ block content
                     label(for='add-12')
                         input#add-12.u-radio(type='radio', name='address')
                         span 滨江区缤纷北苑27幢4单元502室
-    // 促销列表 .show显示
-    section.u-fixed.bottom.m-sale-pop
-        .mask
-        .content
-            h3 促销
-            .list
-                dl
-                    dt
-                        span 满减
-                    dd
-                        a.u-arrow.right(href='javascript:;') 六一儿童节，满100减10元，满200减20
-                dl
-                    dt
-                        span 满赠
-                    dd
-                        a.u-arrow.right(href='javascript:;') 六一儿童节，全场满100赠湿纸巾
-                dl
-                    dt
-                        span 赠品
-                    dd
-                        a.u-arrow.right(href='javascript:;') 好孩子海洋水润婴儿湿巾80抽
-                        a.u-arrow.right(href='javascript:;') 好孩子海洋水润婴儿湿巾80抽好孩子海洋水润婴儿湿巾80抽
-                dl
-                    dt
-                        span 套餐
-                    dd
-                        a.u-arrow.right(href='javascript:;')
-                            .header
-                                strong
-                                    | 最高省
-                                    em 111.1
-                                    | 元
-                                span 共3种
-                            ol
-                                li
-                                    h4 套餐1
-                                    .stuff
-                                        .item
-                                            .pic
-                                                img(src='http://img.mamhao.cn/B80064/main_B80064_04.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
-                                            sub 2件
-                                        .item
-                                            .pic
-                                                img(src='http://img.mamhao.cn/B80064/main_B80064_01.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
-                                        .item
-                                            .pic
-                                                img(src='http://img.mamhao.cn/B80064/main_B80064_05.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
-                                            sub 2件
-                                li
-                                    h4 套餐2
-                                    .stuff
-                                        .item
-                                            .pic
-                                                img(src='http://img.mamhao.cn/B80064/main_B80064_02.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
-                                                sub 2件
-                                        .item
-                                            .pic
-                                                img(src='http://img.mamhao.cn/B80064/main_B80064_04.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
-                                                sub 2件
-                                li
-                                    h4 套餐3
-                                    .stuff
-                                        .item
-                                            .pic
-                                                img(src='http://img.mamhao.cn/B80064/main_B80064_05.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
-                                                sub 2件
-                                        .item
-                                            .pic
-                                                img(src='http://img.mamhao.cn/B80064/main_B80064_04.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
-            .footer
-                button.u-btn.success.max.alone.js-close 关闭
 
     // SKU
     section.u-fixed.bottom.u-sku

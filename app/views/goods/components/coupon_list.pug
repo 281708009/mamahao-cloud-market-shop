@@ -1,0 +1,18 @@
+if vouchers.length
+    .nav-list.js-nav-list
+        each list in vouchers
+            p
+                em 领劵
+                | #{list.des}
+
+    // 促销列表 .show显示
+    section.u-fixed.bottom.m-sale-pop
+        .mask
+        .content
+            h3 优惠券列表
+            .list
+                each item in vouchers
+                    p #{item.des}
+
+            .footer
+                button.u-btn.success.max.alone.js-close 关闭

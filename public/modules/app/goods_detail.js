@@ -38,6 +38,21 @@ define(function (require, exports, module) {
                 }
             });
 
+            //点击好妈妈说
+            $('.guide .ellipsis').on('click', function () {
+                $(this).toggleClass('collapse');
+            });
+
+            //点击优惠券或促销列表
+            $('.js-nav-list').on('click', function () {
+                $(this).siblings('.m-sale-pop').addClass('show');
+            });
+
+            //点击门店地址
+            $('.js-store').on('click', function () {
+                $('.m-select-address').addClass('show');
+            });
+
 
             //点击遮罩或关闭按钮
             $('.mask, .js-close').on('click', function () {
