@@ -34,7 +34,7 @@ if $data.length
                                     span 满赠
                                 dd
                                     each goods in item.giftGoodsList
-                                        a.u-arrow.right(href='/goods/detail?inlet=6&templateId=' + goods.styleNumId + '&itemId=' + +goods.itemNumId) #{goods.styleTitle}
+                                        a.u-arrow.right(href='/goods#/detail/inlet=6&templateId=' + goods.styleNumId + '&itemId=' + +goods.itemNumId) #{goods.styleTitle}
 
                         when 4
                             //- em 套餐
@@ -76,7 +76,7 @@ if $data.length
                                     span 赠品
                                 dd
                                     each goods in item.giftGoodsList
-                                        a.u-arrow.right(href='/goods/detail?inlet=6&templateId=' + goods.styleNumId + '&itemId=' + +goods.itemNumId) #{goods.styleTitle}
+                                        a.u-arrow.right(href='/goods#/detail/inlet=6&templateId=' + goods.styleNumId + '&itemId=' + +goods.itemNumId) #{goods.styleTitle}
 
             .footer
                 button.u-btn.success.max.alone.js-close 关闭
