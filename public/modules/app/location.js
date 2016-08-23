@@ -119,7 +119,7 @@ define(function (require, exports, module) {
 
                     var coordinate = [res.lng, res.lat]; //中心点坐标
                     placeSearch.searchNearBy('', coordinate, 500, function (status, result) {
-                        console.log(JSON.stringify(result));
+                        //console.log(JSON.stringify(result));
                         var poiList = [];
                         if (result.info === 'OK') {
                             poiList = result.poiList.pois;

@@ -1,0 +1,7 @@
+//- 门店和商品详情页当前地址切换
+if data && data.length
+    each item in data
+        li(data-json=item)
+            label(for='add-' + item.deliveryAddrId)
+                input.u-radio(id='add-' + item.deliveryAddrId, type='radio', name='address')
+                span #{item.gpsAddr + item.addrDetail}

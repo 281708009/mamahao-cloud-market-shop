@@ -127,6 +127,7 @@ var store = {
             url: API.queryMemberServerShop,
             data: params,
             success: function (data) {
+                $.extend(data, {type: 0});
                 res.render("store/components/list", data, function (err, html) {
                     res.json({template: html});
                 });
@@ -136,7 +137,7 @@ var store = {
     // 我的关注店
     myShowStore: function (req, res, next) {
         var defaults = {
-            count: 50,
+            count: 100,
             page: 1
         };
         var data = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
@@ -145,6 +146,7 @@ var store = {
             url: API.getMemberShopList,
             data: params,
             success: function (data) {
+                $.extend(data, {type: 1});
                 res.render("store/components/list", data, function (err, html) {
                     res.json({template: html});
                 });
@@ -176,12 +178,12 @@ var store = {
     },
     // 我的收货地址;
     myAddress: function (req, res, next) {
-        var data = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
         HttpClient.request(arguments, {
             url: API.getDeliveryAddr,
-            data: data,
+            data: params,
             success: function (data) {
-                res.render("store/components/address", {rows: data.data}, function (err, html) {
+                res.render("lists/address", data, function (err, html) {
                     res.json({template: html});
                 });
             }

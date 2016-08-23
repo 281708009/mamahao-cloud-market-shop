@@ -114,6 +114,7 @@ router
     .post('/api/beans', centerCtrl.beans)
     .post('/api/integral', centerCtrl.integral)
     .post('/api/coupons', centerCtrl.coupons)
+    .post("/api/obtainCoupons", centerCtrl.obtainCoupons)
     .post('/api/address/save', centerCtrl.doAddressSave)   //保存或新增地址
     .post('/api/address/queryArea', centerCtrl.queryAddressArea)   //保存或新增地址
 ;

@@ -1,7 +1,7 @@
 include ../includes/let.pug
 //- 门店列表;
 each item, index in rows
-    .item
+    .item(class="js-shop-" + item.shopId)
         a.content(href='#/detail/' + item.shopId)
             .pic
                 img(src=(item.outPageLogoPic || item.indexLogoPic) + '@300w_95q.jpg', alt=item.name)
@@ -23,3 +23,4 @@ each item, index in rows
             p #{item.address || item.adr}
             if item.distance
                 span #{formatDistance(item.distance)}
+            del.js-collect(data-id=item.shopId, data-collectid=item.collectId)

@@ -81,16 +81,25 @@ var store = {
      * 备注:先显示部分内容，然后在请求页面需要的其他接口
      * */
     detail: function (req, res, next) {
-        var args = arguments;
-        var data = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
-        var params = {
-            inlet: data.inlet,
-            jsonTerm: JSON.stringify(data)
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        var location = require("querystring").parse(req.get('location') || null);  //header中的定位信息
+        var args = {
+            inlet: params.inlet,
+            jsonTerm: JSON.stringify({
+                areaId: params.location ? params.location.areaId : location.areaId,
+                lat: params.location ? params.location.lat : location.lat,
+                lng: params.location ? params.location.lng : location.lng,
+                templateId: params.templateId,
+                itemId: params.itemId
+            })
         };
-        HttpClient.request(args, {
+        //console.log(params)
+        HttpClient.request(arguments, {
             url: API.goodsDetail,
-            data: params,
+            data: args,
             success: function (data) {
+                data.paramsLocation = params.location || location;
+                //console.log('xxxxxxxxxxx===',data.paramsLocation)
                 res.render("goods/detail", data, function (err, html) {
                     res.json({template: html});
                 });

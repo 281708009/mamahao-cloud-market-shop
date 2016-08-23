@@ -7,7 +7,7 @@ define(function (require, exports, module) {
             url: api_url,
             data: params ? {data: JSON.stringify(params)} : {},
             success: function (res) {
-                console.log('success--->', res);
+                //console.log('success--->', res);
                 var template = res.template;
                 callback(null, template);
             },

@@ -27,7 +27,7 @@ var center = {
             success: function (data) {
                 var json = {
                     rows: data.data,
-                    request: data.request
+                    request: params
                 };
                 res.render('users/components/address', json, function (err, html) {
                     res.json({template: html});
@@ -59,7 +59,7 @@ var center = {
     addressGPS: function (req, res, next) {
         var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
         res.render('users/components/address_gps', {data: params}, function (err, html) {
-            console.log(html)
+            //console.log(html)
             res.json({template: html});
         });
     },
@@ -166,6 +166,16 @@ var center = {
 
             new bigPipe(task, arguments);
         }
+    },
+    obtainCoupons: function (req, res, next) {
+        var params = req.body;
+        HttpClient.request(arguments, {
+            url: API.obtainCoupons,
+            data: params,
+            success: function (data) {
+                res.json(data);
+            }
+        });
     }
 
 };

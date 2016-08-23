@@ -186,7 +186,7 @@ define(function (require, exports, module) {
 
             // 我的服务店
             var my_server_store = {
-                url: '/list/server/:isLocal?',
+                url: '/list/server',
                 render: function (callback) {
                     var params = this.params;
                     //console.log();
@@ -202,7 +202,7 @@ define(function (require, exports, module) {
 
             // 我的关注店
             var my_show_store = {
-                url: '/list/show/:isLocal?',
+                url: '/list/show',
                 render: function (callback) {
                     var params = this.params;
                     //console.log();
@@ -213,6 +213,23 @@ define(function (require, exports, module) {
                     var $module = $(this), o = page.info;
                     // 点击查看服务详情;
                     page.setService($module);
+                    $(".js-collect").on("click", function () {
+                        var thas = $(this), data = JSON.stringify($.extend({}, {
+                            collectIds: thas.data("collectid")
+                        }));
+                        M.ajax({
+                            url: page.config.api['delCollect'],
+                            data: {data: data},
+                            success:function(res){
+                                if(res.success_code == 200){
+                                    $(".js-shop-" + thas.data("id")).remove();
+                                    M.tips("取消关注成功");
+                                }else{
+                                    M.tips(res.msg);
+                                }
+                            }
+                        });
+                    });
                 }
             };
 

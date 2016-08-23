@@ -18,6 +18,7 @@ var api = {
     "MBeanList": "V1/mbean/queryMBeanList.htm",     //获取妈豆记录
     "integral": "V1/member/center/queryMemberPoint.htm",     //积分
     "coupons": "V2/coupon/list.htm",     //优惠券
+    "obtainCoupons": "V2/coupon/obtain.htm",     //领券
 
     "addressList": "V1/member/delivery/getDeliveryAddr.htm",     //收货地址列表
     "checkArea": "V1/basic/checkArea.htm",     //地址

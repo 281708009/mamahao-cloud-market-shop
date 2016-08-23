@@ -62,14 +62,28 @@ section.m-goods-detail.flex
             | #{mamCare}
     // 配送信息
     .delivery
-        dl
+        dl.address
             dt 送至
-            dd
-                p 浙江>杭州市>上城区
+            dd.js-address
+                if paramsLocation.gpsAddr
+                    p #{paramsLocation.gpsAddr}
+                else
+                    p #{paramsLocation.province}>#{paramsLocation.city}>#{paramsLocation.district}
+
                 time
                     | 现在下单，预计
-                    em 次日的17:00
-                    | 前送达
+                    em
+                        case deliveryTime.arriveType
+                            when 0
+                                | 今日
+                            when 1
+                                | 次日
+                        if deliveryTime.arriveTime
+                            | 的#{deliveryTime.arriveTime}前
+                    if deliveryTime.isKuaidi
+                        | 发货
+                    else
+                        | 送达
         dl
             dt 运费
             dd
@@ -80,7 +94,7 @@ section.m-goods-detail.flex
             dd
                 p
                     | 由&nbsp;
-                    span #{shop}
+                    span #{shop || '妈妈好'}
                     | &nbsp;发货并提供售后服务
                 if goodsTag && goodsTag.length
                     ol
@@ -88,6 +102,16 @@ section.m-goods-detail.flex
                             li
                                 img(src= tag.pic, alt= tag.view)
                                 | #{tag.view}
+
+    // 选择地址 .show显示
+    section.u-fixed.m-select-address.bottom
+        .mask
+        .content
+            .title
+                | 选择地址
+                del.js-close
+            .gps 定位到当前位置
+            ul.list
 
 
 
@@ -97,13 +121,14 @@ section.m-goods-detail.flex
             a.u-arrow.right(href='/goods#/quality/' + templateId) 质检担保
 
     // 门店
-    .shop
-        a.u-arrow.right.js-store(href='javascript:;')
-            .pic
-                img(src='http://bgo.mamhao.cn/f8e3bb18-cd83-4f33-9171-511a8c281585.jpg@1e_200w_0c_0i_0o_100q_1x.jpg', alt='')
-            dl
-                dt #{shop}
-                dd 距您#{formatDistance(1000)}
+    if shop
+        .shop
+            a.u-arrow.right(href='/store#/detail/' + shopInfo.shopId)
+                .pic
+                    img(src='http://bgo.mamhao.cn/' + shopInfo.shopPic + '@200w_100q.jpg', alt=shopInfo.shopName)
+                dl
+                    dt #{shop}
+                    dd 距您#{formatDistance(1000)}
 
     // 商品详情
     .u-tab.max.ui-swipe-tab#swipe-tab-detail(data-target='#swipe-detail')
@@ -146,64 +171,6 @@ section.m-goods-detail.flex
         .tools
             button.u-btn.js-addToCart 加入购物车
             button.u-btn.success.js-buy 立即购买
-
-// 选择地址 .show显示
-section.u-fixed.m-select-address.bottom
-    .mask
-    .content
-        .title
-            | 选择地址
-            del.js-close
-        .gps 定位到当前位置
-        ul.list
-            li
-                label(for='add-1')
-                    input#add-1.u-radio(type='radio', name='address')
-                    span 中豪.望江国际1栋9层
-            li
-                label(for='add-2')
-                    input#add-2.u-radio(type='radio', name='address')
-                    span 江干区新城派出所
-            li
-                label(for='add-3')
-                    input#add-3.u-radio(type='radio', name='address')
-                    span 杭州市文一西路恩济花园三区19栋1-2023室纺织工作室
-            li
-                label(for='add-4')
-                    input#add-4.u-radio(type='radio', name='address')
-                    span 滨江区缤纷北苑27幢4单元502室
-            li
-                label(for='add-5')
-                    input#add-5.u-radio(type='radio', name='address')
-                    span 中豪.望江国际1栋9层
-            li
-                label(for='add-6')
-                    input#add-6.u-radio(type='radio', name='address')
-                    span 江干区新城派出所
-            li
-                label(for='add-7')
-                    input#add-7.u-radio(type='radio', name='address')
-                    span 杭州市文一西路恩济花园三区19栋1-2023室纺织工作室
-            li
-                label(for='add-8')
-                    input#add-8.u-radio(type='radio', name='address')
-                    span 滨江区缤纷北苑27幢4单元502室
-            li
-                label(for='add-9')
-                    input#add-9.u-radio(type='radio', name='address')
-                    span 中豪.望江国际1栋9层
-            li
-                label(for='add-10')
-                    input#add-10.u-radio(type='radio', name='address')
-                    span 江干区新城派出所
-            li
-                label(for='add-11')
-                    input#add-11.u-radio(type='radio', name='address')
-                    span 杭州市文一西路恩济花园三区19栋1-2023室纺织工作室
-            li
-                label(for='add-12')
-                    input#add-12.u-radio(type='radio', name='address')
-                    span 滨江区缤纷北苑27幢4单元502室
 
 // SKU
 section.u-fixed.bottom.u-sku

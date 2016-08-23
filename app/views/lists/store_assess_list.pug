@@ -10,11 +10,12 @@ if rows && rows.length
                             img(src= item.memberHeadPic + '@100w_100h_100q.jpg')
                         dl
                             dt #{item.memberNickname}
-                            dd #{item.city}
+                            //-dd #{item.city}
                     .value
                         sub(class='star-'+ item.serviceRating)
                             sup
-                        time #{formatDate(item.createTime, "MM月dd日")}
+                        //-time #{formatDate(item.createTime, "MM月dd日")}
+                        time #{item.city}
                 // 商品评价内容
                 if item.goodsList && item.goodsList.length
                     each goods in item.goodsList

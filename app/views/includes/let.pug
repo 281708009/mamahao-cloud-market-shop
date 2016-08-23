@@ -16,4 +16,4 @@
 //- 计算返回门店评分高、平、低  根据所有门店评分的均值做对比的，高于所有门店平均值显示为高，低、平以此类推;
 - function formatAvgRating(a,b){var c="";return c=a>b?"<sup>高</sup>":a==b?"<sup>平</sup>":"<sub>低</sub>"}
 //- 首页链接控制
-- function formatHomeLink(a){var b="javascript:;";switch(a.linkType){case 2:b="/goods/detail?inlet="+a.inlet+"&templateId="+a.linkTo+"&itemId="+a.itemNumId;break;case 3:b=a.linkTo;break;case 7:b="/goods#";break;case 8:b="/goods#/list/entry=0&brandIds="+a.linkTo;break;case 9:b="/goods#/list/entry=1&categoryId="+a.linkTo;break;case 10:b="/store#/detail/"+a.linkTo}return b}
+- function formatHomeLink(a){var b="javascript:;";switch(a.linkType){case 2:b="/goods#/detail/inlet="+a.inlet+"&templateId="+a.linkTo+"&itemId="+a.itemNumId;break;case 3:b=a.linkTo;break;case 7:b="/goods#";break;case 8:b="/goods#/list/entry=0&brandIds="+a.linkTo;break;case 9:b="/goods#/list/entry=1&categoryId="+a.linkTo;break;case 10:b="/store#/detail/"+a.linkTo}return b}

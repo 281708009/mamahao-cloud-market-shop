@@ -83,7 +83,7 @@ var HttpClient = {
                 if (info.error_code) {
 
                     //未登录状态设置统一状态码
-                    if (/^(-1|1001)$/.test(info.error_code)) {
+                    if (/^(-1|1001|1002)$/.test(info.error_code)) {
                         info.error_code = -1;
                     }
 

@@ -6,13 +6,27 @@ if vouchers.length
                 | #{list.des}
 
     // 促销列表 .show显示
-    section.u-fixed.bottom.m-sale-pop
+    section.u-fixed.bottom.m-goods-coupon
         .mask
         .content
-            h3 优惠券列表
-            .list
+            h3 领取优惠劵
+            ul.list
                 each item in vouchers
-                    p #{item.des}
+                    li(data-id=item.voucherId)
+                        dl
+                            dt
+                                strong
+                                    sub ￥
+                                    | #{item.amount}
+                                p #{item.des}
+                            dd
+                                p 适用范围：#{item.applyDes}
+                                p 有效期至：#{item.timeDes}
+                        .button
+                            if !item.isReceive
+                                button.u-btn.mini.success.ban 已领取
+                            else
+                                button.u-btn.mini.success.js-voucher 立即领取
 
             .footer
                 button.u-btn.success.max.alone.js-close 关闭

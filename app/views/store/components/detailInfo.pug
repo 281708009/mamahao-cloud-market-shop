@@ -26,13 +26,13 @@ if level
         // 综合评分
         ul.score
             li
-                em 商品 #{level.goodsRating}分
+                em 商品 #{level.goodsRating.toFixed(1)}分
                 span !{formatAvgRating(level.goodsRating, level.avgGoodsRating)}
             li
-                em 服务 #{level.serviceRating}分
+                em 服务 #{level.serviceRating.toFixed(1)}分
                 span !{formatAvgRating(level.serviceRating, level.avgServiceRating)}
             li
-                em 物流 #{level.logisticsRating}分
+                em 物流 #{level.logisticsRating.toFixed(1)}分
                 span !{formatAvgRating(level.logisticsRating, level.avgLogisticsRating)}
         // 点评用户
         a.flex-center.u-arrow.right(href='/store/assess/'+ basicInfo.shopId)

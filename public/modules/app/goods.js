@@ -98,7 +98,12 @@ define(function (require, exports, module) {
                 render: function (callback) {
                     //hash值后的url参数
                     detail.hashParams = M.url.getParams(this.params.params);  //json params
-                    page.renderModule('detail', callback, detail.hashParams);
+                    var locationInfo = JSON.parse(localStorage.getItem(CONST.local_detail_location) || null);
+                    var params = detail.hashParams;
+                    if (locationInfo) {
+                        params.location = locationInfo;
+                    }
+                    page.renderModule('detail', callback, params);
                 },
                 bind: function () {
                     require.async('app/goods_detail', function (page) {

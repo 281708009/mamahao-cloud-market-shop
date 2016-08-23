@@ -170,7 +170,14 @@ var task = {
                 selector: ".sale .promote",
                 api: API.goodsPromotionList,
                 pug: '/goods/components/promote_list.pug'
-            }
+            },
+            //配送地址
+            {
+                selector: ".m-select-address .list",
+                api: API.addressList,
+                pug: '/lists/address.pug'
+            },
+
         ]
     },
     // 猜你喜欢商品列表
