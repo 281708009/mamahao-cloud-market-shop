@@ -173,9 +173,7 @@ define(function (require, exports, module) {
                     page.renderModule('orderResult', callback, params);
                 },
                 bind: function () {
-                    M.lazyLoad.init({
-                        container: $('.spa')
-                    });
+                    M.lazyLoad.init();
                 }
             };
 

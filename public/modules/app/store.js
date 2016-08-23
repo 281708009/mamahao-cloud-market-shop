@@ -40,9 +40,7 @@ define(function (require, exports, module) {
             var home = {
                 url: '/',
                 render: function (callback) {
-                    var params = {
-                        isLocal: 1
-                    }, location = JSON.parse(localStorage.getItem(CONST.local_storeAddr)) || {};
+                    var params = {}, location = JSON.parse(localStorage.getItem(CONST.local_storeAddr)) || {};
                     // 本地是否缓存了地址;
                     if(location.deliveryAddrId){
                         $.extend(params, location, {
@@ -88,9 +86,15 @@ define(function (require, exports, module) {
             };
             // 门店详情;
             var store_detail = {
-                url: '/detail/:shopId/:isLocal?',
+                url: '/detail/:shopId/',
                 render: function (callback) {
-                    var params = this.params;
+                    var params = this.params, location = JSON.parse(localStorage.getItem(CONST.local_storeAddr)) || {};
+                    // 本地是否缓存了地址;
+                    if(location.deliveryAddrId){
+                        $.extend(params, location, {
+                            formattedAddress: location.gpsAddr + location.addrDetail
+                        });
+                    }
                     store_detail.params = params;
                     page.renderModule('detail', callback, params);
                 },

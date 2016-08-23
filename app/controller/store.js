@@ -19,12 +19,13 @@ var store = {
         };
         var data = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
         var params = $.extend({}, defaults, data);
-
         // 本地缓存的城市与当前定位的城市是否相同;
         var querystring = require("querystring");
         var locationInfo = querystring.parse(req.get('location') || null);  //header中的定位信息
-        if (params.city == locationInfo.city) {
-            params.isLocal = 0;
+        if (params.city && params.city != locationInfo.city) {
+            params.isLocal = 0; // 非当前定位地址;
+        }else{
+            params.isLocal = 1; // 当前定位地址;
         }
         //来源为ajax翻页请求
         if (data.ajax) {
@@ -56,6 +57,14 @@ var store = {
     // 门店详情;
     storeDetail: function (req, res, next) {
         var data = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        // 本地缓存的城市与当前定位的城市是否相同;
+        var querystring = require("querystring");
+        var locationInfo = querystring.parse(req.get('location') || null);  //header中的定位信息
+        if (data.city && data.city != locationInfo.city) {
+            data.isLocal = 0; // 非当前定位地址;
+        }else{
+            data.isLocal = 1; // 当前定位地址;
+        }
         //console.info(data)
         if (data.ajax) {
             var params = $.extend({}, data);

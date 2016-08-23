@@ -34,10 +34,11 @@ var weChat = {
     //微信授权
     auth: function (req, res, next) {
         var isWeChat = /micromessenger/gi.test(req.header("user-agent")),
-            openId = req.cookies && req.cookies['openId'];
+            openId = req.cookies && req.cookies['openId'],
+            token = req.cookies && req.cookies['token'];
 
         if (isWeChat) {
-            if (req.cookies['token']) {
+            if (token) {
                 //已登录
                 var crypto = require('../utils/crypto');
                 var user_session = {
@@ -46,13 +47,14 @@ var weChat = {
                     nickname: crypto.decipher(req.cookies['nick']),
                     avatar: crypto.decipher(req.cookies['head'])
                 };
-                console.log(user_session)
+                console.info("user_session--->", user_session);
                 req.session.user = user_session;//设置当前用户到session
                 next();
             } else {
+                console.info("openId--->", openId);
                 //微信授权并尝试登录
-                if (!openId) {
-                    //已授权
+                if (!openId || !token) {
+                    //未授权或者已授权但未获取到token，这个地方得保证微信授权后成功在client设置cookie
                     var originalUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
                     var baseUrl = 'http://' + AppConfig.site.api.host + AppConfig.site.api.root; //baseUrl
                     var redirect_uri = encodeURIComponent(baseUrl + '/V1/weixin/oauth/callback.htm?resouce=1' + '&go=' + encodeURIComponent(originalUrl));

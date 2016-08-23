@@ -11,6 +11,8 @@ define(function (require, exports, module) {
                 "goods_list": "/api/goods_list",
                 "search": "/api/search",
                 "filter": "/api/filter",
+                "detail": "/api/goods_detail",
+                "quality": "/api/goods_quality",
             }
         },
         init: function () {
@@ -90,10 +92,44 @@ define(function (require, exports, module) {
                 }
             };
 
+            //详情
+            var detail = {
+                url: '/detail/:params?',
+                render: function (callback) {
+                    //hash值后的url参数
+                    detail.hashParams = M.url.getParams(this.params.params);  //json params
+                    page.renderModule('detail', callback, detail.hashParams);
+                },
+                bind: function () {
+                    require.async('app/goods_detail', function (page) {
+                        page.init(detail.hashParams);
+                    });
+                }
+            };
+
+            //质检报告
+            var quality = {
+                url: '/quality/:templateId',
+                render: function (callback) {
+                    //hash值后的url参数
+                    var params = this.params;
+                    var pics = JSON.parse(localStorage.getItem(CONST.local_qualityPic)) || {},
+                        templateId = params.templateId,
+                        qualityPic = pics[templateId];
+
+                    page.renderModule('quality', callback, qualityPic);
+                },
+                bind: function () {
+                    M.lazyLoad.init();
+                }
+            };
+
             router.push(home)
                 .push(list)
                 .push(search)
                 .push(filter)
+                .push(detail)
+                .push(quality)
                 .setDefault('/').init();
         },
         bindEvents: function () {

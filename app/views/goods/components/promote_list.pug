@@ -46,53 +46,28 @@ if $data.length
                                         .header
                                             strong
                                                 | 最高省
-                                                em 111.1
+                                                em #{item.comboMaxDiscountAmount}
                                                 | 元
-                                            span 共3种
+                                            span 共#{item.comboPromotionList.length}种
                                         ol
-                                            li
-                                                h4 套餐1
-                                                .stuff
-                                                    .item
-                                                        .pic
-                                                            img(src='http://img.mamhao.cn/B80064/main_B80064_04.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
-                                                        sub 2件
-                                                    .item
-                                                        .pic
-                                                            img(src='http://img.mamhao.cn/B80064/main_B80064_01.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
-                                                    .item
-                                                        .pic
-                                                            img(src='http://img.mamhao.cn/B80064/main_B80064_05.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
-                                                        sub 2件
-                                            li
-                                                h4 套餐2
-                                                .stuff
-                                                    .item
-                                                        .pic
-                                                            img(src='http://img.mamhao.cn/B80064/main_B80064_02.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
-                                                            sub 2件
-                                                    .item
-                                                        .pic
-                                                            img(src='http://img.mamhao.cn/B80064/main_B80064_04.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
-                                                            sub 2件
-                                            li
-                                                h4 套餐3
-                                                .stuff
-                                                    .item
-                                                        .pic
-                                                            img(src='http://img.mamhao.cn/B80064/main_B80064_05.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
-                                                            sub 2件
-                                                    .item
-                                                        .pic
-                                                            img(src='http://img.mamhao.cn/B80064/main_B80064_04.jpg@1e_600w_0c_0i_0o_100q_1x.jpg')
+                                            each group in item.comboPromotionList
+                                                li
+                                                    h4 套餐1
+                                                    .stuff
+                                                        each goods in group.comboGoodsList
+                                                            .item
+                                                                .pic
+                                                                    img(src=goods.stylePic + '@100w_100h_100q.jpg')
+                                                                sub #{goods.count}件
+
+
                         when 5
                             //- em 满减
                             dl
                                 dt
                                     span 满减
                                 dd
-                                    each goods in item.giftGoodsList
-                                        a.u-arrow.right(href='/goods/detail?inlet=6&templateId=' + goods.styleNumId + '&itemId=' + +goods.itemNumId) #{goods.styleTitle}
+                                    a.u-arrow.right(href='javascript:;') #{item.promotionName}
 
                         when 6
                             //- em 赠品

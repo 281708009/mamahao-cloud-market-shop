@@ -1,10 +1,18 @@
 include ../../includes/mixin.pug
 -var inlet = 1, extra = '&shopId=' + request.shopId;
-.goods
-    .tab.js-goods-tab
-        ul
-            each t, i in tab
-                li(class=(i == 0 && "active"), data-id=t.id)
-                    a(href='javascript:;') #{t.name}
-    ul.u-goods-list.pagination.clearfix
-        +goodsList(goodsList)
+if tab && tab.length
+    .goods
+        .tab.js-goods-tab
+            ul
+                each t, i in tab
+                    li(class=(i == 0 && "active"), data-id=t.id)
+                        a(href='javascript:;') #{t.name}
+        ul.u-goods-list.pagination.clearfix
+            +goodsList(goodsList)
+else
+    .u-null-all
+        .u-null
+            dl
+                dt.n-01
+                dd
+                    p 暂时没有商品~

@@ -160,7 +160,6 @@ define(function (require, exports, module) {
                     require.async('app/location', function (fun) {
                         fun.getLocation({
                             success: function (res) {
-                                console.log(res)
                                 dtd.resolve({location: $.param(res)});
                             },
                             fail: function () {
@@ -611,6 +610,7 @@ define(function (require, exports, module) {
                     init: function (options) {
                         //懒加载
                         var defaults = {
+                            container: $('.spa'),
                             threshold: 200,
                             effect: "fadeIn",
                             load: function (elements_left, settings) {

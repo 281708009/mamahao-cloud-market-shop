@@ -47,8 +47,8 @@ router
 router
     .get("/goods", goodsCtrl.index)
     .get("/goods/brand", goodsCtrl.brand)
-    .get("/goods/detail", goodsCtrl.detail)
-    .get("/goods/qualityPic", goodsCtrl.qualityPic)
+    //.get("/goods/detail", goodsCtrl.detail)
+    //.get("/goods/qualityPic", goodsCtrl.qualityPic)
 
     .post("/api/goods_type", goodsCtrl.goodsType)
     .post("/api/goods_list", goodsCtrl.list)
@@ -56,6 +56,9 @@ router
     .post("/api/search", goodsCtrl.search)
     .post("/api/searchKeywordTips", goodsCtrl.searchKeywordTips)
     .post("/api/filter", goodsCtrl.filter)
+    .post("/api/goods_detail", goodsCtrl.detail)
+    .post("/api/goods_detail_extra", goodsCtrl.detailExtra)
+    .post("/api/goods_quality", goodsCtrl.qualityPic)
 
     .post("/api/addToCart", goodsCtrl.addToCart)
 

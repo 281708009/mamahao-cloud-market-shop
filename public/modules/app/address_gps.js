@@ -14,8 +14,8 @@ define(function (require, exports, module) {
         var me = this, page = me.page, callback = me.callback;
 
         //获取地理位置信息
-        require.async('app/location', function (obj) {
-            new obj().searchNearBy({
+        require.async('app/location', function (fun) {
+            fun.searchNearBy({
                 success: function (res) {
                     page.renderModule('addressGPS', callback, res);
                 },

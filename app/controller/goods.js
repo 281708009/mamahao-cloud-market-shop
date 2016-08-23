@@ -78,52 +78,51 @@ var store = {
         res.render("goods/brand");
     },
     /*商品详情
-     * 备注:建议使用bigPipe方案
+     * 备注:先显示部分内容，然后在请求页面需要的其他接口
      * */
     detail: function (req, res, next) {
         var args = arguments;
-        var data = req.query;
+        var data = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
         var params = {
             inlet: data.inlet,
             jsonTerm: JSON.stringify(data)
         };
-        //异步流程控制
-        Thenjs(function (cont) {
-            HttpClient.request(args, {
-                url: API.goodsDetail,
-                data: params,
-                success: function (data) {
-                    res.render("goods/detail", data, function (err, html) {
-                        res.write(html);
-                        cont();
-                    });
-                }
-            });
-        }).then(function () {
-            var task = bigPipeTask.goodsDetail;
-            task.common.data = {
-                inlet: params.inlet,
-                templateId: data.templateId
-            };
-
-            //sku需要的参数
-            task.module[3].data = {
-                reservedNo: 0
-            };
-
-            //促销政策需要的参数
-            task.module[5].data = {
-                styleNumId: data.templateId
-            };
-
-            new bigPipe(task, args, true);
-            bigPipe.prototype.succeed = function () {
-                res.end();
-            };
-
-        }, function (cont, err) {
-            console.log(err);
+        HttpClient.request(args, {
+            url: API.goodsDetail,
+            data: params,
+            success: function (data) {
+                res.render("goods/detail", data, function (err, html) {
+                    res.json({template: html});
+                });
+            }
         });
+    },
+    //详情页继续请求其他接口
+    detailExtra: function (req, res, next) {
+        var data = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+
+        var task = bigPipeTask.goodsDetail;
+        task.common.data = {
+            inlet: data.inlet,
+            templateId: data.templateId
+        };
+
+        //sku需要的参数
+        task.module[3].data = {
+            reservedNo: 0
+        };
+
+        //促销政策需要的参数
+        task.module[5].data = {
+            styleNumId: data.templateId
+        };
+
+        bigPipe.prototype.succeed = function () {
+            var me = this;
+            var template = me.scripts.join('');
+            res.json({template: template});
+        };
+        new bigPipe(task, arguments);
     },
     //添加到购物车
     addToCart: function (req, res, next) {
@@ -138,10 +137,10 @@ var store = {
     },
     /*质检报告*/
     qualityPic: function (req, res, next) {
-        var data = {
-            templateId: req.query.templateId
-        };
-        res.render("goods/qualityPic", data);
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        res.render("goods/components/qualityPic", {rows: params}, function (err, html) {
+            res.json({template: html});
+        });
     },
     /*搜索入口*/
     search: function (req, res, next) {

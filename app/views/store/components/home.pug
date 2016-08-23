@@ -11,7 +11,7 @@ section.m-stores.flex
             .title
                 strong 我的服务店
                 if totalServiceShopNumber > 2
-                    a(href='#/list/server/'+request.isLocal) 更多
+                    a(href='#/list/server/') 更多
             if serviceShopList && serviceShopList.length
                 .list
                     +storeList(serviceShopList, request)
@@ -28,7 +28,7 @@ section.m-stores.flex
                 .title
                     strong 我的关注店
                     if totalFollowShopNumber > 2
-                        a(href='#/list/show/'+request.isLocal) 更多
+                        a(href='#/list/show/') 更多
                 .list
                     +storeList(followShopList, request)
 

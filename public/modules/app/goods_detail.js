@@ -6,21 +6,43 @@ define(function (require, exports, module) {
     var page = {
         config: {
             params: M.url.params,
+            hashParams: function () {
+                return M.url.getParams(location.hash.match(/(\w+=)([^\&]*)/gi).join('&'));  //json params
+            },
             // ajax向node请求的url;
-            api: {}
+            api: {
+                "extra": "/api/goods_detail_extra"
+            }
         },
-        init: function () {
+        init: function (params) {
+            var c = page.config;
+            M.ajax({
+                location: true,  //获取地理位置作为参数
+                showLoading: false,
+                url: c.api.extra,
+                data: params ? {data: JSON.stringify(params)} : {},
+                success: function (res) {
+                    console.log('success--->', res);
+                    var template = res.template;
+                    $('.spa').append(template);
+                }
+            });
+
+
             //加载swipe
             require.async('swipe', function () {
                 M.swipe.init(); //初始化Swipe
             });
 
+            M.lazyLoad.init();
+
             page.bindEvents();
         },
         bindEvents: function () {
+            var c = page.config, hashParams = c.hashParams();
 
             /*质检报告，数据缓存到本地*/
-            var templateId = M.url.query('templateId'),
+            var templateId = hashParams.templateId,
                 qualityPic = JSON.parse(localStorage.getItem(CONST.local_qualityPic)) || {};
             qualityPic[templateId] = $('.quality').data('pic');
             localStorage.setItem(CONST.local_qualityPic, JSON.stringify(qualityPic));
@@ -51,6 +73,17 @@ define(function (require, exports, module) {
             //点击门店地址
             $('.js-store').on('click', function () {
                 $('.m-select-address').addClass('show');
+                //获取地理位置信息
+                require.async('app/location', function (fun) {
+                    fun.searchNearBy({
+                        success: function (res) {
+                            console.log(res)
+                        },
+                        fail: function (res) {
+
+                        }
+                    });
+                });
             });
 
 
@@ -155,12 +188,5 @@ define(function (require, exports, module) {
         }
     };
 
-    /*
-     * 这里确保页面加载完后再绑定相应的事件，否则会出事数据缺失的问题
-     * 比如sku的选择
-     * */
-    $(function () {
-        page.init();
-        M.lazyLoad.init();
-    });
+    module.exports = page;
 });

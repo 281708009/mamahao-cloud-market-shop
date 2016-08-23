@@ -4,7 +4,7 @@
  * 调用方式：
  *
  * require.async('app/location', function (obj) {
- *    new obj().getLocation({
+ *    obj.getLocation({
  *       success: function (res) {
  *          console.log(res)
  *       },
