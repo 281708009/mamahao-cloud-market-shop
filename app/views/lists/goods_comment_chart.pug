@@ -12,7 +12,7 @@ if ratingCount && ratingCount.length
             strong 商品评分
             sub
                 sup(style='width: ' + average / len * 100 + '%;')
-            em #{average}分
+            em #{average.toFixed(1)}分
 
         dd
             each rate, index in rating

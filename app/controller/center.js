@@ -63,6 +63,20 @@ var center = {
             res.json({template: html});
         });
     },
+    /*删除地址*/
+    doAddressDelete: function (req, res, next) {
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        HttpClient.request(arguments, {
+            url: API.deleteAddress,
+            data: params,
+            success: function (data) {
+                if (data.success_code === 200) {
+                    data.success = true;
+                }
+                res.json(data);
+            }
+        });
+    },
     /*保存地址*/
     doAddressSave: function (req, res, next) {
         var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
@@ -167,10 +181,22 @@ var center = {
             new bigPipe(task, arguments);
         }
     },
-    obtainCoupons: function (req, res, next) {
+    //领券
+    couponsReceive: function (req, res, next) {
         var params = req.body;
         HttpClient.request(arguments, {
-            url: API.obtainCoupons,
+            url: API.couponsReceive,
+            data: params,
+            success: function (data) {
+                res.json(data);
+            }
+        });
+    },
+    //兑换券
+    couponsExchange: function (req, res, next) {
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        HttpClient.request(arguments, {
+            url: API.couponsExchange,
             data: params,
             success: function (data) {
                 res.json(data);

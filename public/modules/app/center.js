@@ -11,17 +11,20 @@ define(function (require, exports, module) {
                 orders: "/api/orders",
                 orderDetail: "/api/order_detail",
                 orderResult: "/api/order_result",
-                address: "/api/address",
-                addressEdit: "/api/address_edit",
-                addressGPS: "/api/address_gps",
-                addressSearch: "/api/address_search",
-                addressSave: "/api/address/save",
-                queryArea: "/api/address/queryArea",
-                beans: "/api/beans",
-                coupons: "/api/coupons",
-                integral: "/api/integral",
-                orderExpress: "/api/order_express",
+                address: "/api/address",    //收货地址列表
+                addressEdit: "/api/address_edit",   //编辑地址
+                addressGPS: "/api/address_gps", //gps定位附近地址
+                addressSearch: "/api/address_search",   //搜索地址
+                addressSave: "/api/address/save",   //保存收货地址
+                addressDelete: "/api/address/delete",   //删除收货地址
+                queryArea: "/api/address/queryArea",   //查询省市区
+                beans: "/api/beans",    //麻豆列表
+                coupons: "/api/coupons",    //优惠券列表
+                couponsExchange: "/api/coupons_exchange",  //兑换优惠券
+                integral: "/api/integral",  //积分列表
+                orderExpress: "/api/order_express",  //订单物流信息
                 orderReview: "/api/order_review",
+                orderReviewSubmit: "/api/order/reviewSubmit",
                 orderReviewDetail: "/api/order_review_detail",
                 orderRebuy: "/api/order_rebuy"
             }
@@ -144,14 +147,12 @@ define(function (require, exports, module) {
                         data.star = +$('#goodsStar').data('star');
                         //return console.log(data);
                         M.ajax({
-                            url: '/api/order/reviewSubmit',
+                            url: page.config.api['orderReviewSubmit'],
                             data: {data: JSON.stringify(data)},
                             success: function (res) {
                                 // 跳转到评价成功结果页
                                 if (res.success) {
                                     location.href = '/center#/order/result/' + data.templateId + '/' + data.orderNo + '/' + res.mbeanGet;
-                                } else {
-                                    alert(res.msg);
                                 }
                             }
                         })
@@ -278,7 +279,7 @@ define(function (require, exports, module) {
                     $module.on('click', '.list li', function () {
                         var $this = $(this), $spa = $("#app");
                         var data = $spa.data('data') || {};
-                        data.gpsAddr = $this.find('dt').text();
+                        data.gpsAddr = $this.find('dt span').text();
                         $spa.data('data', data);
                         window.history.go(-1);
                     });
@@ -358,6 +359,29 @@ define(function (require, exports, module) {
                             }
                             ele.append(data.template);
                         }
+                    });
+
+                    var $module = $(this);
+                    $module.on('click', '.js-exchange', function () {
+                        var $this = $(this), code = $this.siblings('.coupon-code').val();
+                        var params = {
+                            cdKey: code
+                        };
+                        M.ajax({
+                            url: page.config.api['couponsExchange'],
+                            data: {data: JSON.stringify(params)},
+                            success: function (res) {
+                                // 兑换成功刷新当前页面
+                                if (res.success) {
+                                    M.tips({
+                                        body: '优惠券兑换成功！',
+                                        callback: function () {
+                                            location.reload();
+                                        }
+                                    });
+                                }
+                            }
+                        });
                     });
                 }
             };
@@ -483,17 +507,19 @@ define(function (require, exports, module) {
                     city: $('#list-city'),
                     area: $('#list-area')
                 };
-                var areaId = PCD.area.val();
-                if (/-1/.test(areaId)) {
-                    return M.tips('请选择区域');
-                }
-                var district = (function () {
-                    var arr = [];
-                    for (var i in PCD) {
-                        arr.push(PCD[i].find('option:selected').text());
+
+                for (var i in PCD) {
+                    var $item = PCD[i];
+                    if (/-1/.test($item.val())) {
+                        return M.tips($item.find('option:eq(0)').text());
                     }
-                    return arr.join('');
-                })();
+                }
+
+                var areaId = PCD.area.val();
+
+                var district = $.map(PCD, function (item) {
+                    return item.find('option:selected').text();
+                }).join('');
 
                 $('.js-district').val(district).data('area-id', areaId);
                 $module.find('.u-area .mask').trigger('click');
@@ -513,6 +539,26 @@ define(function (require, exports, module) {
             $module.on('click', '.js-gps', function () {
                 page.getAddressData($('.fm-addr-info'));
                 location.href = '/center#/addressGps';
+            });
+            /*保存地址*/
+            $module.on('click', '.js-delete', function () {
+                var params = {
+                    deliveryAddrId: $(this).data('id')
+                };
+                M.ajax({
+                    url: page.config.api['addressDelete'],
+                    data: {data: JSON.stringify(params)},
+                    success: function (res) {
+                        if (res.success) {
+                            M.tips({
+                                body: '收货地址删除成功！',
+                                callback: function () {
+                                    location.href = '/center#/address';
+                                }
+                            })
+                        }
+                    }
+                });
             });
 
             /*保存地址*/

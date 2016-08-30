@@ -669,7 +669,7 @@ define(function (require, exports, module) {
                     },
                     /*授权，初始化*/
                     init: function (wx, args) {
-                        var me = util;
+                        if (!args) args = {};
                         MMH.ajax({
                             data: {url: window.location.href, r: Math.random()},
                             dataType: "jsonp",
@@ -725,7 +725,6 @@ define(function (require, exports, module) {
 
                                 wx.ready(function () {
                                     console.info('[wechat config is ready]');
-                                    util.share(wx, me.data);
                                     args.ready && args.ready.call(this);
                                 });
 
@@ -738,38 +737,45 @@ define(function (require, exports, module) {
                         });
                     },
                     /*分享*/
-                    share: function (wx, msg) {
-                        var wxData = {
-                            title: msg.title,
-                            link: msg.url,
-                            imgUrl: msg.image,
-                            desc: msg.desc,
-                            success: function (e) {
-                                // 接口调用成功时执行的回调函数;
-                                msg.success && msg.success(e);
-                            },
-                            cancel: function () {
-                                // 用户点击取消时的回调函数，仅部分有用户取消操作的api才会用到
-                                msg.cancel && msg.cancel();
+                    share: function (wx, opts) {
+                        var me = util, params = $.extend({}, me.data, opts || {});
+                        //先初始化
+                        util.init(wx, {
+                            ready: function () {
+                                var wxData = {
+                                    title: params.title,
+                                    link: params.url,
+                                    imgUrl: params.image,
+                                    desc: params.desc,
+                                    success: function (e) {
+                                        // 接口调用成功时执行的回调函数;
+                                        params.success && params.success(e);
+                                    },
+                                    cancel: function () {
+                                        // 用户点击取消时的回调函数，仅部分有用户取消操作的api才会用到
+                                        params.cancel && params.cancel();
+                                    }
+                                };
+                                var wxDataTimeline = {
+                                    title: params.title,
+                                    link: params.url,
+                                    imgUrl: params.image,
+                                    success: function (e) {
+                                        // 接口调用成功时执行的回调函数;
+                                        params.success && params.success(e);
+                                    },
+                                    cancel: function () {
+                                        // 用户点击取消时的回调函数，仅部分有用户取消操作的api才会用到
+                                        params.cancel && params.cancel();
+                                    }
+                                };
+                                wx.onMenuShareTimeline(wxDataTimeline);
+                                wx.onMenuShareAppMessage(wxData);
+                                wx.onMenuShareQQ(wxData);
+                                wx.onMenuShareWeibo(wxData);
                             }
-                        };
-                        var wxDataTimeline = {
-                            title: msg.title,
-                            link: msg.url,
-                            imgUrl: msg.image,
-                            success: function (e) {
-                                // 接口调用成功时执行的回调函数;
-                                msg.success && msg.success(e);
-                            },
-                            cancel: function () {
-                                // 用户点击取消时的回调函数，仅部分有用户取消操作的api才会用到
-                                msg.cancel && msg.cancel();
-                            }
-                        };
-                        wx.onMenuShareTimeline(wxDataTimeline);
-                        wx.onMenuShareAppMessage(wxData);
-                        wx.onMenuShareQQ(wxData);
-                        wx.onMenuShareWeibo(wxData);
+                        });
+
                     }
                 };
 
@@ -900,7 +906,7 @@ define(function (require, exports, module) {
             /*do ajax*/
             ajax: function (params) {
                 var me = this, o = me.opts;
-                console.log(JSON.stringify(o))
+                //console.log(JSON.stringify(o))
 
                 me.$ele.data('locked', true);   //锁定当前请求
 
@@ -1008,7 +1014,7 @@ define(function (require, exports, module) {
                     !$this.text() && $this.text(options.value);
 
                     //绑定事件
-                    $this.siblings(options.decrement + ',' + options.increment).on('click', calc);
+                    $this.siblings(options.decrement + ',' + options.increment).off().on('click', calc);
                 }
 
                 //计算逻辑

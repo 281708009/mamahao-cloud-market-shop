@@ -150,7 +150,7 @@ var task = {
                 blank: {style: '10', tips: '暂时还没有商品评论哦~'},
                 data: {
                     page: 1,
-                    pageSize: 2
+                    pageSize: 10
                 }
             },
             //SKU

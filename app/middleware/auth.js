@@ -10,7 +10,6 @@ exports.requiredAuthentication = function (req, res, next) {
     var user_session = req.session.user;
 
     if (user_session && user_session.token) {
-        console.log(">>>>>>>>>>>>>>>session_id:" + req.session.id);
         next();
     } else {
         if (isWeChat) {

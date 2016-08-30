@@ -21,7 +21,7 @@ var store = {
         var params = $.extend({}, defaults, data);
         // 本地缓存的城市与当前定位的城市是否相同;
         var querystring = require("querystring");
-        var locationInfo = querystring.parse(req.get('location') || null);  //header中的定位信息
+        var locationInfo = querystring.parse(req.get('location')) || {};  //header中的定位信息
         if (params.city && params.city != locationInfo.city) {
             params.isLocal = 0; // 非当前定位地址;
         }else{
@@ -59,7 +59,7 @@ var store = {
         var data = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
         // 本地缓存的城市与当前定位的城市是否相同;
         var querystring = require("querystring");
-        var locationInfo = querystring.parse(req.get('location') || null);  //header中的定位信息
+        var locationInfo = querystring.parse(req.get('location')) || {};  //header中的定位信息
         if (data.city && data.city != locationInfo.city) {
             data.isLocal = 0; // 非当前定位地址;
         }else{

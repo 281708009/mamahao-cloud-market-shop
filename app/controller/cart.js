@@ -98,24 +98,6 @@ var cart = {
             console.log(err)
         })
     },
-    delivery: function (req, res, next) {
-        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
-
-        var data = {inlet: 1, stockTip: 1};
-        if (params.deliveryAddrId) {
-            data.deliveryAddrId = params.deliveryAddrId;
-        }
-        HttpClient.request(arguments, {
-            url: API.settlement,
-            data: data,
-            success: function (data) {
-                var json = data;
-                res.render('cart/delivery', json, function (err, html) {
-                    res.json({template: html});
-                });
-            }
-        });
-    },
     coupon: function (req, res, next) {
 
     },
@@ -144,6 +126,46 @@ var cart = {
             console.log(err)
         })
     },
+    payResult: function(req, res, next){
+        var args = arguments;
+        var params = req.query; // 请求参数值;
+        console.log(params);
+
+        Thenjs(function (cont) {
+            HttpClient.request(args, {
+                url: API.orderLock,
+                data: {orderBatchNo: params.batchNo,orderPayType:params.orderPayType},
+                success: function (data) {
+                    cont();
+                }
+            });
+        }).then(function () {
+            HttpClient.request(args, {
+                url: API.getExtraScore,
+                data: {orderBatchNo: params.batchNo},
+                success: function (data) {
+                    var json = data;
+                    json.orderBatchNo = params.batchNo;
+                    res.render('cart/result', json);
+                }
+            });
+
+        }, function (cont, err) {
+            console.log(err);
+        })
+
+    },
+    submitInvoice: function (req, res, next) {
+        var args = arguments;
+        var params = req.body.data; // 请求参数值;
+        HttpClient.request(args, {
+            url: API.submitInvoice,
+            data: params,
+            success: function (data) {
+                res.json(data);
+            }
+        });
+    },
     /* 确认订单 */
     check: function (req, res, next) {
         var args = arguments;
@@ -153,7 +175,6 @@ var cart = {
             data: params,
             success: function (data) {
                 //data.openid = params.openid;
-                console.log('支付响应结果----------', data);
                 res.json(data);
             }
         });
@@ -181,9 +202,10 @@ var cart = {
     },
     aliPay: function (req, res, next) {
         var params = req.body;
+        console.info(params);
         HttpClient.request(arguments, {
             url: API.aliPay,
-            data: {batchNo: params.batchNo},
+            data: {batchNo: params.batchNo,resource:params.resource},
             success: function (data) {
                 res.json(data);
             }

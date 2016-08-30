@@ -89,9 +89,9 @@ bigPipe.prototype.fetch = function (item, callback) {
             //此处有坑，由于多个请求回来的数据时间顺序不一致，data中的顺序不对
             me.data.push(data);
 
-            var context = (pug.renderFile(viewPath + params.pug, data) || blank).replace(/"/g, '\\"');     //内容
+            var context = (pug.renderFile(viewPath + params.pug, data) || blank).replace(/'/g, "\\'").replace(/\n/g, "\\n");     //内容
             if (context) {
-                var script = '<script>bigPipeRender("' + params.selector + '","' + context + '");</script>';
+                var script = "<script>bigPipeRender('" + params.selector + "','" + context + "');</script>";
                 me.scripts.push(script);
                 me.chunked && res.write(script);
             }
@@ -101,9 +101,9 @@ bigPipe.prototype.fetch = function (item, callback) {
         error: function (error) {
             me.data.push({request: params.data});
 
-            var context = blank.replace(/"/g, '\\"');
+            var context = blank.replace(/'/g, "\\'").replace(/\n/g, "\\n");
             if (context) {
-                var script = '<script>bigPipeRender("' + params.selector + '","' + context + '");</script>';
+                var script = "<script>bigPipeRender('" + params.selector + "','" + context + "');</script>";
                 me.scripts.push(script);
                 me.chunked && res.write(script);
             }
@@ -144,11 +144,17 @@ bigPipe.prototype.succeed = function () {
 bigPipe.prototype.failed = function (error) {
     // end the stream， to response
     var me = this, res = me.http[1];
-    if(me.chunked){
-        return res.end();
-    }
-    res.status(error.status).json(error);
+    console.error('[bigPipe task error]', error);
+    res.end();
 };
 
 module.exports = bigPipe;
+
+
+//ok? understand?
+//that is all
+//thx for view
+
+//bye ,see u tomorrow -_-
+
 

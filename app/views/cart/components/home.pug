@@ -26,7 +26,7 @@ if wholeItems && wholeItems.length
                                         strong #{item.pmtDesc}
                         .body
                             each goods in item.cartCompoents
-                                ul.js-jump(url='/goods/detail?inlet=6&templateId=' + goods.templateId + '&itemId=' + goods.itemId)
+                                ul.js-jump(url='/goods#/detail/inlet=6&templateId=' + goods.templateId + '&itemId=' + goods.itemId)
                                     if goods.isGift
                                         li.li-1
                                     else
@@ -51,7 +51,7 @@ if wholeItems && wholeItems.length
                                             .u-quantity
                                                 a.decrement.js-update(href='javascript:;',data-count=item.compoentCount - 1,class=item.compoentCount == 1 ? 'disabled' : '') -
                                                 .number #{goods.compoentCount}
-                                                a.increment.js-update(href='javascript:;',data-count=item.compoentCount + 1) +
+                                                a.increment.js-update(href='javascript:;',data-count=item.compoentCount + 1,data-max=1) +
                                     if goods.isGift
                                         li.li-4
                                             .price
@@ -59,12 +59,12 @@ if wholeItems && wholeItems.length
                                     else
                                         li.li-4
                                             .price
-                                                strong ￥#{formatPrice(goods.pmtPrice)}
+                                                strong ￥#{goods.pmtPrice}
                                                 if goods.pmtPrice < goods.price
-                                                    del ￥#{formatPrice(goods.price)}
+                                                    del ￥#{goods.price}
                                             .delete.js-del 删除
                         dl.footer
-                            dt 小计：￥#{formatPrice(item.pmtPrice)}
+                            dt 小计：￥#{item.pmtPrice}
                 else if item.pmtType == 4
                     //- 套餐
                     .item.group(class=item.invalid ? 'fail' : '',data-compoent-id=item.compoentId, data-compoent-type=item.compoentType)
@@ -102,16 +102,16 @@ if wholeItems && wholeItems.length
                                         p #{goods.compoentCount}件
                                     li.li-4
                                         .price
-                                            strong ￥#{formatPrice(goods.pmtPrice)}
+                                            strong ￥#{goods.pmtPrice}
                                             if goods.pmtPrice < goods.price
-                                                del ￥#{formatPrice(goods.price)}
+                                                del ￥#{goods.price}
                         dl.footer
-                            dd 已优惠 ￥#{formatPrice(item.discountPrice)}
-                            dt 小计：￥#{formatPrice(item.pmtPrice)}
+                            dd 已优惠 ￥#{item.discountPrice}
+                            dt 小计：￥#{item.pmtPrice}
                 else
                     .item.single(class=item.invalid ? 'fail' : '',data-compoent-id=item.compoentId, data-compoent-type=item.compoentType)
                         .body
-                            ul.js-jump(url='/goods/detail?inlet=6&templateId=' + item.templateId + '&itemId=' + item.itemId)
+                            ul.js-jump(url='/goods#/detail/inlet=6&templateId=' + item.templateId + '&itemId=' + item.itemId)
                                 li.li-1
                                     if item.selected
                                         input.u-checkbox(type='checkbox',checked='checked')
@@ -133,9 +133,9 @@ if wholeItems && wholeItems.length
                                         a.increment.js-update(href='javascript:;',data-count=item.compoentCount + 1) +
                                 li.li-4
                                     .price
-                                        strong ￥#{formatPrice(item.pmtPrice)}
+                                        strong ￥#{item.pmtPrice}
                                         if item.pmtPrice < item.price
-                                            del ￥#{formatPrice(item.price)}
+                                            del ￥#{item.price}
                                     .delete.js-del 删除
         // 底部合计
     .m-cart-footer
@@ -151,10 +151,10 @@ if wholeItems && wholeItems.length
                 dl
                     dt
                         | 合计：
-                        strong ￥#{formatPrice(totalPrice)}
+                        strong ￥#{totalPrice}
                     dd
                         | 为您节省
-                        span ￥#{formatPrice(disPrice)}
+                        span ￥#{disPrice}
             li.li-3
                 a.u-btn.success(href=goodsCount ? '#/settlement' : 'javascript:;',class=goodsCount ? '' : 'ban') 结算
                     span (#{goodsCount})

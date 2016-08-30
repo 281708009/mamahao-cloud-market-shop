@@ -12,7 +12,7 @@ block content
     section.m-pay-form
         dl.flex-center
             dt 请支付
-            dd ￥#{formatPrice(price)}
+            dd ￥#{price}
         ul
             li.u-arrow.right(data-no=orderBatchNo,data-openid=openid)
                 a.weixin.js-weixin(href='javascript:;') 微信支付

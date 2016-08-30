@@ -3,6 +3,7 @@ html(lang="en")
     head
         meta(charset='utf-8')
         block title
+            title 妈妈好商城
         link(rel='dns-prefetch', href='//s.mamhao.cn')
         link(rel='dns-prefetch', href='//img.mamhao.cn')
         link(rel='dns-prefetch', href='//api.mamahao.com')
@@ -10,15 +11,12 @@ html(lang="en")
         meta(name='apple-mobile-web-app-status-bar-style', content='white')
         meta(name='apple-mobile-web-app-capable', content='yes')
         meta(name='format-detection', content='telephone=no; email=no')
-        meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
         block meta
+        link(rel='stylesheet', href='http://s.mamhao.cn/m/common/css/reset.css')
+        link(rel='stylesheet', href='http://s.mamhao.cn/m/v1/style/unit.css')
         block css
-
     body(ontouchstart)
-
-        //- 主内容区域
         block content
 
-        //- js code
-        block js
-
+        //- 公用页面底部元素
+        include ../includes/foot.pug

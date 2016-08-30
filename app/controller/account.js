@@ -49,6 +49,14 @@ var account = {
             url: API.bind,
             data: params,
             success: function (data) {
+                //设置cookie
+                var crypto = require('../utils/crypto');
+                var cookie_setting = {path: '/'};
+                res.cookie('head', crypto.cipher(data.headPic), cookie_setting);
+                res.cookie('token', crypto.cipher(data.token), cookie_setting);
+                res.cookie('memberId', crypto.cipher(data.memberId), cookie_setting);
+                res.cookie('nick', crypto.cipher(data.memberNickName), cookie_setting);
+
                 //绑定成功设置session
                 var user_session = {
                     id: data.memberId,

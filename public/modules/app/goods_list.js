@@ -9,10 +9,7 @@ define(function (require, exports, module) {
                 return M.url.getParams(location.hash.match(/(\w+=)([^\&]*)/gi).join('&'));  //json params
             },
             searchParams: function () {
-                return JSON.parse(localStorage.getItem(CONST.local_search_params));   //local: 请求商品列表需要的参数
-            },
-            locationParams: function () {
-                return JSON.parse(localStorage.getItem(CONST.local_location)); //local: 地理位置信息
+                return JSON.parse(localStorage.getItem(CONST.local_search_params)) || {};   //local: 请求商品列表需要的参数
             }
         },
         init: function () {
@@ -22,7 +19,7 @@ define(function (require, exports, module) {
         bindEvents: function () {
             var c = page.config;
 
-            var hashParams = c.hashParams(), searchParams = c.searchParams(), locationParams = c.locationParams();
+            var hashParams = c.hashParams(), searchParams = c.searchParams();
 
             //懒加载
             M.lazyLoad.init({
@@ -30,8 +27,7 @@ define(function (require, exports, module) {
             });
 
             //分页配置
-            var posParams = {lat: locationParams.lat, lng: locationParams.lng, areaId: locationParams.areaId},
-                pgParams = $.extend({}, searchParams, posParams, hashParams);
+            var pgParams = $.extend({}, searchParams, hashParams);
             $.pagination({
                 params: pgParams,
                 keys: {index: "nextPageStart"},

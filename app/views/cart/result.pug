@@ -1,0 +1,83 @@
+extends ../layouts/layout.pug
+//-block title
+    title 付款成功
+block js
+    script seajs.use('app/pay_result');
+
+block content
+    section.m-order-receipt.m-pay-success
+        .content
+            .pic
+                img(src='http://s.mamhao.cn/m/v1/images/bg-paying.png')
+            h2 付款成功啦!
+            h4 您确认订单收货7天后将获得
+            h3
+                if madouCount > 0
+                    | #{madouCount}妈豆
+                if mcCount > 0
+                    | #{mcCount}MC积分
+                if gbCount > 0
+                    | #{gbCount}GB积分
+            ul
+                li
+                    a.u-btn.max.alone(href='/center#/orders') 查看订单
+                li
+                    a.u-btn.max.alone.success(href='/') 再逛逛
+        .invoice
+            h3
+                em.js-invoice 发票信息
+            ul.js-invoice-infos
+                li
+                    em 发票类型：
+                    p
+                        label
+                            input.u-radio(type='radio',name='invoiceType',checked="",value=1)
+                            | 个人
+                        label
+                            input.u-radio(type='radio',name='invoiceType',value=2)
+                            | 公司
+                li
+                    em 发票抬头：
+                    p
+                        input(type='text',name='invoceTitle',placeholder='请填写发票抬头')
+                        button#submitInvoice 确定
+                        span 点击确定后不能修改
+            if rows && rows.length
+                .push
+                    h2 您还需要
+                    //- 以下商品列表
+                    ul.u-goods-list
+                        each item in rows
+                            li
+                                a(href='/goods#/detail/inlet=6&templateId=' + item.styleNumId + '&itemId=' + item.itemId)
+                                    .pic
+                                        img(data-original=item.pic, src=placeholderPic, alt=item.itemName)
+                                        //- topRightTag，枚举：0不显示 1 赠 2 券
+                                        case item.topRightTag
+                                            when 1
+                                                sup 赠
+                                            when 2
+                                                sub 劵
+                                    .info
+                                        h3 #{item.itemName}
+                                        .tools
+                                            strong ￥#{item.minPrice}
+
+                                                if item.proTag && item.proTag.length
+                                                    if item.proTag.length > 1
+                                                        em 多重优惠
+                                                    else
+                                                        case item.proTag[0]
+                                                            when 3
+                                                                //- em 满赠
+                                                            when 4
+                                                                em 套餐
+                                                            when 5
+                                                                em 满减
+                                                            when 6
+                                                                //- em 赠品
+                                                else if item.price < item.minPrice
+                                                    em 直降
+
+                                        if item.totalSale
+                                            .sales 已售#{item.totalSale}件

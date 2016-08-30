@@ -1,0 +1,127 @@
+extends ../layouts/initial.pug
+block title
+    title 扫码付
+block meta
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+    link(rel='stylesheet', href='http://s.mamhao.cn/m/v1/style/pay-code.css')
+    //-临时样式开始
+    link(rel='stylesheet', href='http://s.mamhao.cn/m/v1/style/common.css')
+    link(rel='stylesheet', href='http://s.mamhao.cn/m/v1/style/unit.css')
+    link(rel='stylesheet', href='http://s.mamhao.cn/m/v1/style/module.css')
+    //-临时样式结束 可删
+    style.
+        html, body {height: 100%; overflow: hidden;}
+        body {background: #f0f0f0;color: #333;}
+block js
+    script seajs.use('app/pay_code');
+block content
+    // 商品列表
+    if isWeChat || isAlipay
+        -if(isWeChat){var clas = "weixin";}else if(isAlipay){var clas = "alipay";}
+        section.m-code-goods(class=clas)
+            .content
+                .address
+                    span 杭州市上城区延安路98号
+                .goods
+                    ul.list
+                        li
+                            dl.desc
+                                dt 好孩子高景观可坐可躺成长推车（适用0-36个月）
+                                dd 白色
+                            dl.price
+                                dt ￥1349
+                                dd x1
+                        li
+                            dl.desc
+                                dt 好孩子高景观可坐可躺成长型婴儿四轮推车GB08-W（适用0-36个月）
+                                dd 白色
+                            dl.price
+                                dt ￥1349
+                                dd x1
+                        li
+                            dl.desc
+                                dt 好孩子高景观可坐可躺成长型婴儿四轮推车GB08-W（适用0-36个月）
+                                dd 白色
+                            dl.price
+                                dt ￥1349
+                                dd x1
+                        li
+                            dl.desc
+                                dt 好孩子高景观可坐可躺成长型婴儿四轮推车GB08-W（适用0-36个月）
+                                dd 白色
+                            dl.price
+                                dt ￥1349
+                                dd x1
+                        li
+                            dl.desc
+                                dt 好孩子高景观可坐可躺成长型婴儿四轮推车GB08-W（适用0-36个月）
+                                dd 白色
+                            dl.price
+                                dt ￥1349
+                                dd x1
+                    ol.total
+                        li
+                            em 商品金额
+                            span ￥150501
+                        li
+                            em 优惠金额
+                            span -￥505.5
+                .warn
+                    p 支付完成后，如需退款请及时联系商家
+                    .m-service
+                        a(href='javascript:;') 妈妈好平台提供支持
+            .footer
+                .actual
+                    | 实付
+                    strong ￥15000.00
+                .button
+                    a.alipay(href='javascript:;') 支付宝付款
+                    a.weixin(href='javascript:;') 微信安全支付
+        // 等待
+        section.m-code-block.m-code-wait
+            .m-notice
+                dl.tip
+                    dt 订单正在生成中，请您耐心等待！
+                    dd 待商家生成订单后，点击“刷新”即可付款
+                .form
+                    a.u-btn.checked(href='javascript:;') 刷新
+            .m-service
+                a(href='javascript:;') 妈妈好平台提供支持
+        // 验证码
+        section.m-code-block.m-code-verify
+            .m-notice
+                dl.tip
+                    dt 终端请求频次过快，请输入验证码！
+                .form
+                    .input
+                        input(type='text', placeholder='请输入验证码', maxlength='6')
+                        img(src='http://yy.mamahao.com/res/image.jsp')
+                    .submit
+                        a.u-btn.success(href='javascript:;') 确定
+            .m-service
+                a(href='javascript:;') 妈妈好平台提供支持
+    else
+        // 外部
+        section.m-code-block.m-code-other.show
+            .m-notice
+                dl.tip
+                    dt 您的姿势不对哈！
+                    dd 请使用以下APP扫码付款
+                ul.app
+                    li.alipay
+                        a(href='alipays://') 支付宝
+                    li.weixin
+                        a(href='weixin://') 微信
+                    li.mamahao
+                        a(href='mamahao://') 妈妈好
+            .m-service
+                a(href='javascript:;') 妈妈好平台提供支持
+
+    // JS脚本;
+    script.
+        var VM = {
+            openId: "#{openId}",
+            isWeChat: #{isWeChat},
+            isAlipay: #{isAlipay},
+            isMamahao: #{isMamahao}
+        };

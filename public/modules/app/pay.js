@@ -42,7 +42,7 @@ define(function(require, exports, module) {
 
         M.ajax({
             url: '/api/aliPay',
-            data: {'batchNo': $this.parent().data('no')},
+            data: {'batchNo': $this.parent().data('no'),'resource':2},
             success:function (res) {
                 var $form = $(res.data);
                 //console.log($form);
@@ -92,8 +92,9 @@ define(function(require, exports, module) {
                                 },
                                 function(res){
                                     alert("1"+res.err_msg);
-                                    if(res.err_msg == "get_brand_wcpay_request：ok" ) {
+                                    if(res.err_msg == "get_brand_wcpay_request:ok" ) {
                                         alert('支付成功');
+                                        location.href='/pay/result?orderPayType=2&batchNo=' + $this.parent().data('no')
                                     }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
 
                                 }
@@ -112,8 +113,9 @@ define(function(require, exports, module) {
                                 },
                                 function(res){
                                     alert("2"+res.err_msg);
-                                    if(res.err_msg == "get_brand_wcpay_request：ok" ) {
+                                    if(res.err_msg == "get_brand_wcpay_request:ok" ) {
                                         alert('支付成功');
+                                        location.href='/pay/result?orderPayType=2&batchNo=' + $this.parent().data('no')
                                     }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
 
                                 }
@@ -131,8 +133,9 @@ define(function(require, exports, module) {
                                 },
                                 function(res){
                                     alert("3"+res.err_msg);
-                                    if(res.err_msg == "get_brand_wcpay_request：ok" ) {
+                                    if(res.err_msg == "get_brand_wcpay_request:ok" ) {
                                         alert('支付成功');
+                                        location.href='/pay/result?orderPayType=2&batchNo=' + $this.parent().data('no')
                                     }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
 
                                 }
@@ -150,8 +153,9 @@ define(function(require, exports, module) {
                             "paySign" : res.paySign //微信签名
                         },
                         function(res){
-                            if(res.err_msg == "get_brand_wcpay_request：ok" ) {
+                            if(res.err_msg == "get_brand_wcpay_request:ok" ) {
                                 alert('支付成功');
+                                location.href='/pay/result?orderPayType=2&batchNo=' + $this.parent().data('no')
                             }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
 
                         }

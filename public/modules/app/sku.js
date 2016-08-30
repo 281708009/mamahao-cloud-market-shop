@@ -16,8 +16,7 @@ define(function (require, exports, module) {
 
     //sku对象
     var sku = {
-        delimiter: 'b',      //分隔符
-        initialized: false  //是否初始化标识
+        delimiter: 'b'      //分隔符
     };
 
     //sku结果集
@@ -27,14 +26,12 @@ define(function (require, exports, module) {
     //初始化，组合新的结果集
     sku.init = function (container) {
 
-        if (sku.initialized) return false;
-
         console.time('skuInit time');
 
         sku.container = $(container);  //存储skuData的外容器
 
         var data = $(container).data('sku-map');
-        if (!data) return;
+        if (!data || sku.container.data('initialized')) return;
         //console.log(JSON.stringify(data))
 
         //拿到已有skuMap中所有的sku组合key
@@ -74,7 +71,7 @@ define(function (require, exports, module) {
 
         });
 
-        sku.initialized = true;    //初始化完成
+        sku.container.data('initialized', true);
 
         //打印一下sku字典拼装花费的时间
         console.timeEnd('skuInit time');

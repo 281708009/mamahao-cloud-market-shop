@@ -23,7 +23,7 @@ if vouchers.length
                                 p 适用范围：#{item.applyDes}
                                 p 有效期至：#{item.timeDes}
                         .button
-                            if !item.isReceive
+                            if item.isReceive
                                 button.u-btn.mini.success.ban 已领取
                             else
                                 button.u-btn.mini.success.js-voucher 立即领取

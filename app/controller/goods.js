@@ -82,7 +82,7 @@ var store = {
      * */
     detail: function (req, res, next) {
         var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
-        var location = require("querystring").parse(req.get('location') || null);  //header中的定位信息
+        var location = require("querystring").parse(req.get('location')) || {};  //header中的定位信息
         var args = {
             inlet: params.inlet,
             jsonTerm: JSON.stringify({
@@ -116,6 +116,13 @@ var store = {
             templateId: data.templateId
         };
 
+        //更新地理位置信息
+        if (data.location) {
+            task.common.data.areaId = data.location.areaId;
+            task.common.data.lat = data.location.lat;
+            task.common.data.lng = data.location.lng;
+        }
+
         //sku需要的参数
         task.module[3].data = {
             reservedNo: 0
@@ -132,6 +139,32 @@ var store = {
             res.json({template: template});
         };
         new bigPipe(task, arguments);
+    },
+    //商品组合促销套餐列表
+    promoteGroup: function (req, res, next) {
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        HttpClient.request(arguments, {
+            url: API.goodsPromoteGroup,
+            data: params,
+            success: function (data) {
+                res.render("goods/components/promote_group", {rows: data}, function (err, html) {
+                    res.json({template: html});
+                });
+            }
+        });
+    },
+    //查询sku
+    sku: function (req, res, next) {
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        HttpClient.request(arguments, {
+            url: API.querySku,
+            data: params,
+            success: function (data) {
+                res.render("lists/goods_sku", data, function (err, html) {
+                    res.json({template: html});
+                });
+            }
+        });
     },
     //添加到购物车
     addToCart: function (req, res, next) {

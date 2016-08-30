@@ -37,6 +37,9 @@ var weChat = {
             openId = req.cookies && req.cookies['openId'],
             token = req.cookies && req.cookies['token'];
 
+        //console.info('[cookies]====', req.cookies)
+        console.info('[session_id]====', req.cookies['session_id'])
+
         if (isWeChat) {
             if (token) {
                 //已登录
@@ -47,17 +50,17 @@ var weChat = {
                     nickname: crypto.decipher(req.cookies['nick']),
                     avatar: crypto.decipher(req.cookies['head'])
                 };
-                console.info("user_session--->", user_session);
+                //console.info("user_session--->", user_session);
                 req.session.user = user_session;//设置当前用户到session
                 next();
             } else {
-                console.info("openId--->", openId);
+                //console.info("openId--->", openId);
                 //微信授权并尝试登录
-                if (!openId || !token) {
-                    //未授权或者已授权但未获取到token，这个地方得保证微信授权后成功在client设置cookie
+                if (!openId) {
+                    //未授权或者已授权但未绑定，这个地方得保证微信授权后到绑定页面成功在client设置cookie
                     var originalUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
                     var baseUrl = 'http://' + AppConfig.site.api.host + AppConfig.site.api.root; //baseUrl
-                    var redirect_uri = encodeURIComponent(baseUrl + '/V1/weixin/oauth/callback.htm?resouce=1' + '&go=' + encodeURIComponent(originalUrl));
+                    var redirect_uri = encodeURIComponent(baseUrl + 'V1/weixin/oauth/callback.htm?resource=1' + '&go=' + originalUrl);
                     var authUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + AppConfig.site.wechat.app_id + '&redirect_uri=' + redirect_uri + '&response_type=code&scope=snsapi_base&state=12345465#wechat_redirect';
                     return res.redirect(authUrl);
                 } else {

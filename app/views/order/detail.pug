@@ -37,12 +37,13 @@ section.m-order-detail
                 em 送达时间：
                 p 预计#{detail.distributionInfo.arriveTime}前送达
     // 收货人信息
-    .u-send
-        dl
-            dt
-                strong #{detail.deliveryInfo.deliveryName}
-                em #{detail.deliveryInfo.deliveryPhone}
-            dd #{detail.deliveryInfo.deliveryAddr}
+    if detail.deliveryInfo
+        .u-send
+            dl
+                dt
+                    strong #{detail.deliveryInfo.deliveryName}
+                    em #{detail.deliveryInfo.deliveryPhone}
+                dd #{detail.deliveryInfo.deliveryAddr}
     // 订单商品信息
     .u-order
         each item in detail.data
@@ -67,9 +68,9 @@ section.m-order-detail
                                 dt
                                     sub 赠品
                             else
-                                dt ￥#{formatPrice(goods.itemPrice)}
+                                dt ￥#{goods.itemPrice}
                                     if goods.oPrice && goods.oPrice != goods.itemPrice
-                                        del ￥#{formatPrice(goods.oPrice)}
+                                        del ￥#{goods.oPrice}
                             dd x#{goods.quantity}
                             if goods.allowBuy
                                 dd
@@ -89,13 +90,13 @@ section.m-order-detail
                                 | 免运费
                             else if p.price != 0
                                 if (p.name != '运费' && p.name != '商品金额')
-                                    | - ￥#{formatPrice(p.price)}
+                                    | - ￥#{p.price}
                                 else
-                                    | ￥#{formatPrice(p.price)}
+                                    | ￥#{p.price}
 
         dl.finally
             dt 实付款
-            dd ￥#{formatPrice(detail.payPrice)}
+            dd ￥#{detail.payPrice}
         ol.number
             li 订单编号：#{detail.orderNo}
             li 下单时间：#{detail.createTime}

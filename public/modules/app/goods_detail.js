@@ -27,8 +27,11 @@ define(function (require, exports, module) {
                     $('.spa').append(template);
                 }
             });
-
-
+            
+            // 购物车内是否有新商品;
+            if(localStorage.getItem(CONST.local_cart_newGoods)){
+                $(".js-goods-cart").addClass("new");
+            }
             //加载swipe
             require.async('swipe', function () {
                 M.swipe.init(); //初始化Swipe
@@ -42,7 +45,7 @@ define(function (require, exports, module) {
         },
         bindEvents: function () {
             var c = page.config, hashParams = c.hashParams();
-            var $app = $('#app');
+            var $app = $('.spa');
 
             /*质检报告，数据缓存到本地*/
             var templateId = hashParams.templateId,
@@ -76,8 +79,9 @@ define(function (require, exports, module) {
             //点击领券优惠券
             $app.on('click', '.js-voucher', function () {
                 var $this = $(this), id = $this.closest('li').data('id');
+                if ($this.hasClass('ban')) return false;
                 M.ajax({
-                    url: '/api/obtainCoupons',
+                    url: '/api/coupons_receive',
                     data: {tid: id},
                     success: function (res) {
                         if (res.success_code == 200) {
@@ -86,6 +90,13 @@ define(function (require, exports, module) {
                         } else {
                             return M.tips(res.msg);
                         }
+                    },
+                    error: function (res) {
+                        var errorMsg = res.msg;
+                        if (/^(-1)$/.test(res.error_code)) {
+                            errorMsg = '您还未登录，请登录后再试！';
+                        }
+                        M.tips(errorMsg);
                     }
                 });
             });
@@ -115,12 +126,12 @@ define(function (require, exports, module) {
             //加入购物车、立即购买
             $app.on('click', '.js-addToCart, .js-buy', function () {
                 var action = $(this).is('.js-buy') ? 'buy' : 'addToCart';
-                $('.js-sku-confirm').data('action', action);
 
                 $('.u-sku').addClass('show');
                 require.async('app/sku', function (sku) {
                     sku.init($('.sku'));
                     $('.u-quantity .number').spinner();  //改变数量控制
+                    $('.js-sku-confirm').data('action', action);
                 });
             });
 
@@ -137,35 +148,45 @@ define(function (require, exports, module) {
                 }
             });
 
+            // 点击查看评论大图;
+            $app.on('click', '.js-comment-pic li img', function () {
+                var thas = $(this), parents = thas.parents(".js-comment-pic");
+                require.async('weixin', function (wx) {
+                    wx.previewImage({
+                        urls: parents.data("json"),
+                        current: thas.attr("src")
+                    });
+                });
+            });
+
 
         },
         //添加商品到购物车
         addToCart: function () {
+            var c = page.config, hashParams = c.hashParams();
             //获取当前选中的sku信息
             require.async('app/sku', function (sku) {
                 var skuInfo = sku.selected();
 
                 if (!skuInfo.itemId) {
-                    return M.tips('请选择SKU');
+                    return M.tips('请选择商品规格');
                 }
 
-                var c = page.config, urlParams = c.params;
                 var local_cartId = localStorage.getItem(CONST.local_cartId);   //本地购物车ID
-                var local_location = localStorage.getItem(CONST.local_location); //本地存储的位置信息
                 var params = {
-                    areaId: local_location.areaId,
                     cartId: local_cartId,
                     jsonTerm: JSON.stringify([{
                         "isBindShop": false,
                         "itemId": skuInfo.itemId,
-                        "shopId": urlParams.shopId,
-                        "templateId": urlParams.templateId,
-                        "companyId": urlParams.companyId,
+                        "shopId": hashParams.shopId,
+                        "templateId": hashParams.templateId,
+                        "companyId": hashParams.companyId,
                         "count": +$('.u-sku .u-quantity .number').text()
                     }]),
                     pmtType: 0
                 };
                 M.ajax({
+                    location: true,
                     url: '/api/addToCart',
                     data: {data: JSON.stringify(params)},
                     success: function (res) {
@@ -173,6 +194,9 @@ define(function (require, exports, module) {
                             localStorage.setItem(CONST.local_cartId, res.cartId);  //更新本地购物车ID
                             M.tips('商品已成功添加到购物车');
                             $('.u-sku .js-close').trigger('click');
+                            // 标记购物车图标加红点;
+                            localStorage.setItem(CONST.local_cart_newGoods, 1);
+                            $(".js-goods-cart").addClass("new");
                         } else {
                             return M.tips(res.msg);
                         }
@@ -182,24 +206,23 @@ define(function (require, exports, module) {
         },
         //立即购买
         buyNow: function () {
+            var c = page.config, hashParams = c.hashParams();
             //获取当前选中的sku信息
             require.async('app/sku', function (sku) {
                 var skuInfo = sku.selected();
 
                 if (!skuInfo.itemId) {
-                    return M.tips('请选择SKU');
+                    return M.tips('请选择商品规格');
                 }
-
-                var c = page.config, urlParams = c.params;
 
                 var params = {
                     inlet: 2,  //1 购物车  2 商品详情 4 麻豆尊享
                     jsonTerm: JSON.stringify({
                         "itemId": skuInfo.itemId,
-                        "templateId": urlParams.templateId,
+                        "templateId": hashParams.templateId,
                         "count": +$('.u-sku .u-quantity .number').text(),
-                        "shopId": urlParams.shopId,
-                        "companyId": urlParams.companyId,
+                        "shopId": hashParams.shopId,
+                        "companyId": hashParams.companyId,
                         "isBindShop": 0
                     })
                 };

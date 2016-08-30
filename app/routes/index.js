@@ -12,7 +12,18 @@ var indexCtrl = require("../controller/index"),           //首页
     accountCtrl = require("../controller/account"),       //账户相关，登录等
     centerCtrl = require("../controller/center"),         //个人中心
     orderCtrl = require("../controller/order"),           //订单
+    payCodeCtrl = require("../controller/pay_code"),      //扫码支付
     weChatCtrl = require("../controller/wechat");         //微信相关
+
+
+/*
+ * 扫码支付
+ * */
+router
+    .get("/pay/code.html", payCodeCtrl.index)
+    .post("/pay/codeAjax.html", payCodeCtrl.ajax)
+    .get("/pay/codeSuccess.html", payCodeCtrl.success)
+;
 
 //所有路由先经过微信授权，优先级最高，放在路由的最前面
 router.get("*", weChatCtrl.auth);
@@ -59,6 +70,8 @@ router
     .post("/api/goods_detail", goodsCtrl.detail)
     .post("/api/goods_detail_extra", goodsCtrl.detailExtra)
     .post("/api/goods_quality", goodsCtrl.qualityPic)
+    .post("/api/goods_promoteGroup", goodsCtrl.promoteGroup)
+    .post("/api/goods_sku", goodsCtrl.sku)
 
     .post("/api/addToCart", goodsCtrl.addToCart)
 
@@ -71,9 +84,10 @@ router
     .get("/cart", cartCtrl.index)
     .get("/pay/", cartCtrl.pay)
     .get("/pay/alipay/pay.htm", cartCtrl.payTips)
+    .get("/pay/result", cartCtrl.payResult)
+    .post("/api/pay/invoice", cartCtrl.submitInvoice)
     .post("/api/pay", cartCtrl.check)
     .post("/api/settlement", cartCtrl.settlement)
-    .post("/api/delivery", cartCtrl.delivery)
     .post("/api/cart", cartCtrl.list)
     .post("/api/aliPay", cartCtrl.aliPay)
     .post("/api/wxPrePay", cartCtrl.wxPrePay)
@@ -114,8 +128,10 @@ router
     .post('/api/beans', centerCtrl.beans)
     .post('/api/integral', centerCtrl.integral)
     .post('/api/coupons', centerCtrl.coupons)
-    .post("/api/obtainCoupons", centerCtrl.obtainCoupons)
+    .post('/api/coupons_exchange', centerCtrl.couponsExchange)
+    .post("/api/coupons_receive", centerCtrl.couponsReceive)
     .post('/api/address/save', centerCtrl.doAddressSave)   //保存或新增地址
+    .post('/api/address/delete', centerCtrl.doAddressDelete)   //删除地址
     .post('/api/address/queryArea', centerCtrl.queryAddressArea)   //保存或新增地址
 ;
 
@@ -131,7 +147,7 @@ router
     .post('/api/order_review_detail', orderCtrl.orderReviewDetail)
     .post('/api/order_result', orderCtrl.orderResult)
     .post('/api/order/:option', orderCtrl.orderOption)
-    .post('/api/order_rebuy',orderCtrl.orderRebuy)
+    .post('/api/order_rebuy', orderCtrl.orderRebuy)
 ;
 
 

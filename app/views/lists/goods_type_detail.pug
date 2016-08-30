@@ -4,7 +4,7 @@ if data && data.length
     each item in data
         if item.name
             h2 #{item.name}
-        ol.flex-center
+        ol.flex-box
             if item.data &&  item.data.length
                 each detail in item.data
                     li

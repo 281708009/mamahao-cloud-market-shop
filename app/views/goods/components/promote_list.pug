@@ -42,7 +42,7 @@ if $data.length
                                 dt
                                     span 套餐
                                 dd
-                                    a.u-arrow.right(href='javascript:;')
+                                    a.u-arrow.right(href='/goods#/promoteGroup/' + request.templateId)
                                         .header
                                             strong
                                                 | 最高省
@@ -58,7 +58,8 @@ if $data.length
                                                             .item
                                                                 .pic
                                                                     img(src=goods.stylePic + '@100w_100h_100q.jpg')
-                                                                sub #{goods.count}件
+                                                                if goods.count > 1
+                                                                    sub #{goods.count}件
 
 
                         when 5
@@ -67,7 +68,7 @@ if $data.length
                                 dt
                                     span 满减
                                 dd
-                                    a.u-arrow.right(href='javascript:;') #{item.promotionName}
+                                    a(href='javascript:;') #{item.promotionName}
 
                         when 6
                             //- em 赠品

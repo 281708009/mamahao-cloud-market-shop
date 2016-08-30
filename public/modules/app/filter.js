@@ -10,10 +10,7 @@ define(function (require, exports, module) {
                 return M.url.getParams(location.hash.match(/(\w+=)([^\&]*)/gi).join('&'));  //json params
             },
             searchParams: function () {
-                return JSON.parse(localStorage.getItem(CONST.local_search_params));   //local: 请求商品列表需要的参数
-            },
-            locationParams: function () {
-                return JSON.parse(localStorage.getItem(CONST.local_location)); //local: 地理位置信息
+                return JSON.parse(localStorage.getItem(CONST.local_search_params)) || {};   //local: 请求商品列表需要的参数
             }
         },
         init: function () {

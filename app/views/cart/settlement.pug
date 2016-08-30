@@ -2,36 +2,9 @@
 block content
     include ../includes/let.pug
     include ../includes/mixin.pug
-    section.m-pay#settlement
+    section.m-pay#settlement(data-stockout=(stockOut || 0),data-stockout-goods=(data || []))
         if stockOut
-            if stockOut == -10001
-                script(type='text/javascript').
-                    M.dialog({
-                        body: '商品在该区域暂时缺货', buttons: [{
-                            "text": "找其他商品", "class": "", "onClick": function () {
-                                location.href = '/'
-                            }
-                        }, {
-                            "text": "我知道了", "class": "", "onClick": function () {
-                                this.hide();
-                                history.go(-1);
-                            }
-                        }]
-                    });
-            else if stockOut == -10002
-                script(type='text/javascript').
-                    M.dialog({
-                        body: '您选购的以下商品缺货', buttons: [{
-                            "text": "找相似商品", "class": "", "onClick": function () {
-                                location.href = '/'
-                            }
-                        }, {
-                            "text": "继续结算", "class": "success", "onClick": function () {
-                                this.hide();
-                                location.reload();
-                            }
-                        }]
-                    });
+
         else
             input(type='hidden',name='orderNo',value=orderNo)
             input(type='hidden',name='deliveryAddrId',value=deliveryAddr ? deliveryAddr.deliveryAddrId : '')
@@ -83,9 +56,9 @@ block content
                                         dt
                                             sub 赠品
                                     else
-                                        dt ￥#{formatPrice(goods.itemPrice)}
+                                        dt ￥#{goods.itemPrice}
                                             if(goods.itemPrice < goods.oPrice)
-                                                del ￥#{formatPrice(goods.oPrice)}
+                                                del ￥#{goods.oPrice}
                                     dd x#{goods.quantity}
             //- 配送
             .courier
@@ -110,14 +83,14 @@ block content
                                 span 当前订单没有适用的优惠劵
 
                         //em 未使用
-                ul.js-point
+                ul.js-point(data-total-discount=useCouponlimit.maxReducePrice)
                     if useCouponlimit.mbeanMaxLimit > 0
                         li#mbean
                             p 可用
                                 span #{useCouponlimit.mbeanMaxLimit}
                                 input(type='tel', name='mbean',value=useCouponlimit.mbeanMaxLimit, data-max=useCouponlimit.mbeanMaxLimit, data-ratio=ratio.mbeanRatio)
                                 | 妈豆，抵
-                                em ￥#{formatPrice(useCouponlimit.mbeanMaxLimit / ratio.mbeanRatio)}
+                                em ￥#{useCouponlimit.mbeanMaxLimit / ratio.mbeanRatio}
                             label
                                 input.u-switch(type='checkbox')
                     if useCouponlimit.gbMaxLimit > 0
@@ -126,16 +99,17 @@ block content
                                 span #{useCouponlimit.gbMaxLimit}
                                 input(type='tel', name='gbCount',value=useCouponlimit.gbMaxLimit, data-max=useCouponlimit.gbMaxLimit, data-ratio=ratio.gbRatio)
                                 | GB积分，抵
-                                em ￥#{formatPrice(useCouponlimit.gbMaxLimit / ratio.gbRatio)}
+                                em ￥#{useCouponlimit.gbMaxLimit / ratio.gbRatio}
                             label
                                 input.u-switch(type='checkbox')
                     if useCouponlimit.mcMaxLimit > 0
                         li#mcPoint
                             p 可用
-                                span #{useCouponlimit.mcMaxLimit}
-                                input(type='tel', name='mcCount', value=useCouponlimit.mcMaxLimit, data-max=useCouponlimit.mcMaxLimit, data-ratio=ratio.mcRatio)
+                                - var mcMax = ~~(useCouponlimit.mcMaxLimit/300)*300
+                                span #{mcMax}
+                                input(type='tel', name='mcCount', value=mcMax, data-max=mcMax, data-ratio=ratio.mcRatio)
                                 | MC积分，抵
-                                em ￥#{formatPrice(useCouponlimit.mcMaxLimit / ratio.mcRatio)}
+                                em ￥#{mcMax / ratio.mcRatio}
                             label
                                 input.u-switch(type='checkbox',chekced='')
             //- 结算金额明细
@@ -144,12 +118,12 @@ block content
                     li
                         em #{money.name}
                         if money.name == '商品金额'
-                            span ￥#{formatPrice(money.price)}
+                            span ￥#{money.price}
                         else
                             if money.price == 0
                                 span 免费
                             else
-                                span -￥#{formatPrice(money.price)}
+                                span -￥#{money.price}
                 li
                     em 运费
                     span
@@ -166,7 +140,7 @@ block content
                 else
                     input(type='hidden',name='payPrice',value=payPrice + mailPrice)
                     p 实付
-                        em.js-finalPrice ￥#{formatPrice(payPrice + mailPrice)}
+                        em.js-finalPrice ￥#{payPrice + mailPrice}
                     button.u-btn.success.js-pay 去付款
             .f-space
 
@@ -217,17 +191,25 @@ block content
                                             button.u-btn.mini.js-btn-delivery(data-type=de.id) #{de.name}
 
                             each de in item.delivery
+                                if de.deliveryTime
+                                    - var dayDesc = de.deliveryTime.arriveType == 0?'今天':'次日'
                                 case de.id
                                     when 1
-                                        .tip.js-tips(for=1) 预计将在今天#{de.deliveryTime.arriveTime}前送达
+                                        if item.shopId
+                                            .tip.js-tips(for=1) 预计将在#{dayDesc}#{de.deliveryTime.arriveTime}前送达
+                                        else
+                                            .tip.js-tips(for=1,style='display:none') 预计将在#{dayDesc}#{de.deliveryTime.arriveTime}前送达
                                     when 2
-                                        .take.js-tips(for=2)
+                                        .take.js-tips(for=2,style='display:none')
                                             strong 自提地点：
                                             p #{de.shopInfo.addr}
                                             strong 时间：
                                             p 工作日：#{de.shopInfo.workTime}<br>节假日：#{de.shopInfo.holiday}
                                     when 3
-                                        .tip.js-tips(for=3) 预计将在今天#{de.deliveryTime.arriveTime}前发货
+                                        if item.shopId
+                                            .tip.js-tips(for=3,style='display:none') 预计将在#{dayDesc}#{de.deliveryTime.arriveTime}前发货
+                                        else
+                                            .tip.js-tips(for=3) 预计将在#{dayDesc}#{de.deliveryTime.arriveTime}前发货
                 section.u-footer-button
                     ul
                         li

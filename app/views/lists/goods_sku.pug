@@ -1,30 +1,31 @@
 //- 商品SKU
 include ../includes/let.pug
-.info
-    .pic
-        img.sku-pic(src= def.itemPic + '@100w_100q.png')
-    dl
-        dt.sku-price #{def.price}
-        dd.sku-desc
+if isInStock
+    .info
+        .pic
+            img.sku-pic(src= def.itemPic + '@100w_100q.png')
+        dl
+            dt.sku-price #{def.price}
+            dd.sku-desc
 
-    del.js-close x
-.sku(data-sku-map=skuInfo)
-    if skuView && skuView.length
-        each views, index in skuView
-            each val, key in views
-                dl
-                    dt #{key}
-                    dd
-                        each v,i in val
-                            a.sku-key(href='javascript:;', data-value=v) #{skuMap[v]}
+        del.js-close x
+    .sku(data-sku-map=skuInfo)
+        if skuView && skuView.length
+            each views, index in skuView
+                each val, key in views
+                    dl
+                        dt #{key}
+                        dd
+                            each v,i in val
+                                a.sku-key(href='javascript:;', data-value=v) #{skuMap[v]}
 
-.quantity
-    dl
-        dt 选择数量
-        dd
-            .u-quantity
-                a.decrement.disabled(href='javascript:;') -
-                .number 1
-                a.increment(href='javascript:;') +
-.button
-    button.u-btn.success.max.alone.js-sku-confirm 确定
+    .quantity
+        dl
+            dt 选择数量
+            dd
+                .u-quantity
+                    a.decrement.disabled(href='javascript:;') -
+                    .number 1
+                    a.increment(href='javascript:;') +
+    .button
+        button.u-btn.success.max.alone.js-sku-confirm 确定

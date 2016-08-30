@@ -54,6 +54,7 @@
         local_cartId:'mmh_cartId',   // 购物车ID
         local_storeAddr: 'mmh_store_address',    // 门店用户收货地址
         local_settlement_addr: 'mmh_settlement_addr',    // 结算选择地址
+        local_cart_newGoods: 'mmh_cart_newgoods',    // 购物车内新增商品
     };
 
 })();

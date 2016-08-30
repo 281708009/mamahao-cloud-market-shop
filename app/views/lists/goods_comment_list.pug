@@ -2,11 +2,11 @@
 if rows && rows.length
     each item in rows
         .item
-            // 评价用户信息
+            //- 评价用户信息
             .header
                 .user
                     .pic
-                        img(src=item.headPic + '@1e_200w_0c_0i_0o_100q_1x.jpg', alt=item.name)
+                        img(src=item.headPic + '@200w_100q.jpg', alt=item.name)
                     dl
                         dt #{item.name}
                         dd #{item.babyAge}
@@ -18,14 +18,20 @@ if rows && rows.length
             .content
                 article
                     | #{item.commentContent}
-
+                // 商品图片
+                if item.pics && item.pics.length
+                    ul.pic.js-comment-pic(data-json=item.pics)
+                        each pic in item.pics
+                            li
+                                img(src=pic+'@100w_100h_100q.jpg')
                 //- 回复
                 if item.shopReplyContent
                     .reply 门店回复：#{item.shopReplyContent}
 
                 //- 购买款式
-                    dl.buy
-                        dt 已购买该商品
-                        dd
-                            span 浅色
-                            span S码
+                dl.buy
+                    dt 已购买该商品
+                //-
+                    dd
+                        span 浅色
+                        span S码

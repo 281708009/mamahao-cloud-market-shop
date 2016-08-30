@@ -1,6 +1,4 @@
-extends layouts/layout
-block title
-    title 每一件商品都是安全的
+extends layouts/layout.pug
 block meta
     meta(name='toTop',content='.container')
 block css
@@ -47,6 +45,18 @@ block content
                                            .pic
                                                img(data-original=d.pic + pngSize, src=placeholderPic)
                                            em #{d.title}
+                    when 6
+                        // 组合三宫格
+                        .grid.group(style="margin-bottom: "+ (grid.bottomPx / 2) +"px;")
+                            -var first = grid.data[0];
+                            a(href=formatHomeLink(first))
+                                img(data-original=first.pic + pngSize, src=placeholderPic, alt=first.name)
+                            div
+                                each d, k in grid.data
+                                    if k != 0
+                                        a(href=formatHomeLink(d))
+                                            img(data-original=d.pic + pngSize, src=placeholderPic, alt=d.name)
+
                     when 7
                         // 组合五宫格
                         .grid.group(style="margin-bottom: "+ (grid.bottomPx / 2) +"px;")
@@ -62,7 +72,24 @@ block content
                                                 img(data-original=d.pic + pngSize, src=placeholderPic, alt=d.name)
                     when 8
                         // 组合七宫格
-
+                        .grid.group(style="margin-bottom: " + (grid.bottomPx / 2) + "px;")
+                            dl
+                                -var first = grid.data[0];
+                                dt
+                                    a(href=formatHomeLink(first))
+                                        img(data-original=first.pic + pngSize, src=placeholderPic, alt=first.name)
+                                dd
+                                    each d, k in grid.data
+                                        if k != 0 && k < 5
+                                            a(href=formatHomeLink(d))
+                                                img(data-original=d.pic + pngSize, src=placeholderPic, alt=d.name)
+                        .grid.group
+                            -var last = grid.data[5];
+                            a(href=formatHomeLink(last))
+                                img(data-original=last.pic + pngSize, src=placeholderPic, alt=last.name)
+                            -var last = grid.data[6];
+                            a(href=formatHomeLink(last))
+                                img(data-original=last.pic + pngSize, src=placeholderPic, alt=last.name)
                     when 9
                         // 黄金坑位（并列两宫格）
                         +getHomeGroup(grid)
@@ -99,7 +126,7 @@ block content
                     when 19
                         // 吊顶栏
                         each d in grid.data
-                            .grid.hang
+                            .grid.hang(style="margin-bottom: "+ (grid.bottomPx / 2) +"px;")
                                 dl
                                     dt
                                         a(href=formatHomeLink(d))
@@ -108,11 +135,40 @@ block content
                                         ol
                                             each g in d.goods
                                                 li
-                                                    a(href='javascript:;')
+                                                    a(href=formatHomeLink(g))
                                                         span.pic
-                                                            img(src=g.pic, alt=g.title)
+                                                            img(src=g.pic + pngSize, alt=g.title)
                                                         if g.linkType == 2
                                                             strong #{g.title}
                                                             em ￥#{g.price}
+                    when 20
+                        // 横排广告展示（图片）
+                        .grid(style="margin-bottom: "+ (grid.bottomPx / 2) +"px;")
+                            .horizontal
+                                each d in grid.data
+                                    a(href=formatHomeLink(d))
+                                        img(src=d.pic + pngSize, alt=d.title)
+                    when 24
+                        // 横排广告展示（商品）
+                        .grid(style="margin-bottom: " + (grid.bottomPx / 2) + "px;")
+                            .horizontal.goods
+                                each d in grid.data
+                                    a(href=formatHomeLink(d))
+                                        span.pic
+                                            img(src=d.pic + pngSize, alt=d.title)
+                                        if d.linkType == 2
+                                            strong #{d.title}
+                                            em ￥#{d.price}
+                    when 1
+                        // 为您优选
+                        .suit
+                            each d in grid.data
+                                p
+                                    a(href=formatHomeLink(d))
+                                        span.pic
+                                            img(data-original=d.pic + pngSize, src=placeholderPicMin, alt=d.title)
+                                        strong #{d.title}
+
+
 
     +footer_nav('index')

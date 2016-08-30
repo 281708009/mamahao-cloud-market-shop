@@ -12,12 +12,12 @@ define(function (require, exports, module) {
                 "search": "/api/search",
                 "filter": "/api/filter",
                 "detail": "/api/goods_detail",
-                "quality": "/api/goods_quality",
+                "promoteGroup": "/api/goods_promoteGroup",
+                "quality": "/api/goods_quality"
             }
         },
         init: function () {
             require.async('router', page.setRouter); //加载路由库文件
-            page.bindEvents();
         },
         /*设置路由*/
         setRouter: function () {
@@ -97,17 +97,40 @@ define(function (require, exports, module) {
                 url: '/detail/:params?',
                 render: function (callback) {
                     //hash值后的url参数
-                    detail.hashParams = M.url.getParams(this.params.params);  //json params
-                    var locationInfo = JSON.parse(localStorage.getItem(CONST.local_detail_location) || null);
-                    var params = detail.hashParams;
+                    var hashParams = M.url.getParams(this.params.params);  //json params
+                    var locationInfo = JSON.parse(localStorage.getItem(CONST.local_detail_location));
+                    detail.params = hashParams;
                     if (locationInfo) {
-                        params.location = locationInfo;
+                        detail.params.location = locationInfo;
                     }
-                    page.renderModule('detail', callback, params);
+                    page.renderModule('detail', callback, detail.params);
                 },
                 bind: function () {
-                    require.async('app/goods_detail', function (page) {
-                        page.init(detail.hashParams);
+                    var $module = $(this);
+                    if (!$module.find('.u-null-all')[0]) {
+                        require.async('app/goods_detail', function (page) {
+                            page.init(detail.params);
+                        });
+                    }
+                }
+            };
+
+            //促销套餐列表
+            var promoteGroup = {
+                url: '/promoteGroup/:styleNumId?',
+                render: function (callback) {
+                    var params = this.params;
+                    var locationInfo = JSON.parse(localStorage.getItem(CONST.local_detail_location));
+                    if (locationInfo) {
+                        params.areaId = locationInfo.areaId;
+                        params.lat = locationInfo.lat;
+                        params.lng = locationInfo.lng;
+                    }
+                    page.renderModule('promoteGroup', callback, params);
+                },
+                bind: function () {
+                    require.async('app/goods_promote', function (page) {
+                        page.init();
                     });
                 }
             };
@@ -134,12 +157,9 @@ define(function (require, exports, module) {
                 .push(search)
                 .push(filter)
                 .push(detail)
+                .push(promoteGroup)
                 .push(quality)
                 .setDefault('/').init();
-        },
-        bindEvents: function () {
-
-
         },
         /*渲染模块*/
         renderModule: function (module, callback, params) {

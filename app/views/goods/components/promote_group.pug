@@ -1,80 +1,38 @@
 section.m-goods-group
-    .item.in
-        .header.u-arrow.bottom
-            strong 套餐1
-            em ￥131.01
-            sup 立省￥8.5
-        .content
-            dl
-                dt
-                    .pic
-                        img(src='http://img.mamhao.cn/CS747623C/main_CS747623C_01.jpg@1e_400w_400h_0c_0i_0o_100q_1x.jpg', alt='')
-                        sub 3件
-                dd
-                    h3 CONVERSE匡威婴童 可爱吉娃娃儿童鞋可爱吉娃娃儿童鞋
-                    p 白色，100ml
-            dl
-                dt
-                    .pic
-                        img(src='http://img.mamhao.cn/CS747623C/main_CS747623C_01.jpg@1e_400w_400h_0c_0i_0o_100q_1x.jpg', alt='')
-                dd
-                    h3 CONVERSE匡威婴童 可爱吉娃娃儿童鞋可爱吉娃娃儿童鞋
-                    a.u-arrow.bottom(href='javascript:;') 请选择商品规格
-            dl
-                dt
-                    .pic
-                        img(src='http://img.mamhao.cn/CS747623C/main_CS747623C_01.jpg@1e_400w_400h_0c_0i_0o_100q_1x.jpg', alt='')
-                        sub 2件
-                dd
-                    h3 CONVERSE匡威婴童 可爱吉娃娃
-                    a.selected.u-arrow.bottom(href='javascript:;') 已选100ml，玉米爽身粉驱蚊液
-        .footer
-            dl
-                dt
-                    | 套餐价格：
-                    strong ￥200
-                dd
-                    del 原价：￥300
-                    sup 立省￥12.1
-            .button
-                button.u-btn.success 加入购物车
-    .item
-        .header.u-arrow.bottom
-            strong 套餐1
-            em ￥131.01
-            sup 立省￥8.5
-        .content
-            dl
-                dt
-                    .pic
-                        img(src='http://img.mamhao.cn/CS747623C/main_CS747623C_01.jpg@1e_400w_400h_0c_0i_0o_100q_1x.jpg', alt='')
-                        em 3件
-                dd
-                    h3 CONVERSE匡威婴童 可爱吉娃娃儿童鞋可爱吉娃娃儿童鞋
-                    p 白色，100ml
-            dl
-                dt
-                    .pic
-                        img(src='http://img.mamhao.cn/CS747623C/main_CS747623C_01.jpg@1e_400w_400h_0c_0i_0o_100q_1x.jpg', alt='')
-                        em 3件
-                dd
-                    h3 CONVERSE匡威婴童 可爱吉娃娃儿童鞋可爱吉娃娃儿童鞋
-                    a(href='javascript:;') 请选择商品规格
-            dl
-                dt
-                    .pic
-                        img(src='http://img.mamhao.cn/CS747623C/main_CS747623C_01.jpg@1e_400w_400h_0c_0i_0o_100q_1x.jpg', alt='')
-                        em 3件
-                dd
-                    h3 CONVERSE匡威婴童 可爱吉娃娃儿童鞋可爱吉娃娃儿童鞋
-                    a.selected(href='javascript:;') 已选100ml，玉米爽身粉驱蚊液
-        .footer
-            dl
-                dt
-                    | 套餐价格：
-                    strong ￥200
-                dd
-                    del 原价：￥300
-                    sup 立省￥12.1
-            .button
-                button.u-btn.success 加入购物车
+    each item, index in rows
+        .item(data-no=item.reservedNo)(class={"in": index === 0})
+            .header.u-arrow.bottom.js-collapse
+                strong #{item.promotionName || ('套餐' + (index + 1))}
+                em ￥#{item.priceSection}
+                sup 立省￥#{item.promotionDiscount}
+            .content
+                each goods in item.comboGoodsList
+                    dl.goods(data-template-id=goods.styleNumId,data-item-id= goods.singleItem && goods.singleItem.itemId ,data-count=goods.count)
+                        dt
+                            .pic
+                                a(href='/goods#/detail/inlet=6&templateId=' + goods.styleNumId)
+                                    img(src=goods.stylePic + '@100w_100q.jpg', alt='')
+                                if goods.count > 1
+                                    sub #{goods.count}件
+                        dd
+                            h3 #{goods.styleTitle}
+                            if goods.singleItem
+                                p #{goods.singleItem.skus}
+                            else
+                                p.spec.u-arrow.bottom.js-sku 请选择商品规格
+
+            .footer
+                dl
+                    dt
+                        | 套餐价格：
+                        strong ￥#{item.priceSection}
+                    dd
+                        del 原价：￥#{item.originalPriceSection}
+                        sup 立省￥#{item.promotionDiscount}
+                .button
+                    button.u-btn.success.js-addToCart 加入购物车
+
+// SKU
+section.u-fixed.bottom.u-sku
+    .mask
+    .content

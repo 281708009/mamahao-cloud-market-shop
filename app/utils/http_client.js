@@ -39,12 +39,13 @@ var HttpClient = {
         }
 
         /*参数*/
-        var location = querystring.parse(req.get('location') || null);  //header中的定位信息
-        var formData = $.extend({}, {
+        var location = querystring.parse(req.get('location'));  //header中的定位信息
+        var locationParams = location ? {
             areaId: location.areaId,
             lat: location.lat,
             lng: location.lng
-        }, params.data || {});  //data参数覆盖header中的信息
+        } : {};
+        var formData = $.extend({}, locationParams, params.data || {});  //data参数覆盖header中的信息
 
         var options = {
             method: params.type || 'POST',
@@ -73,13 +74,13 @@ var HttpClient = {
 
             if (response) {
                 //console.log('response--->' + JSON.stringify(response));
-                console.log('response body, status:', response.statusCode, '--->', body);
+                console.log('response body,[api:', params.url, '],[status:', response.statusCode, ']--->', body);
             }
 
             //  成功 {success: true, msg: 'success'}
             //  失败 {error_code: 1001, msg: '404 error'}
             if (!error && response.statusCode === 200) {
-                var info = JSON.parse(body);
+                var info = body ? JSON.parse(body) : {};
                 if (info.error_code) {
 
                     //未登录状态设置统一状态码
@@ -100,6 +101,9 @@ var HttpClient = {
                         res.render('error', errorInfo);
                     }
                 } else {
+                    if (info.success_code == 200) {
+                        info.success = true;    //添加成功标识
+                    }
                     info.request = options.form;  //请求参数返回
                     info.location = location;   //地理位置信息
                     params.success && params.success.call(this, info);

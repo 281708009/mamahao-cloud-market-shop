@@ -4,7 +4,7 @@
  * */
 
 var api = {
-    "queryMainPage":  "/V3/home/base/queryMainPage.htm",    // 首页
+    "queryMainPage": "/V3/home/base/queryMainPage.htm",    // 首页
     "login": "V1/member/login.htm",    //登录
     "bind": "V1/weixin/oauth/bind.htm",    //绑定
     "vcode": "V1/sms/vcode/sendSmsVcodeForLoginOrReg.htm",     //登录获取验证码
@@ -18,12 +18,14 @@ var api = {
     "MBeanList": "V1/mbean/queryMBeanList.htm",     //获取妈豆记录
     "integral": "V1/member/center/queryMemberPoint.htm",     //积分
     "coupons": "V2/coupon/list.htm",     //优惠券
-    "obtainCoupons": "V2/coupon/obtain.htm",     //领券
+    "couponsReceive": "V2/coupon/obtain.htm",     //领券
+    "couponsExchange": "V2/coupon/exchange.htm ",     //兑换券
 
     "addressList": "V1/member/delivery/getDeliveryAddr.htm",     //收货地址列表
     "checkArea": "V1/basic/checkArea.htm",     //地址
     "addAddress": "V1/member/delivery/addDeliveryAddr.htm",     //添加地址
     "updateAddress": "V1/member/delivery/updateDeliveryAddr.htm",     //更新地址
+    "deleteAddress": "V1/member/delivery/delDeliveryAddr.htm",     //删除地址
     "queryArea": "V1/basic/queryArea.htm",     //获取省市区
 
     "orderList": "V3/order/basic/queryOrderList.htm",      // 订单列表
@@ -57,25 +59,30 @@ var api = {
     "goodsGuessYouLike": "V1/shop/basic/guessYouLike.htm", // 商品猜你喜欢
     "goodsCouponList": "V2/coupon/getGoodsCouponList.htm", // 商品优惠券列表
     "goodsPromotionList": "V2/promotion/queryPromotionList.htm", // 商品促销政策列表
+    "goodsPromoteGroup": "V2/promotion/queryComboPromotionDetailList.htm", // 商品促销组合套餐列表
 
     "querySku": "V1/goods/sku/querySku.htm", //查询sku
     "addToCart": "V2/shop/cart/addCartItem.htm ", //加入购物车
 
     "cart": "V2/shop/cart/getCart.htm",  //购物车列表
     "cartTopDesc": "V1/pmt/getCartTopDesc.htm",  //购物车顶部描述
-    "pay": "V1/order/basic/pay2.htm",   // 订单 立即付款
-    "check": "V2/order/basic/pay.htm", // 确认订单
+    "getDefaultDeliveryAddr": "V2/member/delivery/getDefaultDeliveryAddr.htm",  // 获取用户默认收货地址
+    "usefulCoupon": "V3/voucher/queryStlOrderVouchers.htm",  // 获取其他可用优惠券
     "cartItemCount": "V2/shop/cart/getCartItemCount.htm",  //获取购物车商品数量
-    "settlement": "V4/order/basic/toSettlement.htm",    // 结算
-    "checkPay": "V1/order/basic/checkPay.htm",     // 校验是否可以支付操作
     "selectedCart": "V2/shop/cart/selectedCart.htm",   // 购物车选择\取消选择商品
     "updateCartItemCount": "V2/shop/cart/updateCartItemCount.htm",  // 修改已选商品数量
     "removeCartItem": "V2/shop/cart/removeCartItem.htm",    // 删除购物车商品
-    "getDefaultDeliveryAddr": "V2/member/delivery/getDefaultDeliveryAddr.htm",  // 获取用户默认收货地址
-    "usefulCoupon": "V3/voucher/queryStlOrderVouchers.htm",  // 获取其他可用优惠券
+
+    "settlement": "V4/order/basic/toSettlement.htm",    // 结算
+    "pay": "V1/order/basic/pay2.htm",   // 订单 立即付款
+    "check": "V2/order/basic/pay.htm", // 确认订单
+    "checkPay": "V1/order/basic/checkPay.htm",     // 校验是否可以支付操作
     "aliPay": "pay/wapalipay/submit.htm",   // 阿里支付
     "wxPrePay": "pay/weixin/getOpenId.htm", // 微信预支付
     "wxPay": "pay/weixin/submit.htm",       // 微信确认支付
+    "submitInvoice": "V1/order/basic/addOrderInvoice.htm", // 提交发票信息
+    "getExtraScore": "V1/order/basic/queryExtraScore.htm", // 获取可得妈豆积分数量
+    "orderLock": "V1/order/basic/paylock.htm",  // 支付成功后锁定订单 不允许取消或删除订单
 
 
     // 门店相关;
@@ -85,7 +92,13 @@ var api = {
     "queryShopBasicInfo": "V1/shop/basic/queryShopBasicInfo.htm", // 获取门店基本详情
     "shopGoodsList": "V2/shop/goods/list.htm", // 门店商品列表
     "getDeliveryAddr": "V1/member/delivery/getDeliveryAddr.htm",  // 用户当前收货地址列表
-    "getShopEvaluationInfo": "V1/shop/basic/getShopEvaluationInfo.htm"  // 获取门店评价详情
+    "getShopEvaluationInfo": "V1/shop/basic/getShopEvaluationInfo.htm",  // 获取门店评价详情
+
+
+
+    // 扫码付;
+    "queryPosBarOrder": "/V1/order/basic/queryPosBarOrder.htm", // 扫码订单查询;
+    "codePay": "/V2/order/basic/pay.htm" // 查询支付金额;
 
 
 };

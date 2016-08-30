@@ -45,6 +45,7 @@ var order = {
                     detail: data
                 };
                 res.render('order/detail', json, function (err, html) {
+                    err && console.error(err);
                     res.json({template: html});
                 });
             }

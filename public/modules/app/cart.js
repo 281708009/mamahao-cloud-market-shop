@@ -41,6 +41,7 @@ define(function (require, exports, module) {
                         var selected = $(this).is(':checked') ? 2 : 3,
                             data = JSON.stringify($.extend(true, home.params, {isSelected: selected}));
                         M.ajax({
+                            location: true,
                             url: '/api/cart/selectedCart',
                             data: {data: data},//areaId=330102&isSelected=2
                             success: function (res) {
@@ -58,6 +59,7 @@ define(function (require, exports, module) {
                                 compoentId: $item.data('compoentId')
                             }));
                         M.ajax({
+                            location: true,
                             url: '/api/cart/selectedCart',
                             data: {data: data},
                             success: function (res) {
@@ -107,6 +109,9 @@ define(function (require, exports, module) {
                     $this.on('click', '.js-jump', function () {
                         location.href = $(this).attr('url');
                     });
+
+                    // 清除购物车新商品标识;
+                    localStorage.removeItem(CONST.local_cart_newGoods)
                 }
             };
 
