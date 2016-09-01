@@ -6,7 +6,7 @@ define(function (require, exports, module) {
     var page = {
         config: {
             hashParams: function () {
-                return M.url.getParams(location.hash.match(/(\w+=)([^\&]*)/gi).join('&'));  //json params
+                return M.url.getParams((location.hash.match(/(\w+=)([^\&]*)/gi) || []).join('&'));  //json params
             },
             searchParams: function () {
                 return JSON.parse(localStorage.getItem(CONST.local_search_params)) || {};   //local: 请求商品列表需要的参数
@@ -89,7 +89,7 @@ define(function (require, exports, module) {
         },
         //到筛选页
         toFilter: function () {
-            var hashParamsStr = location.hash.match(/(\w+=)([^\&]*)/gi).join('&');
+            var hashParamsStr = (location.hash.match(/(\w+=)([^\&]*)/gi) || []).join('&');
             location.href = '#/filter/' + hashParamsStr;
         }
     };

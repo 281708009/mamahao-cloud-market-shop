@@ -54,15 +54,22 @@ section.m-order-detail
                 else
                     .header 妈妈好平台
                 each goods in item.goodsList
-                    .content.js-goods(data-infos={itemId:goods.itemId,templateId:goods.templateId,shopId:item.shopId,companyId:item.companyId})
+                    .content.js-goods(data-infos={
+                        itemId: goods.itemId,
+                        templateId: goods.templateId,
+                        shopId: item.shopId,
+                        companyId: item.companyId
+                    })
                         .pic
                             img(src=goods.itemPic)
                         figure
                             figcaption #{goods.itemName}
                             if goods.spec.length
                                 p
-                                    each sp in goods.spec
-                                        | #{sp.value}&nbsp;
+                                    each sp, index in goods.spec
+                                        if index > 0
+                                            | ,
+                                        | #{sp.value}
                         dl
                             if goods.isGift
                                 dt
@@ -138,9 +145,9 @@ section.m-order-detail
                         unless detail.deliveryId == 2
                             a.u-btn(href='#/order/express/' + detail.orderNo) 查看物流
                     when 1
-                        button.u-btn.js-btn-del 删除订单
+                        button.u-btn.js-btn-del(data-order-no=detail.orderNo) 删除订单
                     when 2
-                        button.u-btn.js-btn-del 删除订单
+                        button.u-btn.js-btn-del(data-order-no=detail.orderNo) 删除订单
                     when 3
                         if detail.failureMillisecond <= 0
                             button.u-btn.ban 订单失效

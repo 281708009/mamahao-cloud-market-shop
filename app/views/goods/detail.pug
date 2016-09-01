@@ -29,7 +29,8 @@ section.m-goods-detail.flex
                 del ￥#{originalPrice}
                 em 直降
         dd
-            span 已售#{totalSaleCount}件
+            if totalSaleCount
+                span 已售#{totalSaleCount}件
             a(href='http://h5.mamahao.com/help/beans/')
                 | 购买后可获得
                 em #{getmBean}

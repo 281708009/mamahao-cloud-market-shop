@@ -82,7 +82,13 @@ define(function (require, exports, module) {
         //点击sku选项
         var showPrice, skuDesc,
             defaultPrice = $('.sku-price').text(),
-            showPic = $('.sku-pic').attr('src');
+            showPic = $('.sku-pic').attr('src'),
+            defaultDesc = '请选择' + $.map(sku.container.find('dl dt'), function (item) {
+                    return $(item).text();
+                }).join(',');
+
+        //初始化渲染
+        $('.sku-desc').html(defaultDesc);
 
         //未选择之前，先检查一下状态
         sku.container.find('.' + className.sku).each(function () {
@@ -146,8 +152,9 @@ define(function (require, exports, module) {
                 });
 
             } else {
-                //设置默认价格
+                //设置默认价格、描述
                 showPrice = defaultPrice;
+                skuDesc = defaultDesc;
                 $.each($('.' + className.sku), function () {
                     var $this = $(this);
                     if (!skuMap[$this.data('value')]) {
@@ -164,6 +171,13 @@ define(function (require, exports, module) {
             $('.sku-desc').html(skuDesc);
 
         });
+
+        //只有一组sku的话，直接选中
+        if ($.map(data, function (v, k) {
+                return k;
+            }).length === 1) {
+            sku.container.find('.' + className.sku).trigger('click');
+        }
 
     };
 

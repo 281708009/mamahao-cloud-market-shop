@@ -150,11 +150,3 @@ bigPipe.prototype.failed = function (error) {
 
 module.exports = bigPipe;
 
-
-//ok? understand?
-//that is all
-//thx for view
-
-//bye ,see u tomorrow -_-
-
-

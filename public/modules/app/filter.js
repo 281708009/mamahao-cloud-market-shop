@@ -7,13 +7,26 @@ define(function (require, exports, module) {
         elements: {},
         config: {
             hashParams: function () {
-                return M.url.getParams(location.hash.match(/(\w+=)([^\&]*)/gi).join('&'));  //json params
+                return M.url.getParams((location.hash.match(/(\w+=)([^\&]*)/gi) || []).join('&'));  //json params
             },
             searchParams: function () {
                 return JSON.parse(localStorage.getItem(CONST.local_search_params)) || {};   //local: 请求商品列表需要的参数
             }
         },
         init: function () {
+            var c = page.config;
+            var hashParams = c.hashParams(), searchParams = c.searchParams();
+            //选中当前筛选条件
+            $.each(hashParams.ages.split(','), function (i, v) {
+                $('.ages .content li[data-id="' + v + '"]').addClass('active');
+            });
+            $.each(hashParams.types.split(','), function (i, v) {
+                $('.types .content li[data-id="' + v + '"]').addClass('active');
+            });
+            $.each(hashParams.brandIds.split(','), function (i, v) {
+                $('.brands .content li[data-id="' + v + '"]').addClass('active');
+            });
+
             /*筛选商品*/
             $('.js-collapse').on('click', function () {
                 var $this = $(this), $target = $this.closest('.item').find('.content li:eq(5)~li');
@@ -29,7 +42,7 @@ define(function (require, exports, module) {
             $('.m-filter').on('click', '.content li', function () {
                 var $this = $(this), $target = $this.closest('.item');
                 $this.toggleClass('active');
-                if ($target.hasClass('types')) {
+                if (!$target.hasClass('ages')) {
                     $this.siblings().removeClass('active')
                 }
             });

@@ -54,14 +54,14 @@ define(function (require, exports, module) {
         // 删除订单
         $this.on('click', '.js-btn-del', function () {
             var $item = $(this).closest('.item')
-                , data = JSON.stringify({orderNo: $item.data('id')});
+                , data = {orderNo: $item.length ? $item.data('id') : $(this).data('orderNo')};
             confirm('是否确认删除订单', function () {
                 M.ajax({
                     url: '/api/order/orderDelete',
-                    data: {data: data},
+                    data: {data: JSON.stringify(data)},
                     success: function (res) {
                         M.tips('删除成功');
-                        $item.remove();
+                        $item.length ? $item.remove() : location.href = '/center#/orders';
                     }
                 })
                 this.hide();

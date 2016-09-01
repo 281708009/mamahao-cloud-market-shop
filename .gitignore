@@ -1,1 +1,3 @@
 node_modules/
+app/config/development.js
+app/config/production.js

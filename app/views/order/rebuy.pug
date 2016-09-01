@@ -9,8 +9,10 @@ section.m-order-select
                     figure
                         figcaption #{goods.itemName}
                         p
-                            each sp in goods.spec
-                                | #{sp.value}&nbsp;
+                            each sp, index in goods.spec
+                                if index > 0
+                                    | ,
+                                | #{sp.value}
                     .tools
                         input.u-checkbox(type='checkbox',checked='checked')
 

@@ -8,7 +8,7 @@ section.m-filter.flex
             .content
                 ul
                     each brand, index in brands
-                        li(class={active: index === 0, hide: index > 5},data-id=brand.bId)
+                        li(class={hide: index > 5},data-id=brand.bId)
                             dl
                                 dd
                                     img(src=brand.bLogo)
@@ -22,7 +22,7 @@ section.m-filter.flex
             ol
                 - var hash = {"-1-0":"孕妈咪","0-3":"0-3月","3-6":"3-6月","6-12":"6-12月","12-36":"1-3岁","36-84":"3-7岁","84-":"7岁以上"};
                 each age, index in ages
-                    li(class={active: index === 0, hide: index > 5},data-id=age)
+                    li(class={hide: index > 5},data-id=age)
                         em #{hash[age]}
 
     unless params.entry === '1'
@@ -33,7 +33,7 @@ section.m-filter.flex
             .content
                 ol
                     each type,index in types
-                        li(class={active: index === 0, hide: index > 5},data-id=type.typeId)
+                        li(class={hide: index > 5},data-id=type.typeId)
                             em #{type.typeName}
 
 

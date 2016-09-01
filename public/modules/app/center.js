@@ -521,7 +521,10 @@ define(function (require, exports, module) {
                     return item.find('option:selected').text();
                 }).join('');
 
-                $('.js-district').val(district).data('area-id', areaId);
+                if ($('.js-district').data('area-id') !== areaId) {
+                    $('.js-district').val(district).data('area-id', areaId);
+                    $('.house-number,.street').val('');
+                }
                 $module.find('.u-area .mask').trigger('click');
             });
 
@@ -540,7 +543,7 @@ define(function (require, exports, module) {
                 page.getAddressData($('.fm-addr-info'));
                 location.href = '/center#/addressGps';
             });
-            /*保存地址*/
+            /*删除地址*/
             $module.on('click', '.js-delete', function () {
                 var params = {
                     deliveryAddrId: $(this).data('id')
@@ -553,7 +556,12 @@ define(function (require, exports, module) {
                             M.tips({
                                 body: '收货地址删除成功！',
                                 callback: function () {
-                                    location.href = '/center#/address';
+                                    history.go(-1);
+                                    /*var redirectUrl = '/center#/address', hashParams = $('.m-address-edit').data('hash-params');
+                                     if(hashParams){
+                                     redirectUrl += '/' + $.param(hashParams);
+                                     }
+                                     location.href = redirectUrl;*/
                                 }
                             })
                         }

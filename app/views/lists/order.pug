@@ -47,8 +47,10 @@ each order, index in rows
                     dl
                         dt #{goods.itemName}
                         dd
-                            each spec in goods.spec
-                                | #{spec.value} &nbsp;
+                            each sp, i in goods.spec
+                                if i > 0
+                                    | ,
+                                | #{sp.value}
 
             .u-arrow.right.number 共#{order.itemCount}件
 

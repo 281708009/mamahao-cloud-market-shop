@@ -43,15 +43,17 @@ if wholeItems && wholeItems.length
                                     li.li-3
                                         h3 #{goods.itemName}
                                         p
-                                            each sp in goods.spec
-                                                | #{sp.value}&nbsp;
+                                            each sp, index in goods.spec
+                                                if index > 0
+                                                    | ,
+                                                | #{sp.value}
                                         if goods.isGift
                                             p #{goods.compoentCount}件
                                         else
                                             .u-quantity
-                                                a.decrement.js-update(href='javascript:;',data-count=item.compoentCount - 1,class=item.compoentCount == 1 ? 'disabled' : '') -
+                                                a.decrement.js-update(href='javascript:;',data-count=item.compoentCount - 1,class=item.compoentCount == 1 || item.invalid ? 'disabled' : '') -
                                                 .number #{goods.compoentCount}
-                                                a.increment.js-update(href='javascript:;',data-count=item.compoentCount + 1,data-max=1) +
+                                                a.increment.js-update(href='javascript:;',data-count=item.compoentCount + 1,data-max=1,class=item.invalid ? 'disabled' : '') +
                                     if goods.isGift
                                         li.li-4
                                             .price
@@ -87,7 +89,7 @@ if wholeItems && wholeItems.length
                                     .delete.js-del 删除
                         .body
                             each goods in item.cartCompoents
-                                ul.js-jump(url='/goods/detail?inlet=6&templateId=' + goods.templateId + '&itemId=' + goods.itemId)
+                                ul.js-jump(url='/goods#/detail/inlet=6&templateId=' + goods.templateId + '&itemId=' + goods.itemId)
                                     li.li-1
                                     li.li-2
                                         .pic
@@ -97,8 +99,10 @@ if wholeItems && wholeItems.length
                                     li.li-3
                                         h3 #{goods.itemName}
                                         p
-                                            each sp in goods.spec
-                                                | #{sp.value}&nbsp;
+                                            each sp, index in goods.spec
+                                                if index > 0
+                                                    | ,
+                                                | #{sp.value}
                                         p #{goods.compoentCount}件
                                     li.li-4
                                         .price
@@ -109,14 +113,16 @@ if wholeItems && wholeItems.length
                             dd 已优惠 ￥#{item.discountPrice}
                             dt 小计：￥#{item.pmtPrice}
                 else
+                    //- 单品
                     .item.single(class=item.invalid ? 'fail' : '',data-compoent-id=item.compoentId, data-compoent-type=item.compoentType)
                         .body
                             ul.js-jump(url='/goods#/detail/inlet=6&templateId=' + item.templateId + '&itemId=' + item.itemId)
                                 li.li-1
-                                    if item.selected
-                                        input.u-checkbox(type='checkbox',checked='checked')
-                                    else
-                                        input.u-checkbox(type='checkbox')
+                                    unless item.invalid
+                                        if item.selected
+                                            input.u-checkbox(type='checkbox',checked='checked')
+                                        else
+                                            input.u-checkbox(type='checkbox')
                                 li.li-2
                                     .pic
                                         img(src= item.itemPic + '@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
@@ -125,12 +131,14 @@ if wholeItems && wholeItems.length
                                 li.li-3
                                     h3 #{item.itemName}
                                     p
-                                        each sp in item.spec
-                                            | #{sp.value}&nbsp;
+                                        each sp, index in item.spec
+                                            if index > 0
+                                                | ,
+                                            | #{sp.value}
                                     .u-quantity(class=item.invalid ? 'disabled' : '')
-                                        a.decrement.js-update(href='javascript:;',data-count=item.compoentCount - 1,class=item.compoentCount == 1 ? 'disabled' : '') -
+                                        a.decrement.js-update(href='javascript:;',data-count=item.compoentCount - 1,class=(item.compoentCount == 1 || item.invalid) ? 'disabled' : '') -
                                         .number #{item.compoentCount}
-                                        a.increment.js-update(href='javascript:;',data-count=item.compoentCount + 1) +
+                                        a.increment.js-update(href='javascript:;',data-count=item.compoentCount + 1,class=item.invalid ? 'disabled' : '') +
                                 li.li-4
                                     .price
                                         strong ￥#{item.pmtPrice}

@@ -97,8 +97,13 @@ var api = {
 
 
     // 扫码付;
-    "queryPosBarOrder": "/V1/order/basic/queryPosBarOrder.htm", // 扫码订单查询;
-    "codePay": "/V2/order/basic/pay.htm" // 查询支付金额;
+    "queryPosBarOrder": "V1/order/basic/queryPosBarOrder.htm", // 扫码订单查询;
+    "codePay": "V2/order/basic/pay.htm", // 查询支付金额;
+    "sendSmsVcodeForNoReg": "V1/sms/vcode/sendSmsVcodeForNoReg.htm", // 外部活动获取短信验证码;
+    "couponWithOther": "V1/cwo/couponWithOther.htm", // 外部领取优惠卷接口;
+    "checkSessionRefresh": "checkSessionRefresh.htm", // 测试;
+    "reCheckSessionRefresh": "reCheckSessionRefresh.htm" // 测试;
+
 
 
 };

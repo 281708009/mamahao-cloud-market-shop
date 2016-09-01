@@ -1,10 +1,11 @@
 //- 优惠券列表;
 each item, index in list
     .item(class={
+        'link': !!item.landingDetail,
         'style-3': request.status == 4,
         'style-0': request.status == 1
-    }
-    )
+    })
+        //landingType：落地类型（0=无，1=指定商品ID,2=指定类目ID，3=h5页面）
         a.content(href= item.landingDetail || "javascript:;")
             dl
                 dt

@@ -12,8 +12,10 @@ section.m-assess-list
                     figure
                         figcaption #{item.itemName}
                         p
-                            each sp in item.spec
-                                | #{sp.value}&nbsp;
+                            each sp, index in item.spec
+                                if index > 0
+                                    | ,
+                                | #{sp.value}
                     dl
                         dt
                             if item.isGift

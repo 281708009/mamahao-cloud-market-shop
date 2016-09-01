@@ -78,6 +78,7 @@ define(function (require, exports, module) {
                         confirm('确认删除这个商品吗?', function () {
                             this.hide();
                             M.ajax({
+                                location:true,
                                 url: '/api/cart/removeCartItem',
                                 data: {data: data},
                                 success: function (res) {
@@ -97,6 +98,7 @@ define(function (require, exports, module) {
                             compoentId: $item.data('compoentId')
                         }));
                         M.ajax({
+                            location:true,
                             url: '/api/cart/updateCartItemCount',
                             data: {data: data},
                             success: function (res) {

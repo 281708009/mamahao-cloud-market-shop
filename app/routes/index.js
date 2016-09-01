@@ -22,7 +22,11 @@ var indexCtrl = require("../controller/index"),           //首页
 router
     .get("/pay/code.html", payCodeCtrl.index)
     .post("/pay/codeAjax.html", payCodeCtrl.ajax)
+    .post("/pay/codeSMS.html", payCodeCtrl.sms)
     .get("/pay/codeSuccess.html", payCodeCtrl.success)
+    .get("/pay/codeCoupon.html", payCodeCtrl.coupon)
+    .get("/pay/checkSessionRefresh.html", payCodeCtrl.checkSessionRefresh)
+    .get("/pay/reCheckSessionRefresh.html", payCodeCtrl.reCheckSessionRefresh)
 ;
 
 //所有路由先经过微信授权，优先级最高，放在路由的最前面

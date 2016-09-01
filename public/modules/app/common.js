@@ -122,12 +122,12 @@ define(function (require, exports, module) {
                 if (!$loading[0]) {
                     $loading = $('<div class="loading"><span><s></s></span></div>').appendTo(document.body);
                 }
-                $loading.fadeIn();
+                $loading.stop().fadeIn();
             },
             /*隐藏loading*/
             hideLoading: function () {
                 var $loading = $('.loading');
-                $loading[0] && $loading.fadeOut();
+                $loading[0] && $loading.stop().fadeOut();
             },
             /*ajax请求*/
             ajax: function (params) {
@@ -135,7 +135,7 @@ define(function (require, exports, module) {
 
                 /*是否显示loading*/
                 c.showLoading = typeof params.showLoading === 'boolean' ? params.showLoading : true;
-                c.loadingDelay = typeof params.loadingDelay === 'number' ? params.loadingDelay : 300;
+                c.loadingDelay = typeof params.loadingDelay === 'number' ? params.loadingDelay : 10;
 
                 /*超时显示loading*/
                 if (c.isAjax[params.url]) return false;
@@ -318,15 +318,14 @@ define(function (require, exports, module) {
                         o.mask.add(o.inner).show().addClass('visible');
 
                         /*bind events*/
-                        $.each(o.ft.find('.u-btn'), function (i, el) {
-                            $(el).on('click', function (e) {
-                                var callback = params.buttons[i].onClick;
-                                if (callback && $.isFunction(callback)) {
-                                    callback.call(fun, e);
-                                } else {
-                                    fun.hide();
-                                }
-                            })
+                        o.ft.on('click', '.u-btn', function (e) {
+                            var index = $(this).index();
+                            var callback = params.buttons[index].onClick;
+                            if (callback && $.isFunction(callback)) {
+                                callback.call(fun, e);
+                            } else {
+                                fun.hide();
+                            }
                         });
 
                     },
@@ -1052,6 +1051,128 @@ define(function (require, exports, module) {
 
     })(window.jQuery);
 
+    /* ===========================================
+     * 倒计时插件 - 设置时间与本机时间进行倒计时;
+     * 示例：$(element).timeCountDown({date:'',elements:{}, callback: function(){}});
+     * ===========================================*/
+    (function ($) {
+        $.fn.timeCountDown = function (params) {
+            var me = $(this);
+            // console.log(me);
+            var defaults = {
+                date: '2088/08/08 08:08:08', //默认倒计时日期
+                callback: null, // 回调方法;
+                second: 0, // 秒数;
+                elements: {
+                    hm: me.find(".hm"),
+                    sec: me.find(".sec"),
+                    mini: me.find(".mini"),
+                    hour: me.find(".hour"),
+                    day: me.find(".day"),
+                    month: me.find(".month"),
+                    year: me.find(".year")
+                }
+            };
+
+            var options = $.extend({}, defaults, params || {}), s;
+            return this.each(function () {
+                var fun = {
+                    zero: function (n) {
+                        return n < 10 ? '0' + n : '' + n;
+                    },
+                    dv: function () {
+                        //ar future = new Date(options.date), now = new Date();
+                        //现在将来秒差值
+                        //ar dur = Math.round((future.getTime() - now.getTime()) / 1000),
+                        var dur = options.second,
+                            pms = {
+                                sec: "00",
+                                mini: "00",
+                                hour: "00",
+                                day: "00",
+                                month: "00",
+                                year: "0"
+                            };
+                        if (dur > 0) {
+                            pms.sec = fun.zero(dur % 60); //秒
+                            pms.mini = Math.floor((dur / 60)) > 0 ? fun.zero(Math.floor((dur / 60)) % 60) : "00"; //分钟
+                            pms.hour = Math.floor((dur / 3600)) > 0 ? fun.zero(Math.floor((dur / 3600)) % 24) : "00"; //小时
+                            pms.day = Math.floor((dur / 86400)) > 0 ? fun.zero(Math.floor((dur / 86400)) % 30) : "00"; //天
+                            pms.month = Math.floor((dur / 2629744)) > 0 ? fun.zero(Math.floor((dur / 2629744)) % 12) : "00"; //月份，以实际平均每月秒数计算
+                            pms.year = Math.floor((dur / 31556926)) > 0 ? Math.floor((dur / 31556926)) : "0"; //年份，按按回归年365天5时48分46秒算
+                        }
+                        return pms;
+                    },
+                    ui: function () {
+                        $.each(options.elements, function (o, v) {
+                            v[0] && v.html(fun.dv()[o] || "00");
+                        });
+                        clearInterval(s);
+                        options.second--;
+                        // 倒计时完回调;
+                        if (options.second < 0) {
+                            $.isFunction(options.callback) && options.callback.call(options.callback);
+                            return;
+                        }
+                        s = setTimeout(fun.ui, 1000);
+                    }
+                };
+                var future = new Date(options.date),
+                    now = new Date();
+                //现在将来秒差值
+                options.second = Math.round((future.getTime() - now.getTime()) / 1000);
+                fun.ui();
+            });
+        };
+    })(window.jQuery);
+    /* ===========================================
+     * 倒计时插件 - 秒数倒计时;
+     * 示例：$(element).timing({second: 90, endcall :function(){}, startcall: function(){}, startcall: procescall(){}});
+     * ===========================================*/
+    (function ($) {
+        var Timing = function (element, options) {
+            this.config = {
+                second: 89,
+                endcall: false,				// 结束回调;
+                startcall: false,			// 开始回调;
+                procescall: false			// 进行中回调;
+            };
+            if (typeof options == "object") {
+                $.extend(this.config, options);
+            } else if (typeof options == "number") {
+                this.config.second = options
+            }
+            this.elems = element;
+        };
+        Timing.prototype = {
+            start: function () {
+                var self = this, c = self.config;
+                $.isFunction(c.startcall) && c.startcall.call(c.startcall, self);
+                self.process();
+                c.obj = setInterval(function () {
+                    c.second--;
+                    if (c.second < 0) return self.end();
+                    self.process();
+                }, 1000);
+            },
+            process: function () {
+                var self = this, c = self.config;
+                self.elems.html(c.second);
+                $.isFunction(c.procescall) && c.procescall.call(c.procescall, self);
+            },
+            end: function () {
+                var self = this, c = self.config;
+                clearInterval(c.obj);
+                $.isFunction(c.endcall) && c.endcall.call(c.endcall, self);
+            }
+        };
+        $.fn.secondCountDown = function (op) {
+            return this.each(function () {
+                var data = new Timing($(this), op);
+                data.start();
+            });
+        };
+    })(window.jQuery);
 
 });
 

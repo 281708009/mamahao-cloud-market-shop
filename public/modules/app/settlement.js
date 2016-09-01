@@ -100,19 +100,24 @@ define(function (require, exports, module) {
 
     }
     pageFunc.prototype.stockOut = function (data) {
-        if (data.length > 0) {
+        if (data && data.length > 0) {
             var html = ['<div class="goods-list"><ul>'];
             for (i = 0; i < data.length; i++) {
                 var g = data[i];
                 var spDesc = '';
                 $.each(g.spec, function (index) {
-                    index > 0 && (spDesc+='&nbsp;');
+                    index > 0 && (spDesc += ',');
                     spDesc += this.value;
                 });
                 html.push('<li>');
                 html.push('<div class="pic"><img src="' + g.itemPic + '@1e_200w_200h_0c_0i_0o_100q_1x.jpg"><em>暂时缺货</em></div>');
-                html.push('<dl><dt>' + g.itemTitle + '</dt><dd><span>' + spDesc + '</span><strong>￥' + g.showPrice + '</strong></dd></dl>');
-                html.push('</li>');
+                html.push('<dl><dt>' + g.itemTitle + '</dt><dd><span>' + spDesc + '</span>');
+                if (g.isGift) {
+                    html.push('<em>赠品</em>')
+                } else {
+                    html.push('<strong>￥' + g.showPrice + '</strong>')
+                }
+                html.push('</dd></dl></li>');
             }
             html.push('</ul></div>');
             M.dialog({
@@ -122,20 +127,20 @@ define(function (require, exports, module) {
                 buttons: [
                     {
                         "text": "找相似商品", "class": "", "onClick": function () {
-                        location.href = '/'
-                    }
+                            location.href = '/'
+                        }
                     },
                     {
                         "text": "继续结算", "class": "success", "onClick": function () {
-                        this.hide();
-                        location.reload();
-                    }
+                            this.hide();
+                            location.reload();
+                        }
                     }
                 ]
             });
         } else {
             M.dialog({
-                body: '您选购的以下商品缺货', buttons: [{
+                body: '您选购的商品缺货', buttons: [{
                     "text": "找其他商品", "class": "", "onClick": function () {
                         location.href = '/'
                     }
@@ -153,9 +158,9 @@ define(function (require, exports, module) {
         var me = this;
 
         var $this = me.container, $spa = $('.spa'), $dom = $('#settlement');
-
-        if ($dom.data('stockout') != 0) {
-            me.stockOut($dom.data('stockoutGoods'));
+        var stockOutCode = $dom.data('stockout');
+        if (stockOutCode && stockOutCode != 0) {
+            me.stockOut(stockOutCode == -10001?[]:$dom.data('stockoutGoods'));
             return;
         }
         // 获取本地配送地址

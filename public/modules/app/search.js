@@ -22,28 +22,28 @@ define(function (require, exports, module) {
             });
 
             //点击关键字
-            $('.hot dd em, .history .list li').on('click', '', function () {
-                page.searchGoods($(this).text());
+            $('.hot dd em, .history .list li').on('click', function () {
+                page.searchGoods($(this).text(), false);
             });
 
             //搜素下拉提示
             $keywords.on('input', function () {
                 var keywords = $.trim($keywords.val());
-                if(keywords){
+                if (keywords) {
                     M.ajax({
                         url: '/api/searchKeywordTips',
                         data: {data: JSON.stringify({keyword: keywords})},
                         success: function (res) {
-                            if(res.template){
+                            if (res.template) {
                                 $default.addClass('none');
                                 $search_tips.empty().append(res.template).removeClass('none');
-                            }else{
+                            } else {
                                 $default.removeClass('none');
                                 $search_tips.addClass('none');
                             }
                         }
                     });
-                }else{
+                } else {
                     $default.removeClass('none');
                     $search_tips.addClass('none');
                 }
@@ -52,15 +52,24 @@ define(function (require, exports, module) {
             //清空历史搜素记录
             $('.js-del-history').on('click', function () {
                 localStorage.removeItem(CONST.local_search_history);
-                M.tips('历史搜素记录已清除');
+                M.tips({
+                    body: '历史搜素记录已清除',
+                    callback: function () {
+                        $('.history').fadeOut(function () {
+                            $(this).remove();
+                        });
+                    }
+                });
             });
 
         },
         /*关键字搜索商品*/
-        searchGoods: function (keywords) {
-            var history = JSON.parse(localStorage.getItem(CONST.local_search_history)) || [];
-            history.push(keywords);
-            localStorage.setItem(CONST.local_search_history, JSON.stringify($.unique(history)));
+        searchGoods: function (keywords, type) {
+            if (type !== false) {
+                var history = JSON.parse(localStorage.getItem(CONST.local_search_history)) || [];
+                history.unshift(keywords);
+                localStorage.setItem(CONST.local_search_history, JSON.stringify($.unique(history).slice(0, 10)));
+            }
 
             window.location.href = '#/list/keywords=' + keywords;
         }

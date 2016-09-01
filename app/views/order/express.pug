@@ -14,8 +14,10 @@ section.m-courier
                         figcaption #{goods.itemName}
                         p
                             if goods.spec
-                                each sp in goods.spec
-                                    | #{sp.value}&nbsp;
+                                each sp, index in goods.spec
+                                    if index > 0
+                                        | ,
+                                    | #{sp.value}
                     dl
                         dt ￥#{goods.itemPrice}
                         dd x#{goods.quantity}

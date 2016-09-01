@@ -205,7 +205,7 @@ var cart = {
         console.info(params);
         HttpClient.request(arguments, {
             url: API.aliPay,
-            data: {batchNo: params.batchNo,resource:params.resource},
+            data: params,
             success: function (data) {
                 res.json(data);
             }

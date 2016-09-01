@@ -7,7 +7,7 @@ define(function (require, exports, module) {
         config: {
             params: M.url.params,
             hashParams: function () {
-                return M.url.getParams(location.hash.match(/(\w+=)([^\&]*)/gi).join('&'));  //json params
+                return M.url.getParams((location.hash.match(/(\w+=)([^\&]*)/gi) || []).join('&'));  //json params
             }
         },
         init: function (params) {

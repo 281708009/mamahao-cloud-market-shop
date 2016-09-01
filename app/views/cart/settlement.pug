@@ -2,147 +2,153 @@
 block content
     include ../includes/let.pug
     include ../includes/mixin.pug
-    section.m-pay#settlement(data-stockout=(stockOut || 0),data-stockout-goods=(data || []))
-        if stockOut
+    if stockOut
+        section.m-pay#settlement(data-stockout=(stockOut || 0),data-stockout-goods=(data || []))
+    else
+        section.m-pay#settlement
 
-        else
-            input(type='hidden',name='orderNo',value=orderNo)
-            input(type='hidden',name='deliveryAddrId',value=deliveryAddr ? deliveryAddr.deliveryAddrId : '')
-            if notice
-                .u-alert
-                    p #{notice}
-            //- 收货地址
-            .u-send.js-address
-                if deliveryAddr
-                    a.u-arrow.right(href='/center#/address/f=1&id=' + deliveryAddr.deliveryAddrId)
-                        dl.default
-                            dt
-                                strong #{deliveryAddr.consignee}
-                                em #{deliveryAddr.phone}
-                            dd #{deliveryAddr.prvName}#{deliveryAddr.cityName}#{deliveryAddr.areaName}#{deliveryAddr.gpsAddr}#{deliveryAddr.addrDetail}
-                else
-                    a.u-arrow.right(href='/center#/addressAdd/f=1')
-                        p.add 填写收货地址
-            //- 物品信息
-            - var deliveryDesc = '';
-            - var deliveryInfo = [];
-            .u-order
-                each item, index in data
-                    if index >= 1
-                        - deliveryDesc += '+'
-                    if item.shopId
-                        - deliveryDesc += '门店配送'
-                        - deliveryInfo.push({type:1,sid:item.shopId,deliveryWay:1})
+            if stockOut
+            else
+                input(type='hidden',name='orderNo',value=orderNo)
+                input(type='hidden',name='deliveryAddrId',value=deliveryAddr ? deliveryAddr.deliveryAddrId : '')
+                if notice
+                    .u-alert
+                        p #{notice}
+                //- 收货地址
+                .u-send.js-address
+                    if deliveryAddr
+                        a.u-arrow.right(href='/center#/address/f=1&id=' + deliveryAddr.deliveryAddrId)
+                            dl.default
+                                dt
+                                    strong #{deliveryAddr.consignee}
+                                    em #{deliveryAddr.phone}
+                                dd #{deliveryAddr.prvName}#{deliveryAddr.cityName}#{deliveryAddr.areaName}#{deliveryAddr.gpsAddr}#{deliveryAddr.addrDetail}
                     else
-                        - deliveryDesc += '快递配送'
-                        - deliveryInfo.push({type:2,sid:item.warehouseId,deliveryWay:3})
-                    .item
+                        a.u-arrow.right(href='/center#/addressAdd/f=1')
+                            p.add 填写收货地址
+                //- 物品信息
+                - var deliveryDesc = '';
+                - var deliveryInfo = [];
+                .u-order
+                    each item, index in data
+                        if index >= 1
+                            - deliveryDesc += '+'
                         if item.shopId
-                            .header #{item.shopName}
-                                em 集团自营
+                            - deliveryDesc += '门店配送'
+                            - deliveryInfo.push({type:1,sid:item.shopId,deliveryWay:1})
                         else
-                            .header #{item.warehouseName}
-                        each goods in item.goodsList
-                            .content
-                                .pic
-                                    img(src=goods.itemPic)
-                                figure
-                                    figcaption #{goods.itemName}
-                                    p
-                                        each sp in goods.spec
-                                            | #{sp.value}&nbsp;
-                                dl
-                                    if goods.isGift
-                                        dt
-                                            sub 赠品
-                                    else
-                                        dt ￥#{goods.itemPrice}
-                                            if(goods.itemPrice < goods.oPrice)
-                                                del ￥#{goods.oPrice}
-                                    dd x#{goods.quantity}
-            //- 配送
-            .courier
-                //-a.u-arrow.right(href='#/delivery/' + (deliveryAddr ? deliveryAddr.deliveryAddrId : ''))
-                a.u-arrow.right.js-delivery(data-delivery=deliveryInfo,href='javascript:;')
-                    strong 配送方式
-                    em #{deliveryDesc}
-            //- 优惠信息
-            .sale
-                .header
-                    if coupon
-                        - var voucherIds = [];
-                        each voucher, index in coupon.discountList
-                            - voucherIds.push(voucher.voucherId);
-                        - voucherIds = voucherIds.join(',');
-                        a.u-arrow.right.js-coupon(href='javascript:;')
-                            strong 优惠劵
-                            em.js-vouchers(data-ids=voucherIds,data-discount=coupon.discount) 省#{coupon.discount}元
-                    else
-                        a.right(href='javascript:;')
-                            strong 优惠劵
-                                span 当前订单没有适用的优惠劵
-
-                        //em 未使用
-                ul.js-point(data-total-discount=useCouponlimit.maxReducePrice)
-                    if useCouponlimit.mbeanMaxLimit > 0
-                        li#mbean
-                            p 可用
-                                span #{useCouponlimit.mbeanMaxLimit}
-                                input(type='tel', name='mbean',value=useCouponlimit.mbeanMaxLimit, data-max=useCouponlimit.mbeanMaxLimit, data-ratio=ratio.mbeanRatio)
-                                | 妈豆，抵
-                                em ￥#{useCouponlimit.mbeanMaxLimit / ratio.mbeanRatio}
-                            label
-                                input.u-switch(type='checkbox')
-                    if useCouponlimit.gbMaxLimit > 0
-                        li#gbPoint
-                            p 可用
-                                span #{useCouponlimit.gbMaxLimit}
-                                input(type='tel', name='gbCount',value=useCouponlimit.gbMaxLimit, data-max=useCouponlimit.gbMaxLimit, data-ratio=ratio.gbRatio)
-                                | GB积分，抵
-                                em ￥#{useCouponlimit.gbMaxLimit / ratio.gbRatio}
-                            label
-                                input.u-switch(type='checkbox')
-                    if useCouponlimit.mcMaxLimit > 0
-                        li#mcPoint
-                            p 可用
-                                - var mcMax = ~~(useCouponlimit.mcMaxLimit/300)*300
-                                span #{mcMax}
-                                input(type='tel', name='mcCount', value=mcMax, data-max=mcMax, data-ratio=ratio.mcRatio)
-                                | MC积分，抵
-                                em ￥#{mcMax / ratio.mcRatio}
-                            label
-                                input.u-switch(type='checkbox',chekced='')
-            //- 结算金额明细
-            ul.total
-                each money in price
-                    li
-                        em #{money.name}
-                        if money.name == '商品金额'
-                            span ￥#{money.price}
-                        else
-                            if money.price == 0
-                                span 免费
+                            - deliveryDesc += '快递配送'
+                            - deliveryInfo.push({type:2,sid:item.warehouseId,deliveryWay:3})
+                    each item in data
+                        .item
+                            if item.shopId
+                                .header #{item.shopName}
+                                    em 集团自营
                             else
-                                span -￥#{money.price}
-                li
-                    em 运费
-                    span
-                        if mailPrice == 0
-                            | 免运费
+                                .header #{item.warehouseName}
+                            each goods in item.goodsList
+                                .content
+                                    .pic
+                                        img(src=goods.itemPic)
+                                    figure
+                                        figcaption #{goods.itemName}
+                                        p
+                                            each sp, index in goods.spec
+                                                if index > 0
+                                                    | ,
+                                                | #{sp.value}
+                                    dl
+                                        if goods.isGift
+                                            dt
+                                                sub 赠品
+                                        else
+                                            dt ￥#{goods.itemPrice}
+                                                if(goods.itemPrice < goods.oPrice)
+                                                    del ￥#{goods.oPrice}
+                                        dd x#{goods.quantity}
+                //- 配送
+                .courier
+                    //-a.u-arrow.right(href='#/delivery/' + (deliveryAddr ? deliveryAddr.deliveryAddrId : ''))
+                    a.u-arrow.right.js-delivery(data-delivery=deliveryInfo,href='javascript:;')
+                        strong 配送方式
+                        em #{deliveryDesc}
+                //- 优惠信息
+                .sale
+                    .header
+                        if coupon
+                            - var voucherIds = [];
+                            each voucher, index in coupon.discountList
+                                - voucherIds.push(voucher.voucherId);
+                            - voucherIds = voucherIds.join(',');
+                            a.u-arrow.right.js-coupon(href='javascript:;')
+                                strong 优惠劵
+                                em.js-vouchers(data-ids=voucherIds,data-discount=coupon.discount) 省#{coupon.discount}元
                         else
-                            | ￥#{mailPrice}
+                            a.right(href='javascript:;')
+                                strong 优惠劵
+                                    span 当前订单没有适用的优惠劵
 
-        //- 结算按钮
-        .footer
-            .field
-                if stockOut
-                    button.u-btn.success.ban 去付款
-                else
-                    input(type='hidden',name='payPrice',value=payPrice + mailPrice)
-                    p 实付
-                        em.js-finalPrice ￥#{payPrice + mailPrice}
-                    button.u-btn.success.js-pay 去付款
-            .f-space
+                            //em 未使用
+                    ul.js-point(data-total-discount=useCouponlimit.maxReducePrice)
+                        if useCouponlimit.mbeanMaxLimit > 0
+                            li#mbean
+                                p 可用
+                                    span #{useCouponlimit.mbeanMaxLimit}
+                                    input(type='tel', name='mbean',value=useCouponlimit.mbeanMaxLimit, data-max=useCouponlimit.mbeanMaxLimit, data-ratio=ratio.mbeanRatio)
+                                    | 妈豆，抵
+                                    em ￥#{useCouponlimit.mbeanMaxLimit / ratio.mbeanRatio}
+                                label
+                                    input.u-switch(type='checkbox')
+                        if useCouponlimit.gbMaxLimit > 0
+                            li#gbPoint
+                                p 可用
+                                    span #{useCouponlimit.gbMaxLimit}
+                                    input(type='tel', name='gbCount',value=useCouponlimit.gbMaxLimit, data-max=useCouponlimit.gbMaxLimit, data-ratio=ratio.gbRatio)
+                                    | GB积分，抵
+                                    em ￥#{useCouponlimit.gbMaxLimit / ratio.gbRatio}
+                                label
+                                    input.u-switch(type='checkbox')
+                        if useCouponlimit.mcMaxLimit > 0
+                            li#mcPoint
+                                p 可用
+                                    - var mcMax = ~~(useCouponlimit.mcMaxLimit/300)*300
+                                    span #{mcMax}
+                                    input(type='tel', name='mcCount', value=mcMax, data-max=mcMax, data-ratio=ratio.mcRatio)
+                                    | MC积分，抵
+                                    em ￥#{mcMax / ratio.mcRatio}
+                                label
+                                    input.u-switch(type='checkbox',chekced='')
+                //- 结算金额明细
+                ul.total
+                    each money in price
+                        li
+                            em #{money.name}
+                            if money.name == '商品金额'
+                                span ￥#{money.price}
+                            else
+                                if money.price == 0
+                                    span 免费
+                                else
+                                    span -￥#{money.price}
+                    li
+                        em 运费
+                        span
+                            if mailPrice == 0
+                                | 免运费
+                            else
+                                | ￥#{mailPrice}
+
+            //- 结算按钮
+            .footer
+                .field
+                    if stockOut
+                        button.u-btn.success.ban 去付款
+                    else
+                        input(type='hidden',name='payPrice',value=payPrice + mailPrice)
+                        p 实付
+                            em.js-finalPrice ￥#{payPrice + mailPrice}
+                        button.u-btn.success.js-pay 去付款
+                .f-space
 
     unless stockOut
         // 配送方式选择弹出层
@@ -160,9 +166,10 @@ block content
                         if item.goodsList.length > 1
                             .content.ditto.flex-box
                                 ul.pic
-                                    each goods in item.goodsList
-                                        li
-                                            img(src=goods.itemPic + '@1e_400w_400h_0c_0i_0o_100q_1x.jpg')
+                                    each goods,index in item.goodsList
+                                        if index < 3
+                                            li
+                                                img(src=goods.itemPic + '@1e_400w_400h_0c_0i_0o_100q_1x.jpg')
                                 .number
                                     em 共#{item.goodsList.length}件
                         else
@@ -174,8 +181,10 @@ block content
                                 dl
                                     dt #{goods.itemName}
                                     dd
-                                        each sp in goods.spec
-                                            | #{sp.value}&nbsp;
+                                        each sp, index in goods.spec
+                                            if index > 0
+                                                | ,
+                                            | #{sp.value}
                                 .money
                                     strong #{goods.itemPrice}
                                         //-del #{goods.oPrice}
