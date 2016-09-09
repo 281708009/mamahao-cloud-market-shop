@@ -1,9 +1,10 @@
 if vouchers.length
     .nav-list.js-nav-list
-        each list in vouchers
-            p
-                em 领劵
-                | #{list.des}
+        //-按照优惠金额排序
+        - var vouchersList = vouchers.concat().sort(function(a,b){return b.amount-a.amount});
+        p
+            em 领劵
+            | #{vouchersList[0].des}
 
     // 促销列表 .show显示
     section.u-fixed.bottom.m-goods-coupon

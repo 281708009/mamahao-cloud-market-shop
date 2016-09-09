@@ -9,7 +9,16 @@ if wholeItems && wholeItems.length
             if cartTopDesc.length > 0
                 dd
                     each promotion in cartTopDesc
-                        a.u-arrow.right(href='javascript:;') #{promotion.desc}
+                        case promotion.landingType
+                            //-0 无 1商品详情 2三级类目列表 3 H5链接 4 品牌列表
+                            when 3
+                                a.right.u-arrow(href=promotion.landingDetail) #{promotion.desc}
+                            when 4
+                                a.right.u-arrow(href='/goods#/list/entry=0&brandIds='+ promotion.landingDetail) #{promotion.desc}
+                            when 2
+                                a.right.u-arrow(href='/goods#/list/entry=1&categoryId='+ promotion.landingDetail) #{promotion.desc}
+                            default
+                                a.right(href='javascript:;') #{promotion.desc}
         .content
             each item in wholeItems
                 if item.pmtType == 6
@@ -114,9 +123,9 @@ if wholeItems && wholeItems.length
                             dt 小计：￥#{item.pmtPrice}
                 else
                     //- 单品
-                    .item.single(class=item.invalid ? 'fail' : '',data-compoent-id=item.compoentId, data-compoent-type=item.compoentType)
+                    .item.single(class=item.invalid ? 'fail' : '',class=item.invalid && item.invalidStatus == 1 ? 'under' : '' ,data-compoent-id=item.compoentId, data-compoent-type=item.compoentType)
                         .body
-                            ul.js-jump(url='/goods#/detail/inlet=6&templateId=' + item.templateId + '&itemId=' + item.itemId)
+                            ul.js-jump(url=item.invalid && item.invalidStatus == 1?'':'/goods#/detail/inlet=6&templateId=' + item.templateId + '&itemId=' + item.itemId)
                                 li.li-1
                                     unless item.invalid
                                         if item.selected

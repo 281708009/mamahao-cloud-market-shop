@@ -1,17 +1,18 @@
 include ../includes/let.pug
 //- 操作结果页
-p 操作结果
 if mbeans
     section.m-order-receipt.m-assess-success
         .content
             .pic
                 img(src='http://s.mamhao.cn/m/v1/images/bg-assess.png')
             h2 评价成功啦!
-            p 感谢您此次发表的购物体验，奖励
-                em #{mbeans}妈豆
+            p 恭喜您获得
+                em #{mbeans}
+                | 妈豆
+
             ul
                 li
-                    a.u-btn.max.alone(href='/center#/order/detail/#{orderNo}/') 查看订单
+                    a.u-btn.max.alone(href='/center#/order/detail/' + orderNo) 查看订单
                 li
                     a.u-btn.max.alone(href='/') 快去购物吧
 

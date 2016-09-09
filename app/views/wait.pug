@@ -1,0 +1,33 @@
+extends layouts/initial.pug
+block title
+    title 妈妈好商城
+block meta
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+block css
+    style.
+        html, body {height: 100%; overflow: hidden;}
+        body {background: #f0f0f0;color: #333;}
+        .wait {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            top: 50%;
+            -webkit-transform: translate3d(0, -70%, 0);
+            transform: translate3d(0, -70%, 0);
+        }
+        .wait span {
+            width: 105px;
+            height: 105px;
+            display: block;
+            margin: 0 auto;
+            background: url(data:image/png;base64,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) no-repeat;
+            background-size: cover;
+        }
+        .wait p {
+            padding: 15px 0;
+        }
+
+block content
+    .wait
+        span
+        p 妈妈好商城正加紧建设中，敬请期待!

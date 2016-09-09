@@ -10,6 +10,7 @@
     "ali-oss": "^4.4.4",
     "async": "^1.5.2",
     "body-parser": "^1.15.2",
+    "co": "^4.6.0",
     "connect-flash": "^0.1.1",
     "connect-memcached": "^0.2.0",
     "connect-redis": "^3.0.2",
@@ -33,7 +34,8 @@
     "wechat-oauth": "^1.1.1"
   },
   "devDependencies": {
-    "co": "^4.6.0",
+    "babel-cli": "^6.14.0",
+    "babel-preset-es2015": "^6.14.0",
     "mocha": "latest",
     "supertest": "latest"
   }

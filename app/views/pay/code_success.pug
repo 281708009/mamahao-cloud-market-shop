@@ -4,6 +4,7 @@ block title
 block meta
     script(type='text/javascript').
         var sw = window.screen.width > 414 ? 414 : window.screen.width;
+        /ucbrowser/gi.test(navigator.userAgent) && (sw = window.screen.width);
         var phoneScale = parseInt(sw) / 750;
         document.write('<meta name="viewport" content="width=750, minimum-scale=' + phoneScale + ', maximum-scale=' + phoneScale + ', target-densitydpi=device-dpi">');
 block css
@@ -11,7 +12,7 @@ block css
     style.
         body {font-size: 30px; background: #FFF;}
 block js
-    script seajs.use('app/pay_code_success');
+    script seajs.run('app/pay_code_success');
 block content
     // 领取成功
     section.m-code-success
@@ -41,7 +42,7 @@ block content
                 .close
             .content-border
                 .content
-                    p 您已成功领取新人红包！
+                    p 您已成功领取红包！
                     .volume
                         div
                             p

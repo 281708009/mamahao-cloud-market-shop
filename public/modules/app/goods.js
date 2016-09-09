@@ -56,8 +56,9 @@ define(function (require, exports, module) {
                     page.renderModule('goods_list', callback, params);
                 },
                 bind: function () {
+                    var $module = $(this);
                     require.async('app/goods_list', function (page) {
-                        page.init();
+                        page.init($module);
                     });
                 }
             };
@@ -71,8 +72,9 @@ define(function (require, exports, module) {
                     page.renderModule('search', callback, params);
                 },
                 bind: function () {
+                    var $module = $(this);
                     require.async('app/search', function (page) {
-                        page.init();
+                        page.init($module);
                     });
                 }
             };
@@ -109,7 +111,7 @@ define(function (require, exports, module) {
                     var $module = $(this);
                     if (!$module.find('.u-null-all')[0]) {
                         require.async('app/goods_detail', function (page) {
-                            page.init(detail.params);
+                            page.init($module, detail.params);
                         });
                     }
                 }

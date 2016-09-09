@@ -16,7 +16,7 @@ var task = {
         common: {
             api: API.coupons,
             pug: '/lists/coupon.pug',
-            blank: {style: '07', tips: '您暂时还没有优惠劵哦~'},
+            blank: {style: '07', tips: '您还没有任何优惠券哦~'},
             data: {
                 page: 1,
                 pageSize: 20

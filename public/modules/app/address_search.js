@@ -28,7 +28,7 @@ define(function (require, exports, module) {
 
         //输入关键字
         $keywords.on('input', function () {
-            var keywords = $keywords.val();
+            var keywords = $.trim($(this).val());
             if (!keywords) return false;
             // 高德地图 地址搜索
             AMap.service(["AMap.PlaceSearch"], function () {
@@ -38,6 +38,13 @@ define(function (require, exports, module) {
                     city: params.areaId //城市
                 });
                 //关键字查询
+                if (keywords && params.province) {
+                    params.province = decodeURIComponent(params.province);
+                    //关键字加上省份，提高精度；
+                    // 解决bug：如选择上海黄浦区搜索杭州万泰城可以搜索到；
+                    keywords = params.province + keywords;
+                }
+
                 placeSearch.search(keywords, function (status, result) {
                     //console.log(status, JSON.stringify(result));
                     $result.empty();

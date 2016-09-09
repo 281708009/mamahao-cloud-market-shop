@@ -1,6 +1,6 @@
 if vouchers.length > 0
     each voucher in vouchers
-        label.item
+        label.item.js-coupon-item(data-id=voucher.voucherId,data-discount=voucher.voucherAmount)
             .flex-center
                 input.u-radio(type='radio',name='coupon',value=voucher.voucherId)
             dl

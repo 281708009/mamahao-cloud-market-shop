@@ -96,10 +96,10 @@ section.m-order-detail
                             if (p.name == '运费' && p.price == 0)
                                 | 免运费
                             else if p.price != 0
-                                if (p.name != '运费' && p.name != '商品金额')
-                                    | - ￥#{p.price}
-                                else
-                                    | ￥#{p.price}
+                                //if (p.name != '运费' && p.name != '商品金额')
+                                //    | - ￥#{p.price}
+                                //else
+                                | ￥#{p.price}
 
         dl.finally
             dt 实付款
@@ -127,7 +127,13 @@ section.m-order-detail
                         em 已删除
                     when 9
                         em 退款退货
-            li 订单来源：#{detail.pickShopName}
+            if detail.invoiceType && detail.invoiceType == 1
+                li 个人发票：#{detail.invoceTitle}
+            else if detail.invoiceType && detail.invoiceType == 2
+                li 公司发票：#{detail.invoceTitle}
+            if detail.pickShopName
+                li 订单来源：#{detail.pickShopName}
+
     // 底导
     footer.footer
         if detail.orderStatus == 3 && detail.failureMillisecond <= 0
@@ -136,7 +142,14 @@ section.m-order-detail
                     time 订单已失效，请重新生成。
         else
             dl
-                if detail.allowRefund
+                if detail.orderStatus == 3 && detail.failureMillisecond > 0
+                    dt
+                        time.js-countdown(data-seconds=detail.failureMillisecond,data-page-type=2)
+                            span.minute 15
+                            | 分
+                            span.second 00
+                            | 秒后订单失效
+                else if detail.allowRefund && detail.orderStatus != 1 && detail.orderStatus != 3
                     dt.refund-explain
                         em 退款/退货说明
                 dd
@@ -145,23 +158,29 @@ section.m-order-detail
                         unless detail.deliveryId == 2
                             a.u-btn(href='#/order/express/' + detail.orderNo) 查看物流
                     when 1
-                        button.u-btn.js-btn-del(data-order-no=detail.orderNo) 删除订单
+                        button.u-btn.js-btn-del(data-id=detail.orderNo) 删除订单
                     when 2
-                        button.u-btn.js-btn-del(data-order-no=detail.orderNo) 删除订单
+                        button.u-btn.js-btn-del(data-id=detail.orderNo) 删除订单
                     when 3
                         if detail.failureMillisecond <= 0
                             button.u-btn.ban 订单失效
                         else
-                            button.u-btn.success 立即付款
+                            button.u-btn.js-btn-cancel(data-id=detail.orderNo) 取消订单
+                            a.u-btn.success(href='/pay/' + detail.orderNo) 立即付款
                     when 4
                         unless detail.deliveryId == 2
-                            button.u-btn.js-btn-remind 提醒发货
+                            button.u-btn.js-btn-remind(data-id=detail.orderNo) 提醒发货
                     when 5
-                        a.u-btn(href='#/order/express/' + detail.orderNo) 查看物流
+                        unless detail.deliveryId == 2
+                            a.u-btn(href='#/order/express/' + detail.orderNo) 查看物流
+                        a.u-btn.success.js-btn-receive(data-id=detail.orderNo) 确认收货
                     when 6
                         unless detail.deliveryId == 2
                             a.u-btn(href='#/order/express/' + detail.orderNo) 查看物流
-                        a.u-btn.checked(href='#/order/review/' + detail.orderNo) 评价晒单
+                        if detail.data[0].goodsList.length > 1
+                            a.u-btn.checked(href='#/order/review/' + detail.orderNo) 评价晒单
+                        else
+                            a.u-btn.checked(href='#/order/reviewDetail/' + detail.orderNo) 评价晒单
                     when 8
                     default
                         | &nbsp;

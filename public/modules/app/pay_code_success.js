@@ -3,12 +3,9 @@ define(function (require, exports, module) {
     var page = {
         tools: {
             // 校验手机号码;
-            isMobile: function(v){return !/^1{1,}[3,4,5,7,8]{1}\d{9}$/.test(v)?false:true;},
-            // 获取url参数;
-            search: function(v){var value = location.search.match(new RegExp("[\?\&]" + v + "=([^\&]*)(\&?)", "i"));return value ? decodeURIComponent(value[1]) : "";}
+            isMobile: function(v){return !/^1{1,}[3,4,5,7,8]{1}\d{9}$/.test(v)?false:true;}
         },
         config: {
-            params: M.url.query(),
             // ajax向node请求的url;
             api: {
 
@@ -22,9 +19,11 @@ define(function (require, exports, module) {
             o.code = $(".js-code");
             o.getCode = $(".js-get-code");
             o.submit = $(".js-submit");
+            o.pop = $(".m-pop-all");
 
-            console.log(c);
+            //console.log(c);
             page.bindEvents();
+            page.getCoupon();
         },
         bindEvents: function () {
             var self = this, o = self.info, c = self.config;
@@ -52,6 +51,23 @@ define(function (require, exports, module) {
             o.getCode.on("click", function () {
                 self.getSMS();
             });
+            // 关闭成功提示层;
+            o.pop.on("click", ".title .close", function () {
+                o.pop.removeClass("show");
+                o.mobile.val("");
+                o.code.val("");
+            });
+        },
+        // 获取优惠劵信息;
+        getCoupon: function () {
+            var self = this, o = self.info, c = self.config;
+            M.ajax({
+                url: "/pay/codeCouponInfo.html",
+                success: function (res) {
+                    $(".m-code-success").addClass("show");
+                },
+                error: function () {}
+            });
         },
         // 获取短信验证码;
         getSMS: function () {
@@ -68,7 +84,7 @@ define(function (require, exports, module) {
                 success:function(res){
                     o.mobile.attr("disabled", "disabled");
                     o.getCode.html("<i></i>秒后可重发").addClass("ban").find("i").secondCountDown({
-                        second: 10,
+                        second: 59,
                         endcall: function () {
                             o.getCode.removeClass("ban").html("获取验证码");
                             o.mobile.removeAttr("disabled");
@@ -94,7 +110,12 @@ define(function (require, exports, module) {
                 url: "/pay/codeCoupon.html",
                 data: {data: params},
                 success:function(res){
-                    console.log(res);
+                    o.pop.addClass("show");
+                    //console.log(res);
+                },
+                error: function (res) {
+                    o.code.val("");
+                    M.tips({body: res.msg, delay: 2000});
                 },
                 complete: function () {
                     c.isAjax = false;

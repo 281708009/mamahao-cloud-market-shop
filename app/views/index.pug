@@ -6,7 +6,7 @@ block css
     link(rel='stylesheet', href='/css/index.css')
 block js
     script(src='http://s.mamhao.cn/common/js/swiper.min.js')
-    script seajs.use('app/index');
+    script seajs.run('app/index');
 
 block content
     include includes/let.pug
@@ -63,7 +63,7 @@ block content
                             dl
                                 -var first = grid.data[0];
                                 dt
-                                    a(href=formatHomeLink(first))
+                                    a(href=formatHomeLink(first), class="js-link-type-" + first.linkType, data-json=first)
                                         img(data-original=first.pic + pngSize, src=placeholderPic, alt=first.name)
                                 dd
                                     each d, k in grid.data
@@ -76,7 +76,7 @@ block content
                             dl
                                 -var first = grid.data[0];
                                 dt
-                                    a(href=formatHomeLink(first))
+                                    a(href=formatHomeLink(first), class="js-link-type-" + first.linkType, data-json=first)
                                         img(data-original=first.pic + pngSize, src=placeholderPic, alt=first.name)
                                 dd
                                     each d, k in grid.data
@@ -137,7 +137,7 @@ block content
                                                 li
                                                     a(href=formatHomeLink(g))
                                                         span.pic
-                                                            img(src=g.pic + pngSize, alt=g.title)
+                                                            img(data-original=g.pic + jpgSize, src=placeholderPic, alt=g.title)
                                                         if g.linkType == 2
                                                             strong #{g.title}
                                                             em ￥#{g.price}

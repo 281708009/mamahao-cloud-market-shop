@@ -145,7 +145,8 @@ define(function (require, exports, module) {
                         data.deliverySpeedStar = +$('#deliverySpeedStar').data('star');
                         data.serveStar = +$('#serveStar').data('star');
                         data.star = +$('#goodsStar').data('star');
-                        //return console.log(data);
+                        if (data.content == '') return alert('商品评价内容为空');
+                        if (data.content.length > 140) return alert('字数超出最大限制');
                         M.ajax({
                             url: page.config.api['orderReviewSubmit'],
                             data: {data: JSON.stringify(data)},
@@ -204,7 +205,8 @@ define(function (require, exports, module) {
                                 "isDefult": info.isDefault
                             };
                             localStorage.setItem(CONST.local_settlement_addr, JSON.stringify(localAddr));
-                            location.href = '/cart#/settlement';
+                            //location.href = '/cart#/settlement';
+                            window.history.go(-1);
                         });
                     }
 
@@ -224,8 +226,8 @@ define(function (require, exports, module) {
                     var $module = $(this);
                     $module.data('hash-params', address_add.hashParams);
                     page.updateAddressData($module);
-                    page.queryAddressArea({type: 1}); //获取省份
                     page.bindAddressEvents($module); //绑定相关事件
+                    page.selectPCD();    //首次进入时，如果已有省市区，则选中
                 }
             };
 
@@ -243,14 +245,14 @@ define(function (require, exports, module) {
                     var $module = $(this);
                     $module.data('hash-params', address_edit.hashParams);
                     page.updateAddressData($module);
-                    page.queryAddressArea({type: 1}); //获取省份
                     page.bindAddressEvents($module); //绑定相关事件
+                    page.selectPCD();  //首次进入时，如果已有省市区，则选中
                 }
             };
 
             /*关键字搜索地址*/
             var address_search = {
-                url: '/addressSearch/:areaId',
+                url: '/addressSearch/:areaId/:province?',
                 className: 'm-address-search',
                 render: function () {
                     this.params.areaId = +this.params.areaId;
@@ -278,10 +280,41 @@ define(function (require, exports, module) {
                     var $module = $(this);
                     $module.on('click', '.list li', function () {
                         var $this = $(this), $spa = $("#app");
-                        var data = $spa.data('data') || {};
-                        data.gpsAddr = $this.find('dt span').text();
-                        $spa.data('data', data);
-                        window.history.go(-1);
+                        //console.log($this.data('info'))
+
+                        var thisInfo = $this.data('info');
+                        AMap.service('AMap.Geocoder', function () {//回调函数
+                            //实例化Geocoder,使用geocoder 对象完成相关功能
+                            var geocoder = new AMap.Geocoder();
+
+                            //逆向地理编码（坐标-地址）
+                            var coordinate = [thisInfo.location.lng, thisInfo.location.lat];//坐标
+                            geocoder.getAddress(coordinate, function (status, result) {
+                                //console.log(JSON.stringify(result));
+                                if (status === 'complete' && result.info === 'OK') {
+                                    //获得了有效的地址信息:
+                                    //即，result.regeocode.formattedAddress
+                                    var regeocode = result.regeocode, detail = regeocode.addressComponent;
+                                    console.log(detail)
+                                    detail.province = detail.province.replace(/省$/, ''); //忽略最后一个'省'字
+
+                                    var data = $spa.data('data') || {};
+                                    data.gpsAddr = $this.find('dt span').text();
+                                    data.district = [detail.province, detail.city, detail.district].join('');
+                                    data.areaId = detail.adcode;
+                                    data.prv = detail.province;
+                                    data.city = detail.city;
+                                    data.area = detail.district;
+
+                                    data.lat = thisInfo.location.lat;
+                                    data.lng = thisInfo.location.lng;
+
+                                    $spa.data('data', data);
+                                    window.history.go(-1);
+                                }
+                            });
+                        });
+
                     });
                 }
             };
@@ -412,6 +445,9 @@ define(function (require, exports, module) {
                 phone: form.find('.mobile').val(),
                 district: form.find('.district').val(),
                 areaId: form.find('.district').data('area-id') || null,
+                prv: $('#list-pro').find('option:selected').text(),
+                city: $('#list-city').find('option:selected').text(),
+                area: $('#list-area').find('option:selected').text(),
                 gpsAddr: form.find('.street').val(),
                 lat: form.find('.street').data('lat') || null,
                 lng: form.find('.street').data('lng') || null,
@@ -466,13 +502,71 @@ define(function (require, exports, module) {
                             dom.push('<option value="' + v.id + '">' + v.name + '</option>');
                         });
                         $target.empty().append(dom);
+                        params.callback && params.callback();
                     }
                 });
             }
         },
+        //选择省市区
+        selectPCD: function () {
+            //首次进入时，如果已有省市区，则选中
+            $.when(function () {
+                var dtd = $.Deferred();
+                //获取省份
+                page.queryAddressArea({
+                    type: 1,
+                    callback: function () {
+                        var $district = $('.js-district');
+                        if ($district.data('prv')) {
+                            var $option = $.grep($('#list-pro option'), function (v) {
+                                return $(v).text() === $district.data('prv');
+                            });
+                            $($option[0]).attr('selected', true);
+
+                            dtd.resolve($($option[0]).val());
+                        } else {
+                            dtd.reject();
+                        }
+                    }
+                });
+                return dtd.promise();
+
+            }()).then(function (id) {
+                var dtd = $.Deferred();
+                //获取市
+                page.queryAddressArea({
+                    type: 2,
+                    id: id,
+                    callback: function () {
+                        var $district = $('.js-district');
+                        var $option = $.grep($('#list-city option'), function (v) {
+                            return $(v).text() === $district.data('city');
+                        });
+                        $($option[0]).attr('selected', true);
+
+                        dtd.resolve($($option[0]).val());
+                    }
+                });
+                return dtd.promise();
+
+            }).then(function (id) {
+                //获取区
+                page.queryAddressArea({
+                    type: 3,
+                    id: id,
+                    callback: function () {
+                        var $district = $('.js-district');
+                        var $option = $.grep($('#list-area option'), function (v) {
+                            return $(v).text() === $district.data('area');
+                        });
+                        $($option[0]).attr('selected', true);
+                    }
+                });
+            });
+        },
         /*绑定修改、新建地址等事件*/
-        bindAddressEvents: function (module) {
-            var $module = module;
+        bindAddressEvents: function (container) {
+            var $module = container;
             /*选择省市区*/
             $module.on('click', '.js-district', function () {
                 $('.u-area').addClass('show');
@@ -522,20 +616,26 @@ define(function (require, exports, module) {
                 }).join('');
 
                 if ($('.js-district').data('area-id') !== areaId) {
-                    $('.js-district').val(district).data('area-id', areaId);
+                    $('.js-district').val(district).data({
+                        "area-id": areaId
+                    });
                     $('.house-number,.street').val('');
                 }
+                page.getAddressData($('.fm-addr-info')); //存储数据
+                page.updateAddressData($module);
                 $module.find('.u-area .mask').trigger('click');
             });
 
 
             /*输入关键字搜索*/
             $module.on('click', '.js-street', function () {
-                if (!$('.js-district').data('area-id')) {
+                var $district = $('.js-district');
+                if (!$district.data('area-id')) {
                     return M.tips('请先选择省市区');
                 }
                 var data = page.getAddressData($('.fm-addr-info'));
-                location.href = '/center#/addressSearch/' + data.areaId;
+                var redirectURL = '/center#/addressSearch/' + data.areaId + '/' + ($district.data('prv') || '');
+                location.href = redirectURL;
             });
 
             /*定位*/
@@ -548,25 +648,24 @@ define(function (require, exports, module) {
                 var params = {
                     deliveryAddrId: $(this).data('id')
                 };
-                M.ajax({
-                    url: page.config.api['addressDelete'],
-                    data: {data: JSON.stringify(params)},
-                    success: function (res) {
-                        if (res.success) {
-                            M.tips({
-                                body: '收货地址删除成功！',
-                                callback: function () {
-                                    history.go(-1);
-                                    /*var redirectUrl = '/center#/address', hashParams = $('.m-address-edit').data('hash-params');
-                                     if(hashParams){
-                                     redirectUrl += '/' + $.param(hashParams);
-                                     }
-                                     location.href = redirectUrl;*/
-                                }
-                            })
+                confirm('您确定删除该地址吗', function (fun) {
+                    M.ajax({
+                        url: page.config.api['addressDelete'],
+                        data: {data: JSON.stringify(params)},
+                        success: function (res) {
+                            if (res.success) {
+                                fun.hide();
+                                M.tips({
+                                    body: '收货地址删除成功！',
+                                    callback: function () {
+                                        history.go(-1);
+                                    }
+                                })
+                            }
                         }
-                    }
+                    });
                 });
+
             });
 
             /*保存地址*/
@@ -631,7 +730,8 @@ define(function (require, exports, module) {
                                             "isDefult": data.isDefault
                                         };
                                         localStorage.setItem(CONST.local_settlement_addr, JSON.stringify(localAddr));
-                                        location.href = '/cart#/settlement';
+                                        window.history.go(-2);  //返回
+                                        //location.href = '/cart#/settlement';
                                     } else {
                                         window.history.go(-1);  //返回
                                     }
@@ -648,12 +748,17 @@ define(function (require, exports, module) {
             var $spa = $("#app"), $module = module;
             var data = $spa.data('data');
             if (data) {
-                $module.find('.street').val(data.gpsAddr).data({lat: data.lat, lng: data.lng});
-                $module.find('.name').val(data.consignee);
-                $module.find('.mobile').val(data.phone);
-                $module.find('.district').val(data.district).data('area-id', data.areaId);
-                $module.find('.house-number').val(data.addrDetail);
-                $module.find('.isDefault').prop('checked', data.isDefault ? true : false);
+                data.gpsAddr && $module.find('.street').val(data.gpsAddr).data({lat: data.lat, lng: data.lng});
+                data.consignee && $module.find('.name').val(data.consignee);
+                data.phone && $module.find('.mobile').val(data.phone);
+                data.district && $module.find('.district').val(data.district).data({
+                    'area-id': data.areaId,
+                    'prv': data.prv,
+                    'city': data.city,
+                    'area': data.area
+                });
+                data.addrDetail && $module.find('.house-number').val(data.addrDetail);
+                data.isDefault && $module.find('.isDefault').prop('checked', data.isDefault ? true : false);
             }
 
         },

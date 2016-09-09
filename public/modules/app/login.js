@@ -81,28 +81,20 @@ define(function(require, exports, module) {
         //绑定
         bind:function(){
             var $form = $('.fm-login');
-
-            //设置cookie参数
-            require('cookie');
-            $.cookie.defaults = {expires: 7, path: '/'};
-
             if (!page.validate($form)) return false;
             M.ajax({
                 url: '/api/bind',
-                data: $form.serialize() + '&' + $.param({
-                    openId: $.cookie('openId'),
-                    unionId: $.cookie('unionId'),
-                    nickName: $.cookie('wxNickName')
-                }),
+                data: $form.serialize(),
                 success: function (res) {
-                    if (res.success) {
+                    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxx::::" + res);
+                    // if (res.success) {
                         M.tips({
-                            body: res.msg,
+                            body: '绑定成功！',
                             callback: function () {
                                 location.href = M.url.query('origin') || location.origin;
                             }
                         });
-                    }
+                    // }
                 }
             });
         },

@@ -12,10 +12,12 @@ define(function (require, exports, module) {
             var $nav = $('.category .nav'), $list = $('.category .list');
             $nav.find('li:eq(0)').data('template', $list.html()); //缓存第一个分类的节点
 
-            //懒加载
-            M.lazyLoad.init({
-                container: $('.category .list')
-            });
+            //懒加载，定时器不要删除
+            setTimeout(function () {
+                M.lazyLoad.init({
+                    container: $list
+                });
+            }, 250);
 
             //点击一级分类
             $nav.on('click', 'li', page.getTypeTree);
@@ -30,7 +32,7 @@ define(function (require, exports, module) {
                 $list.empty().append(template);
                 //懒加载
                 M.lazyLoad.init({
-                    container: $('.category .list')
+                    container: $list
                 });
                 return false;
             }
@@ -45,7 +47,7 @@ define(function (require, exports, module) {
 
                     //懒加载
                     M.lazyLoad.init({
-                        container: $('.category .list')
+                        container: $list
                     });
                 }
             });

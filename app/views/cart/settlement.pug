@@ -24,7 +24,7 @@ block content
                                     em #{deliveryAddr.phone}
                                 dd #{deliveryAddr.prvName}#{deliveryAddr.cityName}#{deliveryAddr.areaName}#{deliveryAddr.gpsAddr}#{deliveryAddr.addrDetail}
                     else
-                        a.u-arrow.right(href='/center#/addressAdd/f=1')
+                        a.u-arrow.right(href='/center#/address/f=1')
                             p.add 填写收货地址
                 //- 物品信息
                 - var deliveryDesc = '';
@@ -33,12 +33,13 @@ block content
                     each item, index in data
                         if index >= 1
                             - deliveryDesc += '+'
-                        if item.shopId
+                        if item.shopId && item.delivery.length > 2
                             - deliveryDesc += '门店配送'
                             - deliveryInfo.push({type:1,sid:item.shopId,deliveryWay:1})
                         else
                             - deliveryDesc += '快递配送'
-                            - deliveryInfo.push({type:2,sid:item.warehouseId,deliveryWay:3})
+                            - deliveryInfo.push({type:item.warehouseId?2:1,sid:item.warehouseId || item.shopId,deliveryWay:3})
+
                     each item in data
                         .item
                             if item.shopId
@@ -94,7 +95,7 @@ block content
                             li#mbean
                                 p 可用
                                     span #{useCouponlimit.mbeanMaxLimit}
-                                    input(type='tel', name='mbean',value=useCouponlimit.mbeanMaxLimit, data-max=useCouponlimit.mbeanMaxLimit, data-ratio=ratio.mbeanRatio)
+                                    input(type='tel', name='mbean',value=useCouponlimit.mbeanMaxLimit, data-max=limit.mbeanMaxLimit, data-ratio=ratio.mbeanRatio)
                                     | 妈豆，抵
                                     em ￥#{useCouponlimit.mbeanMaxLimit / ratio.mbeanRatio}
                                 label
@@ -103,7 +104,7 @@ block content
                             li#gbPoint
                                 p 可用
                                     span #{useCouponlimit.gbMaxLimit}
-                                    input(type='tel', name='gbCount',value=useCouponlimit.gbMaxLimit, data-max=useCouponlimit.gbMaxLimit, data-ratio=ratio.gbRatio)
+                                    input(type='tel', name='gbCount',value=useCouponlimit.gbMaxLimit, data-max=limit.gbMaxLimit, data-ratio=ratio.gbRatio)
                                     | GB积分，抵
                                     em ￥#{useCouponlimit.gbMaxLimit / ratio.gbRatio}
                                 label
@@ -111,11 +112,12 @@ block content
                         if useCouponlimit.mcMaxLimit > 0
                             li#mcPoint
                                 p 可用
-                                    - var mcMax = ~~(useCouponlimit.mcMaxLimit/300)*300
-                                    span #{mcMax}
-                                    input(type='tel', name='mcCount', value=mcMax, data-max=mcMax, data-ratio=ratio.mcRatio)
+                                    - var mcMax = ~~(limit.mcMaxLimit/300)*300
+                                    - var mcUseable = ~~(useCouponlimit.mcMaxLimit/300)*300
+                                    span #{mcUseable}
+                                    input(type='tel', name='mcCount', value=mcUseable, data-max=mcMax, data-ratio=ratio.mcRatio)
                                     | MC积分，抵
-                                    em ￥#{mcMax / ratio.mcRatio}
+                                    em ￥#{mcUseable / ratio.mcRatio}
                                 label
                                     input.u-switch(type='checkbox',chekced='')
                 //- 结算金额明细
@@ -129,7 +131,7 @@ block content
                                 if money.price == 0
                                     span 免费
                                 else
-                                    span -￥#{money.price}
+                                    span ￥#{money.price}
                     li
                         em 运费
                         span
@@ -194,7 +196,7 @@ block content
                                 dt 配送方式
                                 dd
                                     each de in item.delivery
-                                        if (item.shopId && de.id == 1) || !item.shopId
+                                        if (item.shopId && (de.id == 1 || item.delivery.length == 2 && de.id == 3)) || !item.shopId
                                             button.u-btn.mini.js-btn-delivery.checked(data-type=de.id) #{de.name}
                                         else
                                             button.u-btn.mini.js-btn-delivery(data-type=de.id) #{de.name}
@@ -239,13 +241,12 @@ block content
                                 input.u-radio(type='radio',name='coupon',checked='checked',value=coupon.discountList[0].voucherId)
                             dl
                                 dt
-                                    strong
-                                        sub ￥
-                                        | #{coupon.discount}
+                                    span 省#{coupon.discount}元
                                     p
                                         em 推荐
                                 dd
                                     p #{coupon.discountList[0].voucherDes}
+                        .more-coupon
                         //label.item
                             .flex-center
                                 input.u-radio(type='radio',name='coupon')

@@ -144,7 +144,7 @@ bigPipe.prototype.succeed = function () {
 bigPipe.prototype.failed = function (error) {
     // end the stream， to response
     var me = this, res = me.http[1];
-    console.error('[bigPipe task error]', error);
+    log.error('[bigPipe task error]', error);
     res.end();
 };
 

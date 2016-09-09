@@ -61,20 +61,20 @@ var HttpClient = {
         }
 
         // API请求日志打印;
-        console.log("\r\n\r\nAPI请求日志打印开始");
-        console.log("session: " + JSON.stringify(session));
-        console.log("url: " + options.uri);
-        console.log("headers: " + JSON.stringify(options.headers));
-        console.log("form: " + JSON.stringify(options.form));
-        console.log("\r\nAPI请求日志打印结束\r\n\r\n");
+        log.info("\r\n\r\nAPI请求日志打印开始");
+        log.info("session: " + JSON.stringify(session));
+        log.info("url: " + options.uri);
+        log.info("headers: " + JSON.stringify(options.headers));
+        log.info("form: " + JSON.stringify(options.form));
+        log.info("\r\nAPI请求日志打印结束\r\n\r\n");
 
 
         /*callback*/
         function callback(error, response, body) {
 
             if (response) {
-                //console.log('response--->' + JSON.stringify(response));
-                console.log('response body,[api:', params.url, '],[status:', response.statusCode, ']--->', body);
+                //log.info('response--->' + JSON.stringify(response));
+                log.info('response body,[api:', params.url, '],[status:', response.statusCode, ']--->', body);
             }
 
             //  成功 {success: true, msg: 'success'}
@@ -112,10 +112,10 @@ var HttpClient = {
                 //request error
                 var errorInfo = {};
                 if (error) {
-                    console.warn('[error]', error);
+                    log.error('[error]', error);
                     errorInfo = {status: error.code, error_code: error.code, msg: error.errno};
                 } else if (response) {
-                    console.log('[error response]' + JSON.stringify(response));
+                    log.error('[error response]' + JSON.stringify(response));
                     errorInfo = {
                         status: response.statusCode,
                         error_code: response.statusCode,

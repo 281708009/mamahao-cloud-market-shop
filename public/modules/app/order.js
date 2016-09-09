@@ -12,23 +12,36 @@ define(function (require, exports, module) {
     //渲染页面
     pageFunc.prototype.render = function () {
         var me = this, page = me.page;
-        //加载swipe
-        require.async('swipe', function () {
-            M.swipe.init();//初始化Swipe
-        });
+        if(me.container.is('.m-order')){
 
-        $.pagination({  //分页
-            keys: {count: "count"},
-            container: '.ui-swipe-item .list',
-            api: page.config.api['orders'],
-            fnSuccess: function (res, ele) {
-                var data = res.data;
-                if (!data.template) {
-                    return ele.data('locked', true)
+            //加载swipe
+            require.async('swipe', function () {
+                M.swipe.init();//初始化Swipe
+            });
+
+            $.pagination({  //分页
+                keys: {count: "count"},
+                container: '.ui-swipe-item .list',
+                api: page.config.api['orders'],
+                fnSuccess: function (res, ele) {
+                    var data = res.data;
+                    if (!data.template) {
+                        return ele.data('locked', true)
+                    }
+                    var $container = $(data.template);
+                    ele.append($container);
+                    $container.find('.js-countdown').each(function () {
+                        var $this = $(this);
+                        $this.timeCountDown({
+                            second: $this.data('seconds'),
+                            callback: function () {
+                                $this.remove();
+                            }
+                        });
+                    });
                 }
-                ele.append(data.template);
-            }
-        });
+            });
+        }
 
         me.bind(); //绑定事件
 
@@ -40,21 +53,39 @@ define(function (require, exports, module) {
 
         var $this = me.container;
 
-        $this.on('click', '.item', function (e) {
+        $this.on('click', '.js-order-detail', function (e) {
             location.href = $(this).attr('url');
         });
-        //$this.on('click', '.js-goods', function (e) {
-        //    e.stopPropagation();
-        //    location.href = $(this).attr('url');
-        //});
+        $this.on('click', '.js-goods', function (e) {
+            e.stopPropagation();
+            location.href = '/goods#/detail/inlet=6&templateId=' + $(this).data('infos').templateId + '&itemId=' + $(this).data('infos').itemId;
+        });
         $this.on('click', '.u-btn', function (e) {
             e.stopPropagation();
+        });
+
+        // 待付款倒计时
+        $('.js-countdown').each(function () {
+            var $this = $(this);
+            $this.timeCountDown({
+                second: $this.data('seconds'),
+                callback: function () {
+                    if($this.data('pageType') == 1) {
+                        $this.remove();
+                        $this.closest('.item').find('.js-option').html('<li><button class="u-btn ban">已经失效</button></li>');
+                    }else{
+                        $this.html('订单已失效，请重新生成。');
+                        $this.closest('dl').find('button').remove();
+                        $this.closest('dl').append('<button class="u-btn ban"> 订单失效</button>');
+                    }
+                }
+            });
         });
 
         // 删除订单
         $this.on('click', '.js-btn-del', function () {
             var $item = $(this).closest('.item')
-                , data = {orderNo: $item.length ? $item.data('id') : $(this).data('orderNo')};
+                , data = {orderNo: $(this).data('id')};
             confirm('是否确认删除订单', function () {
                 M.ajax({
                     url: '/api/order/orderDelete',
@@ -67,13 +98,30 @@ define(function (require, exports, module) {
                 this.hide();
             });
         });
+        // 取消订单
+        $this.on('click', '.js-btn-cancel', function () {
+            var $item = $(this).closest('.item'),
+                orderNo = $(this).data('id'),
+                data = {orderNo: orderNo};
+            confirm('您确定取消订单', function () {
+                M.ajax({
+                    url: '/api/order/orderCancel',
+                    data: {data: JSON.stringify(data)},
+                    success: function (res) {
+                        window.location.href = '/center#/orders' ;//跳转到订单页
+                    }
+                })
+                this.hide();
+            });
+        });
 
         // 提醒发货
         $this.on('click', '.js-btn-remind', function () {
-            var data = JSON.stringify({orderNo: $(this).closest('.item').data('id')});
+            var $item = $(this).closest('.item'),
+                data = {orderNo: $(this).data('id')};
             M.ajax({
                 url: '/api/order/orderRemind',
-                data: {data: data},
+                data: {data: JSON.stringify(data)},
                 success: function (res) {
                     M.tips({body: "提醒成功", delay: 1000, class: "true"});
                 }
@@ -82,7 +130,7 @@ define(function (require, exports, module) {
 
         // 门店信息
         $this.on('click', '.js-btn-shop', function () {
-            var data = JSON.stringify({orderNo: $(this).closest('.item').data('id'), shopId: $(this).data('shopId')});
+            var data = JSON.stringify({orderNo: $(this).data('id'), shopId: $(this).data('shopId')});
             M.ajax({
                 url: '/api/order/shopInfo',
                 data: {data: data},
@@ -128,7 +176,7 @@ define(function (require, exports, module) {
         // 确认收货
         $this.on('click', '.js-btn-receive', function () {
             var $item = $(this).closest('.item'),
-                orderNo = $item.data('id'),
+                orderNo = $(this).data('id'),
                 data = JSON.stringify({orderNo: orderNo});
             confirm('是否确认收货', function () {
                 M.ajax({

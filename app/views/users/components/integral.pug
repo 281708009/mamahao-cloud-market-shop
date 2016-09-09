@@ -1,14 +1,21 @@
 //- 我的分员积分;
 .u-tab.double.fixed.ui-swipe-tab
     ul
-        li.active
-            a(href='javascript:;')
-                | #{data[0].totalPoint}分
-                em Goodbady积分
-        li
-            a(href='javascript:;')
-                | #{data[1].totalPoint}分
-                em Mothercare积分
+        //-这里需要独立循环两次，不是bug，别改，不明白可问我，by xqs
+        each item in data
+            if item.request.type == 0
+                li.active
+                    a(href='javascript:;')
+                        | #{item.totalPoint}分
+                        em Goodbady积分
+
+        each item in data
+            if item.request.type == 1
+                li
+                    a(href='javascript:;')
+                        | #{item.totalPoint}分
+                        em Mothercare积分
+
     .f-space
 
 .m-record.flex.flex-column

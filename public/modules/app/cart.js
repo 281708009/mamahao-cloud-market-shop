@@ -109,7 +109,7 @@ define(function (require, exports, module) {
 
                     // 跳转商品详情页
                     $this.on('click', '.js-jump', function () {
-                        location.href = $(this).attr('url');
+                        $(this).attr('url') != '' && (location.href = $(this).attr('url'));
                     });
 
                     // 清除购物车新商品标识;

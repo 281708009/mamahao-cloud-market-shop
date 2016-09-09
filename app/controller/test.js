@@ -25,6 +25,10 @@ var test = {
             pid: 456
         };
        res.json(data);
+    },
+    aliOSS: function (req, res, next) {
+        var aliOSS = require('../utils/ali-oss');
+        new aliOSS().fileUpload();
     }
 };
 

@@ -12,19 +12,37 @@ define(function (require, exports, module) {
                 return JSON.parse(localStorage.getItem(CONST.local_search_params)) || {};   //local: 请求商品列表需要的参数
             }
         },
-        init: function () {
+        init: function (container) {
+            var c = page.config;
+            c.$container = container;
+            var $module = c.$container;
+
+            //点击排序
+            $module.on('click', '.u-tab ul li', page.goodsSort);
+
+            //点击筛选，到筛选页
+            $module.on('click', '.js-to-filter', page.toFilter);
+
+            //点击购买须知
+            $module.on('click', '.js-ellipsis', function () {
+                $(this).toggleClass('collapse');
+            });
+
             page.bindEvents();
         },
         //绑定事件
         bindEvents: function () {
             var c = page.config;
+            var $module = c.$container;
 
             var hashParams = c.hashParams(), searchParams = c.searchParams();
 
             //懒加载
-            M.lazyLoad.init({
-                container: $('.u-goods-list')
-            });
+            setTimeout(function () {
+                M.lazyLoad.init({
+                    container: $module.find('.list')
+                });
+            }, 250);
 
             //分页配置
             var pgParams = $.extend({}, searchParams, hashParams);
@@ -50,15 +68,25 @@ define(function (require, exports, module) {
                 }
             });
 
-            //点击排序
-            $('.u-tab').on('click', 'ul li', page.goodsSort);
+            //鼠标滚动上滑展开下滑收缩
+            require.async('headroom', function () {
+                var $target = $module.find(".desc");
+                $target.headroom({
+                    scroller: $module.find('.list')[0],
+                    onPin: function () {
+                        $target.show();
+                    },
+                    onUnpin: function () {
+                        $target.hide();
+                    }
+                });
+            });
 
-            //点击筛选，到筛选页
-            $('.js-to-filter').on('click', page.toFilter);
         },
         //排序
         goodsSort: function () {
             var o = page.elements, c = page.config;
+            var $module = c.$container;
             var $this = $(this), index = $this.index();
 
             if ($this.hasClass('active') && !$this.find('em')[0]) return false;
@@ -81,7 +109,7 @@ define(function (require, exports, module) {
                 url: '/api/goods_list',
                 data: {data: JSON.stringify(params)},
                 success: function (res) {
-                    $('.spa').empty().append(res.template);
+                    $module.empty().append(res.template);
                     //重新绑定事件
                     page.bindEvents();
                 }

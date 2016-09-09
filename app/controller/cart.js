@@ -84,6 +84,11 @@ var cart = {
                     new bigPipe(task, args);
                     bigPipe.prototype.succeed = function () {
                         var me = this;
+                        //json.limit.gbMaxLimit = json.payPrice * 100;
+                        //json.limit.mcMaxLimit = json.payPrice * 3;
+                        //json.useCouponlimit.gbMaxLimit = json.useCouponlimit.maxReducePrice * 100;
+                        //json.useCouponlimit.mcMaxLimit = json.useCouponlimit.maxReducePrice * 3;
+
                         res.render('cart/settlement', json, function (err, html) {
                             console.log(err)
                             var template = html + me.scripts.join('');
@@ -234,6 +239,17 @@ var cart = {
             url: API.wxPay,
             type: 'get',
             data: params,
+            success: function (data) {
+                res.json(data);
+            }
+        });
+    },
+    // 校验是否可以支付
+    checkPay: function(req,res,next){
+        var params = req.params;
+        HttpClient.request(arguments, {
+            url: API.checkPay,
+            data: {orderNo: params.orderNo},
             success: function (data) {
                 res.json(data);
             }

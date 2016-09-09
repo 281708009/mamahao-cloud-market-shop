@@ -38,11 +38,13 @@ var weChat = {
             token = req.cookies && req.cookies['token'];
 
         //console.info('[cookies]====', req.cookies)
-        console.info('[session_id]====', req.cookies['session_id'])
+        log.info('[session_id]====', req.cookies['session_id'])
+        //if(req.query.debug) return next();
 
         if (isWeChat) {
             if (token) {
                 //已登录
+                log.info("[已登录]：有token--->", token);
                 var crypto = require('../utils/crypto');
                 var user_session = {
                     id: crypto.decipher(req.cookies['memberId']),
@@ -50,13 +52,13 @@ var weChat = {
                     nickname: crypto.decipher(req.cookies['nick']),
                     avatar: crypto.decipher(req.cookies['head'])
                 };
-                //console.info("user_session--->", user_session);
+                log.info("user_session--->", JSON.stringify(user_session));
                 req.session.user = user_session;//设置当前用户到session
                 next();
             } else {
-                //console.info("openId--->", openId);
                 //微信授权并尝试登录
                 if (!openId) {
+                    log.info("[未授权，进行授权操作]：无token，无openId");
                     //未授权或者已授权但未绑定，这个地方得保证微信授权后到绑定页面成功在client设置cookie
                     var originalUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
                     var baseUrl = 'http://' + AppConfig.site.api.host + AppConfig.site.api.root; //baseUrl
@@ -64,6 +66,7 @@ var weChat = {
                     var authUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + AppConfig.site.wechat.app_id + '&redirect_uri=' + redirect_uri + '&response_type=code&scope=snsapi_base&state=12345465#wechat_redirect';
                     return res.redirect(authUrl);
                 } else {
+                    log.info("[已授权但未绑定，到绑定页面]：无token，有openId--->", openId);
                     next();
                 }
             }

@@ -1,6 +1,6 @@
 //- 订单列表
 each order, index in rows
-    .item(data-id=order.orderNo, url='#/order/detail/' + order.orderNo + '/' + (request.queryType ? request.queryType : ''))
+    .item.js-order-detail(class=order.orderStatus == 3?'wait':'',data-id=order.orderNo, url='#/order/detail/' + order.orderNo + '/' + (request.queryType ? request.queryType : ''))
         dl.header.flex-center
             dt.flex
                 if order.shopName
@@ -57,9 +57,13 @@ each order, index in rows
         .footer.flex-center
             dl.flex
                 dt 实付：￥#{order.payPrice}
-                //- if(order.orderStatus === 3)
-                    dd 14分58秒后订单失效
-            ul
+                if(order.orderStatus === 3)
+                    dd.js-countdown(data-seconds=order.remainMinutes,data-page-type=1)
+                        time.minute 15
+                        | 分
+                        time.second 00
+                        | 秒后订单失效
+            ul.js-option
                 case order.orderStatus
                     when 0
                         if(order.deliveryId == 3)
@@ -70,32 +74,34 @@ each order, index in rows
                                 a.u-btn.checked(href='#/order/rebuy/' + order.orderNo + '/' + (request.queryType ? request.queryType : '')) 再次购买
                     when 1
                         li
-                            button.u-btn.js-btn-del 删除订单
+                            button.u-btn.js-btn-del(data-id=order.orderNo) 删除订单
                     when 2
                         li
-                            button.u-btn.js-btn-del 删除订单
+                            button.u-btn.js-btn-del(data-id=order.orderNo) 删除订单
                     when 3
                         if order.remainMinutes <= 0
                             li
                                 button.u-btn.ban 已经失效
                         else
                             li
-                                //a.u-btn.checked(href='/pay/' + order.orderNo) 立即付款
-                                a.u-btn.checked(href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx230909e739bb72fd&redirect_uri=http://api.mamhao.com/mamahao-app-api/pay/weixin/getOpenId.htm?orderNo='+order.orderNo+'&response_type=code&scope=snsapi_base&state=123456#wechat_redirect') 立即付款
+                                a.u-btn.checked(href='/pay/?' + order.orderNo) 立即付款
+                                //a.u-btn.checked(href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx230909e739bb72fd&redirect_uri=http://api.mamhao.com/mamahao-app-api/pay/weixin/getOpenId.htm?orderNo='+order.orderNo+'&response_type=code&scope=snsapi_base&state=123456#wechat_redirect') 立即付款
                     when 4
                         li
                             if order.deliveryId == 2
                                 buttob.u-btn.js-btn-shop(data-shop-id=order.shopId) 门店信息
                             else
-                                button.u-btn.js-btn-remind 提醒发货
+                                button.u-btn.js-btn-remind(data-id=order.orderNo) 提醒发货
                     when 5
                         li
                             if(order.deliveryId == 1)
                                 buttob.u-btn.js-btn-delivery(data-shop-id=order.shopId) 配送信息
+                            else if(order.deliveryId == 2)
+                                buttob.u-btn.js-btn-shop(data-shop-id=order.shopId) 门店信息
                             else
                                 a.u-btn(href='#/order/express/' + order.orderNo) 查看物流
                         li
-                            button.u-btn.checked.js-btn-receive 确认收货
+                            button.u-btn.checked.js-btn-receive(data-id=order.orderNo) 确认收货
                     when 6
                         li
                             if(order.goodsList.length > 1)

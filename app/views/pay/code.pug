@@ -1,6 +1,10 @@
 extends ../layouts/initial.pug
 block title
-    title #{shop.shopName}
+    title
+        if shop
+            | #{shop.shopName}
+        else
+            | 妈妈好
 block meta
     meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
 block css
@@ -9,17 +13,21 @@ block css
         html, body {height: 100%; overflow: hidden;}
         body {background: #f0f0f0;color: #333;}
 block js
-    script seajs.use('app/pay_code');
+    script seajs.run('app/pay_code');
 block content
+    // 格式化款式数据;
+    -function getSpec(a){var b=[],c=a.length,d=0;if(!c)return"";for(;c>d;d++)b.push(a[d].value);return b.join("，")};
     // 商品列表 #{shop.shopName}
     if isWeChat || isAlipay
         if status == 4
             // 等待
             section.m-code-block.m-code-wait.show
                 .m-notice
-                    dl.tip
-                        dt 订单正在生成中，请您耐心等待！
-                        dd 待商家生成订单后，点击“刷新”即可付款
+                    .tip
+                        span
+                        dl
+                            dt 订单正在生成中，请您耐心等待！
+                            dd 待商家生成订单后，点击“刷新”即可付款
                     .form
                         a.u-btn.checked.js-code-reload(href='javascript:;') 刷新
                 .m-service
@@ -28,12 +36,14 @@ block content
             // 验证码
             section.m-code-block.m-code-verify.show
                 .m-notice
-                    dl.tip
-                        dt 终端请求频次过快，请输入验证码！
+                    .tip
+                        span
+                        dl
+                            dt 终端请求频次过快，请输入验证码！
                     .form
                         .input
                             input(class="js-code", type='tel', placeholder='请输入验证码', maxlength='4')
-                            img(src='http://api.mamhao.com/mamahao-app-api/vcode/verificationCode4ExtShare.htm')
+                            img.js-image-vcode(src='http://s.mamhao.cn/common/images/placeholder-2.png')
                         .submit
                             a.u-btn.success.js-submit(href='javascript:;') 确定
                 .m-service
@@ -50,11 +60,14 @@ block content
                                 li
                                     dl.desc
                                         dt #{goods.itemName}
-                                        dd #{goods.spec}
+                                        dd #{getSpec(goods.spec)}
                                     dl.price
                                         dt ￥#{goods.itemPrice}
                                         dd x#{goods.quantity}
                         ol.total
+                            li
+                                em 订单号
+                                span #{orderNo}
                             li
                                 em 商品金额
                                 span ￥#{payPrice}
@@ -73,9 +86,11 @@ block content
         // 外部
         section.m-code-block.m-code-other.show
             .m-notice
-                dl.tip
-                    dt 您的姿势不对哈！
-                    dd 请使用以下APP扫码付款
+                .tip
+                    span
+                    dl
+                        dt 您的姿势不对哈！
+                        dd 请使用以下APP扫码付款
                 ul.app
                     li.alipay
                         a(href='alipays://') 支付宝
@@ -92,7 +107,7 @@ block content
             orderNo: "#{orderNo}",
             status: "#{status}",
             openId: "#{openId}",
-            shopId: "#{shop.shopId}",
+            shopId: "#{shop && shop.shopId}",
             isWeChat: #{isWeChat},
             isAlipay: #{isAlipay},
             isMamahao: #{isMamahao}

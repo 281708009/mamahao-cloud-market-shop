@@ -15,16 +15,79 @@ define(function (require, exports, module) {
         me.bind(); //绑定事件
 
     };
+    /* 缺货提醒 */
+    pageFunc.prototype.stockOut = function (data) {
+        if (data && data.length > 0) {
+            var html = ['<div class="goods-list"><ul>'];
+            for (i = 0; i < data.length; i++) {
+                var g = data[i];
+                var spDesc = '';
+                $.each(g.spec, function (index) {
+                    index > 0 && (spDesc += ',');
+                    spDesc += this.value;
+                });
+                html.push('<li>');
+                html.push('<div class="pic"><img src="' + g.itemPic + '@1e_200w_200h_0c_0i_0o_100q_1x.jpg"><em>暂时缺货</em></div>');
+                html.push('<dl><dt>' + g.itemTitle + '</dt><dd><span>' + spDesc + '</span>');
+                if (g.isGift) {
+                    html.push('<em>赠品</em>')
+                } else {
+                    html.push('<strong>￥' + g.showPrice + '</strong>')
+                }
+                html.push('</dd></dl></li>');
+            }
+            html.push('</ul></div>');
+            M.dialog({
+                className: "m-cart-lack",
+                title: "您选购的以下商品缺货",
+                body: html.join(''),
+                buttons: [
+                    {
+                        "text": "找相似商品", "class": "", "onClick": function () {
+                        location.href = '/'
+                    }
+                    },
+                    {
+                        "text": "继续结算", "class": "success", "onClick": function () {
+                        this.hide();
+                        location.reload();
+                    }
+                    }
+                ]
+            });
+        } else {
+            M.dialog({
+                body: '商品在该区域暂时缺货', buttons: [{
+                    "text": "找其他商品", "class": "", "onClick": function () {
+                        location.href = '/'
+                    }
+                }, {
+                    "text": "我知道了", "class": "success", "onClick": function () {
+                        this.hide();
+                        if (history.length) {
+                            history.go(-1);
+                        } else {
+                            location.href = '/cart';
+                        }
+                    }
+                }]
+            });
+        }
+    };
     // 填充页面数据
     pageFunc.prototype.fillData = function (data) {
         var me = this, $this = me.container;
         // 地址信息 {"deliveryAddrId":27442,"addr":"浙江宁波市海曙区天宁大厦1111","consignee":"网瘾少年","phone":"15267436078","areaId":330203}
-
-        var htmlArr = [
-            '<a class="u-arrow right" href="/center#/address/f=1&amp;id=', data.deliveryAddrId + '">',
-            '<dl class="default"><dt><strong>', data.consignee, '</strong><em>', data.phone, '</em></dt><dd>', data.addr,
-            '</dd></dl></a>'
-        ];
+        console.log(data);
+        var htmlArr = [];
+        htmlArr.push('<a class="u-arrow right" href="/center#/address/f=1&amp;id=' + data.deliveryAddrId + '">');
+        if (data.isDefult) {
+            htmlArr.push('<dl class="default"><dt><strong>');
+        }else{
+            htmlArr.push('<dl><dt><strong>');
+        }
+        htmlArr.push(data.consignee + '</strong><em>' + data.phone + '</em></dt><dd>' + data.addr);
+        htmlArr.push('</dd></dl></a>');
 
         $('.js-address').html(htmlArr.join(''));
         $this.find('[name="deliveryAddrId"]').val(data.deliveryAddrId);
@@ -83,7 +146,7 @@ define(function (require, exports, module) {
             var $input = $(this).find('input[type="tel"]'), // 当前虚拟货币数量输入框
                 ratio = $input.data('ratio'),   // 当前虚拟货币的比率
                 max = $input.data('max'),
-                maxDiscount = M.calc.subtract(maxTotalDiscount, discount),
+                maxDiscount = M.calc.subtract(payPrice, discount),
                 maxCount = max;
             if ($input.attr('name') == 'mcCount') {
                 maxCount = M.calc.multiply(~~(maxDiscount / 100), 100) * ratio;
@@ -98,61 +161,7 @@ define(function (require, exports, module) {
             $input.prev().html(useableCount);
         })
 
-    }
-    pageFunc.prototype.stockOut = function (data) {
-        if (data && data.length > 0) {
-            var html = ['<div class="goods-list"><ul>'];
-            for (i = 0; i < data.length; i++) {
-                var g = data[i];
-                var spDesc = '';
-                $.each(g.spec, function (index) {
-                    index > 0 && (spDesc += ',');
-                    spDesc += this.value;
-                });
-                html.push('<li>');
-                html.push('<div class="pic"><img src="' + g.itemPic + '@1e_200w_200h_0c_0i_0o_100q_1x.jpg"><em>暂时缺货</em></div>');
-                html.push('<dl><dt>' + g.itemTitle + '</dt><dd><span>' + spDesc + '</span>');
-                if (g.isGift) {
-                    html.push('<em>赠品</em>')
-                } else {
-                    html.push('<strong>￥' + g.showPrice + '</strong>')
-                }
-                html.push('</dd></dl></li>');
-            }
-            html.push('</ul></div>');
-            M.dialog({
-                className: "m-cart-lack",
-                title: "您选购的以下商品缺货",
-                body: html.join(''),
-                buttons: [
-                    {
-                        "text": "找相似商品", "class": "", "onClick": function () {
-                            location.href = '/'
-                        }
-                    },
-                    {
-                        "text": "继续结算", "class": "success", "onClick": function () {
-                            this.hide();
-                            location.reload();
-                        }
-                    }
-                ]
-            });
-        } else {
-            M.dialog({
-                body: '您选购的商品缺货', buttons: [{
-                    "text": "找其他商品", "class": "", "onClick": function () {
-                        location.href = '/'
-                    }
-                }, {
-                    "text": "我知道了", "class": "success", "onClick": function () {
-                        this.hide();
-                        history.go(-1);
-                    }
-                }]
-            });
-        }
-    }
+    };
     //绑定事件
     pageFunc.prototype.bind = function () {
         var me = this;
@@ -160,7 +169,7 @@ define(function (require, exports, module) {
         var $this = me.container, $spa = $('.spa'), $dom = $('#settlement');
         var stockOutCode = $dom.data('stockout');
         if (stockOutCode && stockOutCode != 0) {
-            me.stockOut(stockOutCode == -10001?[]:$dom.data('stockoutGoods'));
+            me.stockOut(stockOutCode == -10001 ? [] : $dom.data('stockoutGoods'));
             return;
         }
         // 获取本地配送地址
@@ -221,6 +230,10 @@ define(function (require, exports, module) {
 
         // 点击切换优惠券 弹出层隐藏
         $this.on('click', '.js-coupon-item', function () {
+            $('.open').each(function(){
+                $(this).find('.u-switch').trigger('click');
+            });
+            $('.u-radio:checked').prop('checked', false);
             var ids = $(this).data('id'), discount = $(this).data('discount');
             if (ids) {
                 $('.js-vouchers').data({
@@ -233,6 +246,7 @@ define(function (require, exports, module) {
                     discount: 0
                 }).html('不使用优惠券');
             }
+            $(this).find('.u-radio').prop('checked', true);
             $('#coupon').removeClass('show');
             me.calcu();
         });
@@ -300,7 +314,7 @@ define(function (require, exports, module) {
                 success: function (res) {
                     if (res.success_code == 200) {
                         // 跳转支付方式选择页
-                        location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx230909e739bb72fd&redirect_uri=http://api.mamhao.com/mamahao-app-api/pay/weixin/getOpenId.htm?orderNo=' + res.orderBatchNo + '&response_type=code&scope=snsapi_base&state=123456#wechat_redirect';
+                        location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx230909e739bb72fd&redirect_uri='+ M.config.api +'pay/weixin/getOpenId.htm?orderNo=' + res.orderBatchNo + '&response_type=code&scope=snsapi_base&state=123456#wechat_redirect';
                     }
                 }
             });

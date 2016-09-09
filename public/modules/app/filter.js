@@ -17,13 +17,13 @@ define(function (require, exports, module) {
             var c = page.config;
             var hashParams = c.hashParams(), searchParams = c.searchParams();
             //选中当前筛选条件
-            $.each(hashParams.ages.split(','), function (i, v) {
+            hashParams.ages && $.each(hashParams.ages.split(','), function (i, v) {
                 $('.ages .content li[data-id="' + v + '"]').addClass('active');
             });
-            $.each(hashParams.types.split(','), function (i, v) {
+            hashParams.types && $.each(hashParams.types.split(','), function (i, v) {
                 $('.types .content li[data-id="' + v + '"]').addClass('active');
             });
-            $.each(hashParams.brandIds.split(','), function (i, v) {
+            hashParams.brands && $.each(hashParams.brands.split(','), function (i, v) {
                 $('.brands .content li[data-id="' + v + '"]').addClass('active');
             });
 
@@ -55,8 +55,8 @@ define(function (require, exports, module) {
             //组装参数
             var $items = $('.item'), params = {};
             $.each($items, function () {
-                var $this = $(this), $active = $this.find('li.active');
-                params[this.id] = (function () {
+                var $this = $(this), $active = $this.find('li.active'), field = $this.data('field');
+                params[field] = (function () {
                     var arr = [];
                     $.each($active, function () {
                         arr.push($(this).data('id'));

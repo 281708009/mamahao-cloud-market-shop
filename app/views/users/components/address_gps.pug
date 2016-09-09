@@ -2,14 +2,14 @@
 include ../../includes/mixin.pug
 if data.error
     +blank(data.error.style, data.error.tips)
-        a(class='u-btn checked',href= 'javascript:history.go(-1);') 返回
+        a(class='u-btn checked',href= 'javascript:location.reload();') 刷新试试
 
 else
 
     if data && data.length
         ul.list
             each item, index in data
-                li
+                li(data-info=item)
                     dl
                         dt
                             span #{item.name}
@@ -19,5 +19,5 @@ else
                     span #{item.distance}m
 
     else
-        +blank('03', '定位失败')
-            a(class='u-btn checked',href= 'javascript:history.go(-1);') 返回
+        +blank('03', '定位失败，请确认您的定位服务是否开启')
+            a(class='u-btn checked',href= 'javascript:location.reload();') 刷新试试

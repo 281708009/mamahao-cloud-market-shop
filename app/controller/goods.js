@@ -19,7 +19,7 @@ var store = {
         bigPipe.prototype.succeed = function () {
             var me = this;
             res.render('goods/components/home', {}, function (err, html) {
-                console.log(html)
+                err && log.error(err);
                 var template = html + me.scripts.join('');
                 res.json({template: template});
             });
@@ -68,6 +68,7 @@ var store = {
             success: function (data) {
                 data.params = params;
                 res.render(pug, data, function (err, html) {
+                    err && log.error(err);
                     res.json({template: html});
                 });
             }
@@ -90,7 +91,8 @@ var store = {
                 lat: params.location ? params.location.lat : location.lat,
                 lng: params.location ? params.location.lng : location.lng,
                 templateId: params.templateId,
-                itemId: params.itemId
+                itemId: params.itemId,
+                shopId: params.shopId
             })
         };
         //console.log(params)
@@ -101,6 +103,7 @@ var store = {
                 data.paramsLocation = params.location || location;
                 //console.log('xxxxxxxxxxx===',data.paramsLocation)
                 res.render("goods/detail", data, function (err, html) {
+                    err && log.error(err);
                     res.json({template: html});
                 });
             }
@@ -148,6 +151,7 @@ var store = {
             data: params,
             success: function (data) {
                 res.render("goods/components/promote_group", {rows: data}, function (err, html) {
+                    err && log.error(err);
                     res.json({template: html});
                 });
             }

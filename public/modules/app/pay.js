@@ -39,10 +39,13 @@ define(function(require, exports, module) {
     //支付宝支付
     $('.js-alipay').on('click',function () {
         var $this = $(this);
-
-        M.ajax({
+        // 调用通用支付方法;
+        M.pay.alipay({
+            data: {batchNo: $this.data('no'), resource: 2}
+        });
+        /*M.ajax({
             url: '/api/aliPay',
-            data: {'batchNo': $this.parent().data('no'),'resource':2},
+            data: {'batchNo': $this.data('no'),'resource':2},
             success:function (res) {
                 var $form = $(res.data);
                 //console.log($form);
@@ -63,18 +66,20 @@ define(function(require, exports, module) {
             error:function () {
 
             }
-        })
-
-
+        })*/
     });
     
     //微信支付
     $('.js-weixin').on('click',function () {
-        //console.log(wx);
         var $this = $(this);
-        M.ajax({
+        // 调用通用支付方法;
+        M.pay.weixin({
+            data: {orderNo: $this.data('no'), openId: $this.data('openid')},
+            callback: '/pay/result?orderPayType=2&batchNo=' + $this.data('no')
+        });
+        /*M.ajax({
             url: '/api/wxPay',
-            data: {'orderNo': $this.parent().data('no'),'openId':$this.parent().data('openid')},
+            data: {'orderNo': $this.data('no'),'openId':$this.data('openid')},
             success:function (res) {
                 console.log(WeixinJSBridge);
                //调起微信支付控件
@@ -94,7 +99,7 @@ define(function(require, exports, module) {
                                     alert("1"+res.err_msg);
                                     if(res.err_msg == "get_brand_wcpay_request:ok" ) {
                                         alert('支付成功');
-                                        location.href='/pay/result?orderPayType=2&batchNo=' + $this.parent().data('no')
+                                        location.href='/pay/result?orderPayType=2&batchNo=' + $this.data('no')
                                     }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
 
                                 }
@@ -115,7 +120,7 @@ define(function(require, exports, module) {
                                     alert("2"+res.err_msg);
                                     if(res.err_msg == "get_brand_wcpay_request:ok" ) {
                                         alert('支付成功');
-                                        location.href='/pay/result?orderPayType=2&batchNo=' + $this.parent().data('no')
+                                        location.href='/pay/result?orderPayType=2&batchNo=' + $this.data('no')
                                     }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
 
                                 }
@@ -135,7 +140,7 @@ define(function(require, exports, module) {
                                     alert("3"+res.err_msg);
                                     if(res.err_msg == "get_brand_wcpay_request:ok" ) {
                                         alert('支付成功');
-                                        location.href='/pay/result?orderPayType=2&batchNo=' + $this.parent().data('no')
+                                        location.href='/pay/result?orderPayType=2&batchNo=' + $this.data('no')
                                     }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
 
                                 }
@@ -155,7 +160,7 @@ define(function(require, exports, module) {
                         function(res){
                             if(res.err_msg == "get_brand_wcpay_request:ok" ) {
                                 alert('支付成功');
-                                location.href='/pay/result?orderPayType=2&batchNo=' + $this.parent().data('no')
+                                location.href='/pay/result?orderPayType=2&batchNo=' + $this.data('no')
                             }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
 
                         }
@@ -163,27 +168,22 @@ define(function(require, exports, module) {
                 }
 
             }
-        })
+        })*/
     });
     //点击二维码支付，调用后台接口请求接口，生成支付二维码
     $('.js-codepay').on('click',function () {
-        $('.code').show();
-        var $this = $(this);
-        var orderNo = $this.parent().data('no');
-        var openId = $this.parent().data('openid');
-        /*$.ajax({
-            url: 'http://localhost:8080/mamahao-app-api/pay/weixin/makeWeixinScanCode.htm',
-            dataType:'jsonp',
-            data: {'orderNo': $this.parent().data('no'), 'openId': $this.parent().data('openid'),'size':240},
-            success: function (res) {
-                console.log(res);
-                $('.code').find('p > img').attr('src',res);
-            }
-        });*/
-        //移除原有的图片
-        $('.code').find('p > img').remove();
+        var $this = $(this), code = $('.code');
+        if(code.data("show")) return; // 已经显示，不再处理;
+        code.show().data("show", true);
+        var orderNo = $this.data('no');
+        var openId = $this.data('openid');
         //TODO 二维码地址暂时写死，回头再改
-        $('.code').find('p.img').append('<img src="http://api.mamhao.com/mamahao-app-api/pay/weixin/makeWeixinScanCode.htm?batchNo='+orderNo+'&openId='+openId+'&size=240" style="width:200px;height:200px;"/>');
+        var img = new Image(), src = M.config.api +'pay/weixin/makeWeixinScanCode.htm?batchNo='+orderNo+'&openId='+openId+'&size=240';
+        img.src = src;
+        img.onload = function () {
+            $('.code').find('.js-code-pay-img').html(img);
+        };
+        //$('.code').show().find('.js-code-pay-img img').attr('src', M.config.api +'pay/weixin/makeWeixinScanCode.htm?batchNo='+orderNo+'&openId='+openId+'&size=240');
     });
 
 });

@@ -103,7 +103,9 @@ define(function (require, exports, module) {
     (function () {
         var MMH = {
             config: {
-                isAjax: {} //正在ajax的api对象
+                isAjax: {}, //正在ajax的api对象
+                // api调用域，区分正式环境及测试环境;
+                api: /mamahao.com/gi.test(location.host) ? "http://api.mamahao.com/" : "http://api.mamhao.com/mamahao-app-api/"
             },
             init: function () {
 
@@ -180,7 +182,7 @@ define(function (require, exports, module) {
                         dataType: params.dataType || "json",
                         timeout: 2e4,  //20s
                         success: function (res) {
-                            //console.log('success', JSON.stringify(res))
+                            console.log('success', typeof res)
                             c.isAjax[params.url] = false;
                             if (res.error_code) {
                                 var errorMsg = res.msg;
@@ -322,7 +324,7 @@ define(function (require, exports, module) {
                             var index = $(this).index();
                             var callback = params.buttons[index].onClick;
                             if (callback && $.isFunction(callback)) {
-                                callback.call(fun, e);
+                                callback.call(fun, fun);
                             } else {
                                 fun.hide();
                             }
@@ -632,7 +634,21 @@ define(function (require, exports, module) {
 
                 //Parse url params to JSON
                 function getParams(search) {
-                    return search ? JSON.parse('{"' + decodeURIComponent(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}') : {};
+                    var obj = {};
+                    if(search !== ""){
+                        var arr = search.split("&"), i = 0, l = arr.length;
+                        for(; i < l; i++){
+                            var k = arr[i].split("=");
+                            var a = arr[i].match(new RegExp(k[0] + "=([^\&]*)(\&?)", "i"))
+                            obj[k[0]] = decodeURIComponent(a[1]);
+                        }
+                    }
+                    return obj;
+                    /*var result = search ? JSON.parse('{"' + search.replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}') : {};
+                    for(var i in result){
+                        result[i] = decodeURIComponent(result[i]);
+                    }
+                    return result;*/
                 }
 
                 var util = {
@@ -657,14 +673,167 @@ define(function (require, exports, module) {
                     query: util.query
                 };
             }(),
+            /* 支付 */
+            pay: function () {
+                var util = {
+                    config: {},
+                    checkPay:function(data){
+                        //
+                    },
+                    // 微信支付;
+                    weixin: function (options) {
+                        options.config && $.extend(options.config, this.config)
+                        var params = options;
+                        M.ajax({
+                            url: '/api/wxPay',
+                            data: params.data,
+                            success:function (res) {
+                                //console.log(WeixinJSBridge);
+                                //调起微信支付控件
+                                if (typeof(WeixinJSBridge) == "undefined"){
+                                    if( document.addEventListener ){
+                                        document.addEventListener('WeixinJSBridgeReady', function () {
+                                            WeixinJSBridge.invoke(
+                                                'getBrandWCPayRequest', {
+                                                    "appId" : res.appId,     //公众号名称，由商户传入
+                                                    "timeStamp":res.timeStamp,         //时间戳，自1970年以来的秒数
+                                                    "nonceStr" : res.nonceStr, //随机串
+                                                    "package" :res.package,
+                                                    "signType" : "MD5",         //微信签名方式：
+                                                    "paySign" : res.paySign //微信签名
+                                                },
+                                                function(res){
+                                                    //alert("1"+res.err_msg);
+                                                    if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                                                        //alert('支付成功');
+                                                        if(typeof params.callback == "string"){
+                                                            location.href = params.callback;
+                                                        }else{
+                                                            params.callback && params.callback.call(this);
+                                                        }
+                                                    }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+
+                                                }
+                                            );
+                                        }, false);
+                                    }else if (document.attachEvent){
+                                        document.attachEvent('WeixinJSBridgeReady', function () {
+                                            WeixinJSBridge.invoke(
+                                                'getBrandWCPayRequest', {
+                                                    "appId" : res.appId,     //公众号名称，由商户传入
+                                                    "timeStamp":res.timeStamp,         //时间戳，自1970年以来的秒数
+                                                    "nonceStr" : res.nonceStr, //随机串
+                                                    "package" :res.package,
+                                                    "signType" : "MD5",         //微信签名方式：
+                                                    "paySign" : res.paySign //微信签名
+                                                },
+                                                function(res){
+                                                    //alert("2"+res.err_msg);
+                                                    if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                                                        //alert('支付成功');
+                                                        if(typeof params.callback == "string"){
+                                                            location.href = params.callback;
+                                                        }else{
+                                                            params.callback && params.callback.call(this);
+                                                        }
+                                                    }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+
+                                                }
+                                            );
+                                        });
+                                        document.attachEvent('onWeixinJSBridgeReady', function () {
+                                            WeixinJSBridge.invoke(
+                                                'getBrandWCPayRequest', {
+                                                    "appId" : res.appId,     //公众号名称，由商户传入
+                                                    "timeStamp":res.timeStamp,         //时间戳，自1970年以来的秒数
+                                                    "nonceStr" : res.nonceStr, //随机串
+                                                    "package" :res.package,
+                                                    "signType" : "MD5",         //微信签名方式：
+                                                    "paySign" : res.paySign //微信签名
+                                                },
+                                                function(res){
+                                                    //alert("3"+res.err_msg);
+                                                    if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                                                        //alert('支付成功');
+                                                        if(typeof params.callback == "string"){
+                                                            location.href = params.callback;
+                                                        }else{
+                                                            params.callback && params.callback.call(this);
+                                                        }
+                                                    }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+
+                                                }
+                                            );
+                                        });
+                                    }
+                                }else{
+                                    WeixinJSBridge.invoke(
+                                        'getBrandWCPayRequest', {
+                                            "appId" : res.appId,     //公众号名称，由商户传入
+                                            "timeStamp":res.timeStamp,         //时间戳，自1970年以来的秒数
+                                            "nonceStr" : res.nonceStr, //随机串
+                                            "package" :res.package,
+                                            "signType" : "MD5",         //微信签名方式：
+                                            "paySign" : res.paySign //微信签名
+                                        },
+                                        function(res){
+                                            if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                                                //alert('支付成功');
+                                                if(typeof params.callback == "string"){
+                                                    location.href = params.callback;
+                                                }else{
+                                                    params.callback && params.callback.call(this);
+                                                }
+                                            }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+
+                                        }
+                                    );
+                                }
+
+                            }
+                        })
+                    },
+                    // 支付宝支付;
+                    alipay: function (options) {
+                        options.config && $.extend(options.config, this.config)
+                        var params = options;
+                        M.ajax({
+                            url: '/api/aliPay',
+                            data: params.data,
+                            success:function (res) {
+                                var $form = $(res.data);
+                                if(params.data.resource == 2){
+                                    var queryParam = '';
+                                    $form.find("input").each(function(){
+                                        var name = $(this).attr("name");
+                                        var value = $(this).attr("value");
+                                        //console.log(name+"  "+ value);
+                                        queryParam += name + '=' + encodeURIComponent(value) + '&';
+                                    });
+                                    var gotoUrl = $form.attr('action') + queryParam;
+                                    require.async('3rd/ap.js',function () {
+                                        _AP.pay(gotoUrl);
+                                    });
+                                }else{
+                                    $form.submit();
+                                }
+                            }
+                        });
+                    }
+                };
+                return {
+                    weixin: util.weixin,
+                    alipay: util.alipay
+                };
+            }(),
             /* 微信 */
             wx: function () {
                 var util = {
                     data: {
-                        title: "妈妈好",
+                        title: "妈妈好商城",
                         url: "http://m.mamahao.com/",
                         image: "http://s.mamhao.cn/common/images/icon-114.png",
-                        desc: "让每一件商品都是安全的!"
+                        desc: "好孩子集团旗下母婴电商平台，让每一件商品都是安全的！"
                     },
                     /*授权，初始化*/
                     init: function (wx, args) {
@@ -672,8 +841,8 @@ define(function (require, exports, module) {
                         MMH.ajax({
                             data: {url: window.location.href, r: Math.random()},
                             dataType: "jsonp",
-                            //url: "http://api.mamhao.cn/V1/basic/weixin/secret.htm",
-                            url: "http://api.mamhao.com" + (/mamhao/g.test(location.host) ? "/mamahao-app-api" : "") + "/pay/weixin/config.htm",  //区分是否为测试环境
+                            //url: M.config.api + "V1/basic/weixin/secret.htm",
+                            url: M.config.api + "pay/weixin/config.htm",  //区分是否为测试环境
                             success: function (data) {
                                 console.log(data);
                                 wx.config({
@@ -743,8 +912,8 @@ define(function (require, exports, module) {
                             ready: function () {
                                 var wxData = {
                                     title: params.title,
-                                    link: params.url,
-                                    imgUrl: params.image,
+                                    link: encodeURI(params.url),
+                                    imgUrl: encodeURI(params.image),
                                     desc: params.desc,
                                     success: function (e) {
                                         // 接口调用成功时执行的回调函数;
@@ -757,8 +926,8 @@ define(function (require, exports, module) {
                                 };
                                 var wxDataTimeline = {
                                     title: params.title,
-                                    link: params.url,
-                                    imgUrl: params.image,
+                                    link: encodeURI(params.url),
+                                    imgUrl: encodeURI(params.image),
                                     success: function (e) {
                                         // 接口调用成功时执行的回调函数;
                                         params.success && params.success(e);
@@ -1053,27 +1222,32 @@ define(function (require, exports, module) {
 
     /* ===========================================
      * 倒计时插件 - 设置时间与本机时间进行倒计时;
-     * 示例：$(element).timeCountDown({date:'',elements:{}, callback: function(){}});
+     * 示例：$(element).timeCountDown({second: 60, endDate:'', startDate: "", elements:{}, callback: function(){}});
      * ===========================================*/
     (function ($) {
         $.fn.timeCountDown = function (params) {
             var me = $(this);
             // console.log(me);
             var defaults = {
-                date: '2088/08/08 08:08:08', //默认倒计时日期
-                callback: null, // 回调方法;
-                second: 0, // 秒数;
+                endDate: '2088/08/08 08:08:08', //默认倒计时日期
+                startDate: false,           // 结束时间;
+                callback: false,			// 结束回调;
+                callstart: false,			// 开始回调;
+                callproces: false,			// 进行中回调;
+                second: 0,                  // 时间差秒数;
                 elements: {
-                    hm: me.find(".hm"),
-                    sec: me.find(".sec"),
-                    mini: me.find(".mini"),
+                    second: me.find(".second"),
+                    minute: me.find(".minute"),
                     hour: me.find(".hour"),
-                    day: me.find(".day"),
-                    month: me.find(".month"),
-                    year: me.find(".year")
+                    day: me.find(".day")
+                },
+                pms: {
+                    second: "00",
+                    minute: "00",
+                    hour: "00",
+                    day: "00"
                 }
             };
-
             var options = $.extend({}, defaults, params || {}), s;
             return this.each(function () {
                 var fun = {
@@ -1084,22 +1258,12 @@ define(function (require, exports, module) {
                         //ar future = new Date(options.date), now = new Date();
                         //现在将来秒差值
                         //ar dur = Math.round((future.getTime() - now.getTime()) / 1000),
-                        var dur = options.second,
-                            pms = {
-                                sec: "00",
-                                mini: "00",
-                                hour: "00",
-                                day: "00",
-                                month: "00",
-                                year: "0"
-                            };
+                        var dur = options.second, pms = options.pms;
                         if (dur > 0) {
-                            pms.sec = fun.zero(dur % 60); //秒
-                            pms.mini = Math.floor((dur / 60)) > 0 ? fun.zero(Math.floor((dur / 60)) % 60) : "00"; //分钟
-                            pms.hour = Math.floor((dur / 3600)) > 0 ? fun.zero(Math.floor((dur / 3600)) % 24) : "00"; //小时
-                            pms.day = Math.floor((dur / 86400)) > 0 ? fun.zero(Math.floor((dur / 86400)) % 30) : "00"; //天
-                            pms.month = Math.floor((dur / 2629744)) > 0 ? fun.zero(Math.floor((dur / 2629744)) % 12) : "00"; //月份，以实际平均每月秒数计算
-                            pms.year = Math.floor((dur / 31556926)) > 0 ? Math.floor((dur / 31556926)) : "0"; //年份，按按回归年365天5时48分46秒算
+                            pms.day = fun.zero(Math.floor(dur / (60 * 60 * 24))); //天
+                            pms.hour = fun.zero(Math.floor(dur / (60 * 60)) - (pms.day * 24)); //小时
+                            pms.minute = fun.zero(Math.floor(dur / 60) - (pms.day * 24 * 60) - (pms.hour * 60)); //分钟
+                            pms.second = fun.zero(Math.floor(dur) - (pms.day * 24 * 60 * 60) - (pms.hour * 60 * 60) - (pms.minute * 60)); //秒
                         }
                         return pms;
                     },
@@ -1108,20 +1272,26 @@ define(function (require, exports, module) {
                             v[0] && v.html(fun.dv()[o] || "00");
                         });
                         clearInterval(s);
-                        options.second--;
+                        // 进行中的回调;
+                        $.isFunction(options.callproces) && options.callproces.call(options.callproces, options.second);
                         // 倒计时完回调;
-                        if (options.second < 0) {
+                        if (options.second <= 0) {
                             $.isFunction(options.callback) && options.callback.call(options.callback);
                             return;
                         }
+                        options.second--;
                         s = setTimeout(fun.ui, 1000);
                     }
                 };
-                var future = new Date(options.date),
-                    now = new Date();
-                //现在将来秒差值
-                options.second = Math.round((future.getTime() - now.getTime()) / 1000);
-                fun.ui();
+                if(options.second){
+                    // 如果已经传了时间差，那么直接进行倒计时;
+                    fun.ui();
+                }else{
+                    // 为传时间差，计算传的时间与当前时间的时间差进行倒计时;
+                    var future = new Date(options.endDate), now = options.startDate ? new Date(options.startDate) : new Date();
+                    options.second = Math.round((future.getTime() - now.getTime()) / 1000);
+                    fun.ui();
+                }
             });
         };
     })(window.jQuery);

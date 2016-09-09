@@ -10,7 +10,7 @@ section.m-goods-detail.flex
             ol.ui-swipe-wrap
                 each pic_url in pic
                     li.ui-swipe-item
-                        img(data-original= pic_url + '@600w_100q.jpg', src=placeholderPic)
+                        img(data-original= pic_url + '@600w_100q.jpg', src=placeholderPic, data-share=pic_url)
 
             // 点点点
             .ui-swipe-tab#swipe-tab-banner(data-target='#swipe-banner')
@@ -37,11 +37,11 @@ section.m-goods-detail.flex
                 | 个妈豆
     // 标题
     dl.title
-        dt.flex-center
-            | #{title}
+        dt
+            strong.js-share-title #{title}
             sup 自营
             sub 实体店
-        dd #{subtitle}
+        dd.js-share-desc #{subtitle}
     // 促销
     .sale
         // 优惠劵
@@ -63,13 +63,13 @@ section.m-goods-detail.flex
             | #{mamCare}
     // 配送信息
     .delivery
-        dl.address
+        dl.address.js-address
             dt 送至
-            dd.js-address
+            dd
                 if paramsLocation.gpsAddr
                     p #{paramsLocation.gpsAddr}
                 else
-                    p #{paramsLocation.province}>#{paramsLocation.city}>#{paramsLocation.district}
+                    p #{paramsLocation.street}
 
                 if isInStock
                     time
@@ -160,12 +160,12 @@ section.m-goods-detail.flex
 
             .ui-swipe-item
                 // 商品口碑
-                .u-score.flex-column
+                .u-score
                     // 评分合计
                     .out
 
                     // 口碑列表
-                    .list.flex
+                    .list
 
 
 

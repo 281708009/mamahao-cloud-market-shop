@@ -2,7 +2,7 @@ extends ../layouts/layout.pug
 block title
     title #{shopName}
 block js
-    script seajs.use('app/store_assess');
+    script seajs.run('app/store_assess');
 block content
     include ../includes/let.pug
     - var totalCount = score_5 + score_4 + score_3 + score_2 + score_1;

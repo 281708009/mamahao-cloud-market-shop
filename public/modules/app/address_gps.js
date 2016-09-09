@@ -23,7 +23,7 @@ define(function (require, exports, module) {
                     var params = {
                         error: {
                             style: '03',
-                            tips: '定位失败'
+                            tips: '定位失败，请确认您的定位服务是否开启'
                         }
                     };
                     page.renderModule('addressGPS', callback, params);

@@ -25,6 +25,7 @@
             "common": "app/common.js",
             "weixin": "http://res.wx.qq.com/open/js/jweixin-1.0.0.js",
             "AMap": "http://webapi.amap.com/maps?v=1.3&key=97a72a5c35a9f4915293fdb121bbdc2a",
+            "ali-oss": "http://gosspublic.alicdn.com/aliyun-oss-sdk-4.4.4.min.js",
         },
 
         map: [
@@ -33,7 +34,7 @@
 
         //use之前，预加载
         preload: [
-            'common'
+            //'common'
         ],
 
         // 调试模式
@@ -51,10 +52,21 @@
         local_search_history: 'mmh_search_history',     //历史搜素关键字
         local_search_params: 'mmh_search_params',     //搜索商品需要的参数
         local_qualityPic: 'mmh_qualityPic',  //质检担保图片
-        local_cartId:'mmh_cartId',   // 购物车ID
+        local_cartId: 'mmh_cartId',   // 购物车ID
         local_storeAddr: 'mmh_store_address',    // 门店用户收货地址
         local_settlement_addr: 'mmh_settlement_addr',    // 结算选择地址
         local_cart_newGoods: 'mmh_cart_newgoods',    // 购物车内新增商品
     };
+
+    //添加seajs：run函数
+    seajs.dependencies = ['jquery', 'fastclick', 'AMap', 'common'];
+    seajs.run = function (path, callback) {
+        seajs.use(seajs.dependencies, function () {
+            seajs.use(path, function (e) {
+                callback && callback.call(this, e);
+            });
+        });
+    };
+
 
 })();

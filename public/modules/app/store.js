@@ -77,7 +77,7 @@ define(function (require, exports, module) {
                         fnSuccess: function (res, ele) {
                             var data = res.data;
                             if (!data.template) {
-                                return ele.data('locked', true)
+                                return ele.data('locked', true).after('<div class="u-null-page"><em>该区域无更多门店</em></div>');
                             }
                             ele.append(data.template);
                         }

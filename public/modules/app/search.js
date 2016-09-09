@@ -5,11 +5,13 @@
 define(function (require, exports, module) {
     var page = {
         elements: {},
-        init: function () {
-            var $js_search = $('.js-search'),
-                $keywords = $('#keywords'),
-                $search_tips = $('.search-tips'),
-                $default = $('.autoshow');
+        init: function (container) {
+            var $module = $(container);
+
+            var $js_search = $module.find('.js-search'),
+                $keywords = $module.find('#keywords'),
+                $search_tips = $module.find('.search-tips'),
+                $default = $module.find('.autoshow');
 
             /*关键字搜索商品*/
             $js_search.on('click', function () {
@@ -22,8 +24,14 @@ define(function (require, exports, module) {
             });
 
             //点击关键字
-            $('.hot dd em, .history .list li').on('click', function () {
-                page.searchGoods($(this).text(), false);
+            $module.on('click', '.hot dd em', function () {
+                var keywords = $(this).text();
+                page.searchGoods(keywords, false);
+            });
+            //点击提示关键字或历史记录关键字
+            $module.on('click', '.search-tips li, .history .list li', function () {
+                var keywords = $(this).text();
+                page.searchGoods(keywords);
             });
 
             //搜素下拉提示
@@ -50,7 +58,7 @@ define(function (require, exports, module) {
             });
 
             //清空历史搜素记录
-            $('.js-del-history').on('click', function () {
+            $module.on('click', '.js-del-history', function () {
                 localStorage.removeItem(CONST.local_search_history);
                 M.tips({
                     body: '历史搜素记录已清除',
@@ -68,7 +76,7 @@ define(function (require, exports, module) {
             if (type !== false) {
                 var history = JSON.parse(localStorage.getItem(CONST.local_search_history)) || [];
                 history.unshift(keywords);
-                localStorage.setItem(CONST.local_search_history, JSON.stringify($.unique(history).slice(0, 10)));
+                localStorage.setItem(CONST.local_search_history, JSON.stringify(history.unique().slice(0, 10)));
             }
 
             window.location.href = '#/list/keywords=' + keywords;

@@ -1,7 +1,7 @@
 //- 筛选 entry 0:品牌 1:分类
 section.m-filter.flex
     unless params.entry === '0'
-        .item.brands#brands
+        .item.brands#brands(data-field='brandIds')
             .title
                 strong 品牌
                 .more.u-arrow.bottom.js-collapse 全部展开
@@ -14,7 +14,7 @@ section.m-filter.flex
                                     img(src=brand.bLogo)
                                 dt #{brand.bName}
 
-    .item.ages#ages
+    .item.ages#ages(data-field='ages')
         .title
             strong 年龄
             .more.u-arrow.bottom.js-collapse 全部展开
@@ -26,7 +26,7 @@ section.m-filter.flex
                         em #{hash[age]}
 
     unless params.entry === '1'
-        .item.types#types
+        .item.types#types(data-field='categoryId')
             .title
                 strong 类目
                 .more.u-arrow.bottom.js-collapse 全部展开

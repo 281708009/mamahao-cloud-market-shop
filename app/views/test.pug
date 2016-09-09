@@ -2,16 +2,20 @@ extends layouts/layout
 block title
     title 这是测试页面
 block js
-    script.
-        M.ajax({
-            url: '/test/request',
-            data: {},
-            success: function (res) {
-                console.log('res---->',JSON.stringify(res))
-                var html = '<script>function show(m){alert(m)}<\/script><script>show("'+res.id+'");<\/script>';
-                $('body').append(html);
-            }
-        });
+    script seajs.run('app/test');
 
 block content
-    h3 这是测试页面 id: #{id}, pid: #{pid}
+
+    //h3 这是测试页面 id: #{id}, pid: #{pid}
+
+    form(action='/test/upload_file', method='post', enctype='multipart/form-data')
+        | 文件名:
+        input.u-btn(type='file', name='upfile')
+        br
+        input.u-btn(type='submit', value='提交')
+
+
+    p
+        button.u-btn.success.js-ali-oss 点击测试 ali-oss
+
+

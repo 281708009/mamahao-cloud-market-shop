@@ -4,7 +4,7 @@
  * */
 
 var api = {
-    "queryMainPage": "/V3/home/base/queryMainPage.htm",    // 首页
+    "queryMainPage": "V3/home/base/queryMainPage.htm",    // 首页
     "login": "V1/member/login.htm",    //登录
     "bind": "V1/weixin/oauth/bind.htm",    //绑定
     "vcode": "V1/sms/vcode/sendSmsVcodeForLoginOrReg.htm",     //登录获取验证码
@@ -36,6 +36,7 @@ var api = {
     "orderReview": "V1/order/basic/queryOrderGoodsList.htm",        // 评价晒单商品列表页面
     "orderRemind": "V1/order/basic/remindDelivery.htm",  // 提醒发货
     "orderReceive": "V1/order/basic/confirmReceipt.htm", // 确认收货
+    "orderCancel": "/V1/order/basic/cancelOrder.htm",   // 取消订单
     "shopInfo": "V1/order/basic/queryShopInfo.htm",  // 获取门店信息
     "deliveryInfo": "V1/order/basic/queryDeliveryInfo.htm", // 获取配送信息
     "reviewSubmit": "V2/comment/basic/commentGoodsTemplate.htm",    // 提交晒单评价
@@ -49,6 +50,9 @@ var api = {
     "goodsType": "V1/shop/basic/queryGoodsType.htm", // 商品分类：一级类目
     "goodsTypeTree": "V1/shop/basic/queryGoodsTypeTree.htm", // 商品分类：二级类目
     "goodsList": "V2/category/goods/list.htm", // 商品分类：二级类目商品列表
+    //"goodsList": "/V4/search/goods/query.htm", // 商品列表:类目、品牌、筛选、搜素共用
+
+
     //"goodsDetail": "V1/shop/basic/searchItemDetail.htm", // 商品详情: 切换规格
     "goodsDetail": "V2/shop/basic/searchTemplateDetail.htm", // 商品详情
     "goodsCommentList": "V1/comment/basic/queryGoodsTemplateCommentList.htm", // 商品详情评论列表
@@ -93,16 +97,19 @@ var api = {
     "shopGoodsList": "V2/shop/goods/list.htm", // 门店商品列表
     "getDeliveryAddr": "V1/member/delivery/getDeliveryAddr.htm",  // 用户当前收货地址列表
     "getShopEvaluationInfo": "V1/shop/basic/getShopEvaluationInfo.htm",  // 获取门店评价详情
+    // 摇妈豆;
+    "getActiveMbeans": "V1/h5/base/getActiveMbeans.htm",    // 给自己摇妈豆
+    "getActiveMbeansByExtApp": "V2/h5/base/getActiveMbeansByExtApp.htm",    // 给他人摇妈豆
+    "getMbeanPossibleCount": "V2/h5/base/getMbeanPossibleCount.htm",    // 摇妈豆中奖列表
 
 
 
     // 扫码付;
     "queryPosBarOrder": "V1/order/basic/queryPosBarOrder.htm", // 扫码订单查询;
-    "codePay": "V2/order/basic/pay.htm", // 查询支付金额;
+    "imageVcode": "vcode/verificationCode4ExtShare.htm", // 获取图片验证码;
     "sendSmsVcodeForNoReg": "V1/sms/vcode/sendSmsVcodeForNoReg.htm", // 外部活动获取短信验证码;
-    "couponWithOther": "V1/cwo/couponWithOther.htm", // 外部领取优惠卷接口;
-    "checkSessionRefresh": "checkSessionRefresh.htm", // 测试;
-    "reCheckSessionRefresh": "reCheckSessionRefresh.htm" // 测试;
+    "couponWithOther": "V1/cwo/couponWithOther.htm", // 外部领取优惠卷;
+    "checkObtainCoupon": "V1/cwo/checkObtainCoupon.htm" // 外部优惠卷信息;
 
 
 
