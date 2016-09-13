@@ -106,6 +106,7 @@ define(function (require, exports, module) {
             localStorage.setItem(CONST.local_search_params, JSON.stringify(params));
 
             M.ajax({
+                location: true,
                 url: '/api/goods_list',
                 data: {data: JSON.stringify(params)},
                 success: function (res) {

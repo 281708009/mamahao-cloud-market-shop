@@ -5,11 +5,3 @@ block js
     script seajs.run('app/store');
 
 block extra
-    // 定位空白页
-    script#tpl_null(type='text/html')
-        section.u-null-all.m-stores-null
-            .null
-                img(src='http://s.mamhao.cn/m/v1/images/bg-stores-null.png', alt='')
-                p 定位未开启，请在系统设置中开启定位
-
-        +footer_nav('store')

@@ -34,11 +34,12 @@ define(function (require, exports, module) {
                 page.searchGoods(keywords);
             });
 
-            //搜素下拉提示
+            //搜索下拉提示
             $keywords.on('input', function () {
                 var keywords = $.trim($keywords.val());
                 if (keywords) {
                     M.ajax({
+                        showLoading: false,
                         url: '/api/searchKeywordTips',
                         data: {data: JSON.stringify({keyword: keywords})},
                         success: function (res) {
@@ -61,7 +62,7 @@ define(function (require, exports, module) {
             $module.on('click', '.js-del-history', function () {
                 localStorage.removeItem(CONST.local_search_history);
                 M.tips({
-                    body: '历史搜素记录已清除',
+                    body: '历史搜索记录已清除',
                     callback: function () {
                         $('.history').fadeOut(function () {
                             $(this).remove();

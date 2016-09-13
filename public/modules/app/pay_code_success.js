@@ -34,13 +34,8 @@ define(function (require, exports, module) {
             // 微信端进行受权;
             if(c.isWeChat){
                 require.async('weixin', function (wx) {
-                    //M.wx.share(wx);
                     // 隐藏可分享按钮;
-                    M.wx.init(wx, {
-                        ready: function () {
-                            wx.hideOptionMenu();
-                        }
-                    });
+                    wx.hideOptionMenu();
                 });
             }
             // 领取优惠卷;
@@ -72,7 +67,7 @@ define(function (require, exports, module) {
         // 获取短信验证码;
         getSMS: function () {
             var self = this, o = self.info, c = self.config;
-            if(c.isAjax) return;
+            if(c.isAjax || c.isSecond) return;
             if(!self.tools.isMobile(o.mobile.val())){
                 return M.tips("请输入正确的手机号码");
             }
@@ -83,9 +78,11 @@ define(function (require, exports, module) {
                 data: {data: params},
                 success:function(res){
                     o.mobile.attr("disabled", "disabled");
+                    c.isSecond = true;
                     o.getCode.html("<i></i>秒后可重发").addClass("ban").find("i").secondCountDown({
                         second: 59,
                         endcall: function () {
+                            c.isSecond = false; // 计时结束;
                             o.getCode.removeClass("ban").html("获取验证码");
                             o.mobile.removeAttr("disabled");
                         }

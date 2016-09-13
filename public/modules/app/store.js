@@ -12,7 +12,8 @@ define(function (require, exports, module) {
                 myShowStore: '/api/myShowStore',
                 myAddress: '/api/myAddress',
                 addCollect: '/api/addCollect',
-                delCollect: '/api/delCollect'
+                delCollect: '/api/delCollect',
+                delServiceShop: '/api/delServiceShop'
             }
         },
         info: {},
@@ -105,8 +106,8 @@ define(function (require, exports, module) {
                     o.collect = $(".js-collect");
                     o.collect.on("click", ".u-btn", function () {
                         var thas = $(this), data = {
-                            collectid: o.collect.data("collectid"), // 收藏id;
-                            collectItemId: o.collect.data("id"), // 门店id;
+                            collectid: thas.parent().data("collectid"), // 收藏id;
+                            collectItemId: thas.parent().data("id"), // 门店id;
                             collectType: 3 // 类型 1_商品2_品牌3_门店
                         };
                         if(thas.hasClass("active")){
@@ -158,6 +159,15 @@ define(function (require, exports, module) {
                     M.lazyLoad.init({
                         container: ".node-stores-detail-goods"
                     });
+                    // 门店详情页自定义分享;
+                    require.async('weixin', function (wx) {
+                        M.wx.share(wx, {
+                            title: $(".js-share-title").text(),
+                            url: location.href,
+                            image: $(".js-share-image").data("share"),
+                            desc: $(".js-share-desc").text()
+                        });
+                    });
                     // 门店商品分页;
                     $(".pagination").data('params', {
                         showTab: 0,
@@ -179,6 +189,9 @@ define(function (require, exports, module) {
                             M.lazyLoad.init({
                                 container: ele
                             });
+                        },
+                        fnLoading: function (ele) {
+                            ele.after('<div class="tc pagination-loading">正在加载中...</div>');
                         }
                     });
                 }
@@ -197,6 +210,29 @@ define(function (require, exports, module) {
                     var $module = $(this), o = page.info;
                     // 点击查看服务详情;
                     page.setService($module);
+                    $(".js-collect").on("click", function () {
+                        var thas = $(this), data = JSON.stringify($.extend({}, {
+                            msId: thas.data("collectid")
+                        }));
+                        M.dialog({
+                            body: "确定删除此服务店?",
+                            buttons: [
+                                {"text": "取消"},
+                                {"text": "确定", "class": "success", "onClick": function () {
+                                    var dialog = this;
+                                    M.ajax({
+                                        url: page.config.api['delServiceShop'],
+                                        data: {data: data},
+                                        success:function(res){
+                                            $(".js-shop-" + thas.data("id")).remove();
+                                            M.tips("删除成功");
+                                            dialog.hide();
+                                        }
+                                    });
+                                }}
+                            ]
+                        });
+                    });
                 }
             };
 
@@ -217,17 +253,23 @@ define(function (require, exports, module) {
                         var thas = $(this), data = JSON.stringify($.extend({}, {
                             collectIds: thas.data("collectid")
                         }));
-                        M.ajax({
-                            url: page.config.api['delCollect'],
-                            data: {data: data},
-                            success:function(res){
-                                if(res.success_code == 200){
-                                    $(".js-shop-" + thas.data("id")).remove();
-                                    M.tips("取消关注成功");
-                                }else{
-                                    M.tips(res.msg);
-                                }
-                            }
+                        M.dialog({
+                            body: "确定取消关注此店?",
+                            buttons: [
+                                {"text": "取消"},
+                                {"text": "确定", "class": "success", "onClick": function () {
+                                    var dialog = this;
+                                    M.ajax({
+                                        url: page.config.api['delCollect'],
+                                        data: {data: data},
+                                        success:function(res){
+                                            $(".js-shop-" + thas.data("id")).remove();
+                                            M.tips("取消关注成功");
+                                            dialog.hide();
+                                        }
+                                    });
+                                }}
+                            ]
                         });
                     });
                 }
@@ -296,7 +338,7 @@ define(function (require, exports, module) {
         // 切换地址
         setAddress: function () {
             var self = this, o = self.info;
-            o.popAddress.on("change", ".u-radio", function () {
+            o.popAddress.on("change", ".u-checkbox", function () {
                 var thas = $(this).parents("li");
                 localStorage.setItem(CONST.local_storeAddr, JSON.stringify(thas.data("json")));
                 window.location.reload();
@@ -330,17 +372,14 @@ define(function (require, exports, module) {
                 var data = JSON.stringify($.extend({}, {
                     collectIds: params.collectid
                 }));
+                //console.log(1111111111);
                 M.ajax({
                     url: page.config.api['delCollect'],
                     data: {data: data},
                     success:function(res){
-                        if(res.success_code == 200){
-                            o.collect.find(".u-btn").removeClass("active").addClass("success").html("+ 关注");
-                            count.text(Number(count.text()) - 1);
-                            M.tips("取消关注成功");
-                        }else{
-                            M.tips(res.msg);
-                        }
+                        o.collect.find(".u-btn").removeClass("active").addClass("success").html("+ 关注");
+                        count.text(Number(count.text()) - 1);
+                        M.tips("取消关注成功");
                     }
                 });
             }else{
@@ -353,13 +392,9 @@ define(function (require, exports, module) {
                     url: page.config.api['addCollect'],
                     data: {data: data},
                     success:function(res){
-                        if(res.success_code == 200){
-                            o.collect.data("collectid", res.data.collectId).find(".u-btn").removeClass("success").addClass("active").html("已关注");
-                            count.text(Number(count.text()) + 1);
-                            M.tips({class: "true", body: "关注成功", delay: 2000});
-                        }else{
-                            M.tips(res.msg);
-                        }
+                        o.collect.data("collectid", res.data.collectId).find(".u-btn").removeClass("success").addClass("active").html("已关注");
+                        count.text(Number(count.text()) + 1);
+                        M.tips({class: "true", body: "关注成功", delay: 2000});
                     }
                 });
             }
@@ -368,13 +403,18 @@ define(function (require, exports, module) {
         openLocation: function () {
             var o = page.info, json = o.location.data("basic");
             require.async('weixin', function (wx) {
-                wx.openLocation({
-                    latitude: Number(json.lat), // 纬度，浮点数，范围为90 ~ -90
-                    longitude: Number(json.lng), // 经度，浮点数，范围为180 ~ -180。
-                    name: json.shopName, // 位置名
-                    address: json.shopAddr, // 地址详情说明
-                    scale: 14, // 地图缩放级别,整形值,范围从1~28。默认为最大
-                    infoUrl: '' // 在查看位置界面底部显示的超链接,可点击跳转
+                // 隐藏可分享按钮;
+                M.wx.init(wx, {
+                    ready: function () {
+                        wx.openLocation({
+                            latitude: Number(json.lat), // 纬度，浮点数，范围为90 ~ -90
+                            longitude: Number(json.lng), // 经度，浮点数，范围为180 ~ -180。
+                            name: json.shopName, // 位置名
+                            address: json.shopAddr, // 地址详情说明
+                            scale: 14, // 地图缩放级别,整形值,范围从1~28。默认为最大
+                            infoUrl: '' // 在查看位置界面底部显示的超链接,可点击跳转
+                        });
+                    }
                 });
             });
         }

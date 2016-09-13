@@ -12,6 +12,7 @@ var bigPipe = require("../utils/bigPipe"),
 var payCode = {
     // 扫码付;
     index: function (req, res, next) {
+        log.info('不走统一微信受权');
         var isWeChat = /micromessenger/gi.test(req.header("user-agent")),
             isAlipay = /alipayclient/gi.test(req.header("user-agent")),
             isMamahao = /mamhao/gi.test(req.header("user-agent")),
@@ -48,6 +49,16 @@ var payCode = {
             }
         }
     },
+    // 订单支付页 - 防止H5广告问题;
+    order: function (req, res, next) {
+        log.info('不走统一微信受权,扫码付中转页面');
+        var isWeChat = /micromessenger/gi.test(req.header("user-agent")),
+            isAlipay = /alipayclient/gi.test(req.header("user-agent")),
+            isMamahao = /mamhao/gi.test(req.header("user-agent")),
+            scanCodeToken = req.cookies && req.cookies['scanCodeToken'];  // 图文验证码唯一参数
+        var defaults = $.extend({}, req.query, {isWeChat: isWeChat, isAlipay: isAlipay, isMamahao: isMamahao});
+        res.render("pay/code_over", defaults);
+    },
     // 获取图片验证码;
     imageCode: function (req, res, next) {
         HttpClient.request(arguments, {
@@ -83,7 +94,7 @@ var payCode = {
     // 领取优惠卷
     coupon: function (req, res, next) {
         var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
-        $.extend(params, {tid: "57cf6d8a0cf290b9adf9d91c"}); // 优惠卷id;
+        $.extend(params, {tid: "57c69f230cf25161cf371ce8"}); // 优惠卷id;
         HttpClient.request(arguments, {
             url: API.couponWithOther,
             data: params,
@@ -95,7 +106,7 @@ var payCode = {
     // 优惠卷信息;
     couponInfo: function (req, res, next) {
         var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
-        $.extend(params, {tid: "57cf6d8a0cf290b9adf9d91c"}); // 优惠卷id;
+        $.extend(params, {tid: "57c69f230cf25161cf371ce8"}); // 优惠卷id;
         HttpClient.request(arguments, {
             url: API.checkObtainCoupon,
             data: params,

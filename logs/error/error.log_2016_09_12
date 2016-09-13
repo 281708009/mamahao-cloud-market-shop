@@ -1,0 +1,55 @@
+[2016-09-12 20:34:24.321] [ERROR] error - ====================异常捕获A-开始====================
+[2016-09-12 20:34:24.323] [ERROR] error - Error: ENOENT: no such file or directory, open 'd:\svn\mamahao-mobile-site\trunk\public\upload\upload_456335e02a125fe0d0b51e63ff7c1750.jpg'
+    at Error (native)
+[2016-09-12 20:34:24.323] [ERROR] error - ====================异常捕获A-结束====================
+[2016-09-12 20:35:00.293] [ERROR] error - ====================异常捕获A-开始====================
+[2016-09-12 20:35:00.294] [ERROR] error - TypeError: Cannot read property 'name' of undefined
+    at d:\svn\mamahao-mobile-site\trunk\app\utils\ali-oss.js:45:38
+    at IncomingForm.<anonymous> (d:\svn\mamahao-mobile-site\trunk\node_modules\formidable\lib\incoming_form.js:105:9)
+    at emitNone (events.js:67:13)
+    at IncomingForm.emit (events.js:166:7)
+    at IncomingForm._maybeEnd (d:\svn\mamahao-mobile-site\trunk\node_modules\formidable\lib\incoming_form.js:553:8)
+    at d:\svn\mamahao-mobile-site\trunk\node_modules\formidable\lib\incoming_form.js:230:12
+    at WriteStream.<anonymous> (d:\svn\mamahao-mobile-site\trunk\node_modules\formidable\lib\file.js:70:5)
+    at WriteStream.g (events.js:260:16)
+    at emitNone (events.js:72:20)
+    at WriteStream.emit (events.js:166:7)
+[2016-09-12 20:35:00.294] [ERROR] error - ====================异常捕获A-结束====================
+[2016-09-12 20:43:45.338] [ERROR] error - ====================异常捕获A-开始====================
+[2016-09-12 20:43:45.338] [ERROR] error - TypeError: Cannot read property 'name' of undefined
+    at d:\svn\mamahao-mobile-site\trunk\app\utils\ali-oss.js:45:38
+    at IncomingForm.<anonymous> (d:\svn\mamahao-mobile-site\trunk\node_modules\formidable\lib\incoming_form.js:105:9)
+    at emitNone (events.js:67:13)
+    at IncomingForm.emit (events.js:166:7)
+    at IncomingForm._maybeEnd (d:\svn\mamahao-mobile-site\trunk\node_modules\formidable\lib\incoming_form.js:553:8)
+    at d:\svn\mamahao-mobile-site\trunk\node_modules\formidable\lib\incoming_form.js:230:12
+    at WriteStream.<anonymous> (d:\svn\mamahao-mobile-site\trunk\node_modules\formidable\lib\file.js:70:5)
+    at WriteStream.g (events.js:260:16)
+    at emitNone (events.js:72:20)
+    at WriteStream.emit (events.js:166:7)
+[2016-09-12 20:43:45.339] [ERROR] error - ====================异常捕获A-结束====================
+[2016-09-12 21:08:16.137] [ERROR] error - Error: ENOENT: no such file or directory, open 'd:\svn\mamahao-mobile-site\trunk\public\upload\avatar_150x150e664c921-4535-426c-9e6d-7ad938eb80b8.jpg' (stream "error"), PUT http://test-goods-item-images.oss-cn-hangzhou.aliyuncs.com/avatar_150x150.jpg -1 (connected: false, keepalive socket: false, agent status: {"createSocketCount":1,"closeSocketCount":1,"errorSocketCount":0,"timeoutSocketCount":0,"requestCount":0,"freeSockets":{},"sockets":{},"requests":{}})
+headers: {}
+[2016-09-12 21:08:59.138] [ERROR] error - Error: ENOENT: no such file or directory, open 'd:\svn\mamahao-mobile-site\trunk\public\upload\18719e8f-a042-481c-dd27-d60aa199c3cc.png' (stream "error"), PUT http://test-goods-item-images.oss-cn-hangzhou.aliyuncs.com/baidu.png -1 (connected: false, keepalive socket: false, agent status: {"createSocketCount":1,"closeSocketCount":1,"errorSocketCount":0,"timeoutSocketCount":0,"requestCount":0,"freeSockets":{},"sockets":{},"requests":{}})
+headers: {}
+[2016-09-12 21:09:59.173] [ERROR] error - Error: ENOENT: no such file or directory, open 'd:\svn\mamahao-mobile-site\trunk\public\upload\0588cf9b-0ee9-4f75-a999-27e4eeb11b54.jpg' (stream "error"), PUT http://test-goods-item-images.oss-cn-hangzhou.aliyuncs.com/0588cf9b-0ee9-4f75-a999-27e4eeb11b54.jpg -1 (connected: false, keepalive socket: false, agent status: {"createSocketCount":1,"closeSocketCount":1,"errorSocketCount":0,"timeoutSocketCount":0,"requestCount":0,"freeSockets":{},"sockets":{},"requests":{}})
+headers: {}
+[2016-09-12 21:10:32.907] [ERROR] error - Error: ENOENT: no such file or directory, open 'd:\svn\mamahao-mobile-site\trunk\public\upload\af1f2c25-a534-43d7-8bf2-bb6a117e1a6b.jpg' (stream "error"), PUT http://test-goods-item-images.oss-cn-hangzhou.aliyuncs.com/af1f2c25-a534-43d7-8bf2-bb6a117e1a6b.jpg -1 (connected: false, keepalive socket: false, agent status: {"createSocketCount":1,"closeSocketCount":1,"errorSocketCount":0,"timeoutSocketCount":0,"requestCount":0,"freeSockets":{},"sockets":{},"requests":{}})
+headers: {}
+[2016-09-12 21:12:20.524] [ERROR] error - Error: ENOENT: no such file or directory, open 'd:\svn\mamahao-mobile-site\trunk\public\upload\29a6cc07-d64d-4833-ae1a-ae3cfee018e1.jpg' (stream "error"), PUT http://test-goods-item-images.oss-cn-hangzhou.aliyuncs.com/29a6cc07-d64d-4833-ae1a-ae3cfee018e1.jpg -1 (connected: false, keepalive socket: false, agent status: {"createSocketCount":1,"closeSocketCount":1,"errorSocketCount":0,"timeoutSocketCount":0,"requestCount":0,"freeSockets":{},"sockets":{},"requests":{}})
+headers: {}
+[2016-09-12 21:13:51.010] [ERROR] error - ====================异常捕获A-开始====================
+[2016-09-12 21:13:51.011] [ERROR] error - TypeError: Cannot read property 'name' of undefined
+    at d:\svn\mamahao-mobile-site\trunk\app\utils\ali-oss.js:45:34
+    at IncomingForm.<anonymous> (d:\svn\mamahao-mobile-site\trunk\node_modules\formidable\lib\incoming_form.js:105:9)
+    at emitNone (events.js:67:13)
+    at IncomingForm.emit (events.js:166:7)
+    at IncomingForm._maybeEnd (d:\svn\mamahao-mobile-site\trunk\node_modules\formidable\lib\incoming_form.js:553:8)
+    at MultipartParser.IncomingForm._initMultipart.parser.onEnd (d:\svn\mamahao-mobile-site\trunk\node_modules\formidable\lib\incoming_form.js:417:10)
+    at MultipartParser.write.callback (d:\svn\mamahao-mobile-site\trunk\node_modules\formidable\lib\multipart_parser.js:102:31)
+    at MultipartParser.write (d:\svn\mamahao-mobile-site\trunk\node_modules\formidable\lib\multipart_parser.js:268:15)
+    at IncomingForm.write (d:\svn\mamahao-mobile-site\trunk\node_modules\formidable\lib\incoming_form.js:157:34)
+    at IncomingMessage.<anonymous> (d:\svn\mamahao-mobile-site\trunk\node_modules\formidable\lib\incoming_form.js:123:12)
+[2016-09-12 21:13:51.011] [ERROR] error - ====================异常捕获A-结束====================
+[2016-09-12 21:16:28.928] [ERROR] error - Error: ENOENT: no such file or directory, open 'd:\svn\mamahao-mobile-site\trunk\public\upload\a1f6bc80-6c36-4e5e-ad81-4e537c2c1b3f.jpg' (stream "error"), PUT http://test-goods-item-images.oss-cn-hangzhou.aliyuncs.com/a1f6bc80-6c36-4e5e-ad81-4e537c2c1b3f.jpg -1 (connected: false, keepalive socket: false, agent status: {"createSocketCount":1,"closeSocketCount":1,"errorSocketCount":0,"timeoutSocketCount":0,"requestCount":0,"freeSockets":{},"sockets":{},"requests":{}})
+headers: {}

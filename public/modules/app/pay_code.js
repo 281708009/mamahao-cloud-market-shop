@@ -33,13 +33,8 @@ define(function (require, exports, module) {
             // 微信端进行受权;
             if(c.isWeChat){
                 require.async('weixin', function (wx) {
-                    //M.wx.share(wx);
                     // 隐藏可分享按钮;
-                    M.wx.init(wx, {
-                        ready: function () {
-                            wx.hideOptionMenu();
-                        }
-                    });
+                    wx.hideOptionMenu();
                 });
             }
             // 刷新页面;

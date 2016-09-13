@@ -2,20 +2,41 @@ extends layouts/layout
 block title
     title 这是测试页面
 block js
+    script(src='http://gosspublic.alicdn.com/aliyun-oss-sdk-4.4.4.min.js')
     script seajs.run('app/test');
+
+
+block css
+    style.
+        .ali-oss .opts {
+            padding: 10px;
+        }
+
+        .ali-oss .content {
+            padding: 2px 10px;
+        }
+
+        .ali-oss .content dd {
+            padding: 2px 10px;
+            color: #aaa;
+        }
+
+        .ali-oss .content img {
+            width: 80px;
+        }
 
 block content
 
     //h3 这是测试页面 id: #{id}, pid: #{pid}
 
-    form(action='/test/upload_file', method='post', enctype='multipart/form-data')
-        | 文件名:
-        input.u-btn(type='file', name='upfile')
-        br
-        input.u-btn(type='submit', value='提交')
+    div.ali-oss
+        p.opts
+            button.u-btn.success.js-ali-oss 点击测试 ali-oss
+        p.opts
+            input.js-upload(type='file',value='请选择文件',multiple)
+        dl.content
 
 
-    p
-        button.u-btn.success.js-ali-oss 点击测试 ali-oss
+
 
 

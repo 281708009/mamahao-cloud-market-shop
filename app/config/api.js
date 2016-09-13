@@ -92,6 +92,7 @@ var api = {
     // 门店相关;
     "queryMemberShopIndex": "V1/member/shop/queryMemberShopIndex.htm", // 附近实体店首页
     "queryMemberServerShop": "V1/member/shop/queryMemberServerShop.htm", // 我的服务店
+    "deletememberServiceShop": "V1/member/shop/deletememberServiceShop.htm", // 删除我的服务店
     "getMemberShopList": "V1/member/shop/getMemberShopList.htm", // 我关注的店
     "queryShopBasicInfo": "V1/shop/basic/queryShopBasicInfo.htm", // 获取门店基本详情
     "shopGoodsList": "V2/shop/goods/list.htm", // 门店商品列表

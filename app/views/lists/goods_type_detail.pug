@@ -12,5 +12,5 @@ if data && data.length
                         - href += (item.type == 0 ? '&brandIds=' : '&categoryId=') + detail.typeId;
                         a(href= href)
                             .pic
-                                img(src=placeholderPic, data-original=detail.pic + '@200w_200h_100q.png')
+                                img(src=placeholderPic, data-original=detail.pic + (item.type == 0 ? '@112w_112h_1e_100q.png' : '@113w_127h_1e_100q.png' ))
                             em #{detail.name}

@@ -116,6 +116,11 @@ define(function (require, exports, module) {
                     MMH.toTop.init();
                     /*初始化自动滑动导航条*/
                     MMH.nav.init();
+                    // 全局微信自定义分享一次;
+                    require.async('weixin', function (wx) {
+                        //console.log("weixin----------------->", wx);
+                        MMH.wx.share(wx);
+                    });
                 });
             },
             /*显示loading*/
@@ -174,15 +179,14 @@ define(function (require, exports, module) {
 
                 /*do ajax*/
                 function doAjax(data) {
-                    $.ajax({
+                    var setting = {
                         type: params.type || "POST",
                         url: params.url || "/",
                         headers: $.extend({ajax: true}, data || {}),
                         data: params.data || {},
-                        dataType: params.dataType || "json",
                         timeout: 2e4,  //20s
                         success: function (res) {
-                            console.log('success', typeof res)
+                            console.log('ajax-success-typeof', typeof res)
                             c.isAjax[params.url] = false;
                             if (res.error_code) {
                                 var errorMsg = res.msg;
@@ -218,7 +222,27 @@ define(function (require, exports, module) {
                             MMH.hideLoading();
                             params.complete && params.complete.call(this, res);
                         }
-                    });
+                    };
+
+                    //额外配置
+                    if (null !== params.dataType) {
+                        //default: Intelligent Guess (xml, json, script, or html)
+                        setting.dataType = params.dataType;
+                    }
+                    if (null !== params.cache) {
+                        //默认: true, dataType为"script"和"jsonp"时默认为false
+                        setting.cache = params.cache;
+                    }
+                    if (null !== params.processData) {
+                        //默认: true
+                        setting.processData = params.processData;
+                    }
+                    if (null !== params.contentType) {
+                        //default: 'application/x-www-form-urlencoded; charset=UTF-8'
+                        setting.contentType = params.contentType;
+                    }
+
+                    $.ajax(setting);
                 }
             },
             /*tips提示框*/
@@ -297,8 +321,8 @@ define(function (require, exports, module) {
                         var defaults = {
                             body: '模态框内容',
                             buttons: [
-                                {"text": "确定", "class": "success", "onClick": null},
-                                {"text": "取消", "class": "", "onClick": null}
+                                {"text": "取消", "class": "", "onClick": null},
+                                {"text": "确定", "class": "success", "onClick": null}
                             ]
                         };
                         Object.prototype.toString.call(args) !== '[object Object]' && (args = {body: args + ''});
@@ -635,9 +659,9 @@ define(function (require, exports, module) {
                 //Parse url params to JSON
                 function getParams(search) {
                     var obj = {};
-                    if(search !== ""){
+                    if (search) {
                         var arr = search.split("&"), i = 0, l = arr.length;
-                        for(; i < l; i++){
+                        for (; i < l; i++) {
                             var k = arr[i].split("=");
                             var a = arr[i].match(new RegExp(k[0] + "=([^\&]*)(\&?)", "i"))
                             obj[k[0]] = decodeURIComponent(a[1]);
@@ -645,10 +669,10 @@ define(function (require, exports, module) {
                     }
                     return obj;
                     /*var result = search ? JSON.parse('{"' + search.replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}') : {};
-                    for(var i in result){
-                        result[i] = decodeURIComponent(result[i]);
-                    }
-                    return result;*/
+                     for(var i in result){
+                     result[i] = decodeURIComponent(result[i]);
+                     }
+                     return result;*/
                 }
 
                 var util = {
@@ -677,151 +701,174 @@ define(function (require, exports, module) {
             pay: function () {
                 var util = {
                     config: {},
-                    checkPay:function(data){
-                        //
+                    checkPay: function (data, fn) {
+                        M.ajax({
+                            url: '/api/checkPay',
+                            data: data,
+                            success: function (res) {
+                                if (res.error_code && res.error_code == 5000) {
+                                    M.dialog({
+                                        title: "订单已经支付,请勿重复发起支付",
+                                        buttons: [{
+                                            "text": "确定", "class": "success", "onClick": function () {
+                                                location.href = '/center#/orders'
+                                            }
+                                        }]
+                                    });
+                                } else {
+                                    fn();
+                                }
+                            }
+                        });
                     },
                     // 微信支付;
                     weixin: function (options) {
                         options.config && $.extend(options.config, this.config)
-                        var params = options;
-                        M.ajax({
-                            url: '/api/wxPay',
-                            data: params.data,
-                            success:function (res) {
-                                //console.log(WeixinJSBridge);
-                                //调起微信支付控件
-                                if (typeof(WeixinJSBridge) == "undefined"){
-                                    if( document.addEventListener ){
-                                        document.addEventListener('WeixinJSBridgeReady', function () {
-                                            WeixinJSBridge.invoke(
-                                                'getBrandWCPayRequest', {
-                                                    "appId" : res.appId,     //公众号名称，由商户传入
-                                                    "timeStamp":res.timeStamp,         //时间戳，自1970年以来的秒数
-                                                    "nonceStr" : res.nonceStr, //随机串
-                                                    "package" :res.package,
-                                                    "signType" : "MD5",         //微信签名方式：
-                                                    "paySign" : res.paySign //微信签名
-                                                },
-                                                function(res){
-                                                    //alert("1"+res.err_msg);
-                                                    if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-                                                        //alert('支付成功');
-                                                        if(typeof params.callback == "string"){
-                                                            location.href = params.callback;
-                                                        }else{
-                                                            params.callback && params.callback.call(this);
-                                                        }
-                                                    }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                        var params = options, self = this;
+                        self.checkPay(params.data, function () {
+                            M.ajax({
+                                url: '/api/wxPay',
+                                data: params.data,
+                                success: function (res) {
+                                    //console.log(WeixinJSBridge);
+                                    //调起微信支付控件
+                                    if (typeof(WeixinJSBridge) == "undefined") {
+                                        if (document.addEventListener) {
+                                            document.addEventListener('WeixinJSBridgeReady', function () {
+                                                WeixinJSBridge.invoke(
+                                                    'getBrandWCPayRequest', {
+                                                        "appId": res.appId,     //公众号名称，由商户传入
+                                                        "timeStamp": res.timeStamp,         //时间戳，自1970年以来的秒数
+                                                        "nonceStr": res.nonceStr, //随机串
+                                                        "package": res.package,
+                                                        "signType": "MD5",         //微信签名方式：
+                                                        "paySign": res.paySign //微信签名
+                                                    },
+                                                    function (res) {
+                                                        //alert("1"+res.err_msg);
+                                                        if (res.err_msg == "get_brand_wcpay_request:ok") {
+                                                            //alert('支付成功');
+                                                            if (typeof params.callback == "string") {
+                                                                location.href = params.callback;
+                                                            } else {
+                                                                params.callback && params.callback.call(this);
+                                                            }
+                                                        }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
 
-                                                }
-                                            );
-                                        }, false);
-                                    }else if (document.attachEvent){
-                                        document.attachEvent('WeixinJSBridgeReady', function () {
-                                            WeixinJSBridge.invoke(
-                                                'getBrandWCPayRequest', {
-                                                    "appId" : res.appId,     //公众号名称，由商户传入
-                                                    "timeStamp":res.timeStamp,         //时间戳，自1970年以来的秒数
-                                                    "nonceStr" : res.nonceStr, //随机串
-                                                    "package" :res.package,
-                                                    "signType" : "MD5",         //微信签名方式：
-                                                    "paySign" : res.paySign //微信签名
-                                                },
-                                                function(res){
-                                                    //alert("2"+res.err_msg);
-                                                    if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-                                                        //alert('支付成功');
-                                                        if(typeof params.callback == "string"){
-                                                            location.href = params.callback;
-                                                        }else{
-                                                            params.callback && params.callback.call(this);
-                                                        }
-                                                    }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                                                    }
+                                                );
+                                            }, false);
+                                        } else if (document.attachEvent) {
+                                            document.attachEvent('WeixinJSBridgeReady', function () {
+                                                WeixinJSBridge.invoke(
+                                                    'getBrandWCPayRequest', {
+                                                        "appId": res.appId,     //公众号名称，由商户传入
+                                                        "timeStamp": res.timeStamp,         //时间戳，自1970年以来的秒数
+                                                        "nonceStr": res.nonceStr, //随机串
+                                                        "package": res.package,
+                                                        "signType": "MD5",         //微信签名方式：
+                                                        "paySign": res.paySign //微信签名
+                                                    },
+                                                    function (res) {
+                                                        //alert("2"+res.err_msg);
+                                                        if (res.err_msg == "get_brand_wcpay_request:ok") {
+                                                            //alert('支付成功');
+                                                            if (typeof params.callback == "string") {
+                                                                location.href = params.callback;
+                                                            } else {
+                                                                params.callback && params.callback.call(this);
+                                                            }
+                                                        }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
 
-                                                }
-                                            );
-                                        });
-                                        document.attachEvent('onWeixinJSBridgeReady', function () {
-                                            WeixinJSBridge.invoke(
-                                                'getBrandWCPayRequest', {
-                                                    "appId" : res.appId,     //公众号名称，由商户传入
-                                                    "timeStamp":res.timeStamp,         //时间戳，自1970年以来的秒数
-                                                    "nonceStr" : res.nonceStr, //随机串
-                                                    "package" :res.package,
-                                                    "signType" : "MD5",         //微信签名方式：
-                                                    "paySign" : res.paySign //微信签名
-                                                },
-                                                function(res){
-                                                    //alert("3"+res.err_msg);
-                                                    if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-                                                        //alert('支付成功');
-                                                        if(typeof params.callback == "string"){
-                                                            location.href = params.callback;
-                                                        }else{
-                                                            params.callback && params.callback.call(this);
-                                                        }
-                                                    }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                                                    }
+                                                );
+                                            });
+                                            document.attachEvent('onWeixinJSBridgeReady', function () {
+                                                WeixinJSBridge.invoke(
+                                                    'getBrandWCPayRequest', {
+                                                        "appId": res.appId,     //公众号名称，由商户传入
+                                                        "timeStamp": res.timeStamp,         //时间戳，自1970年以来的秒数
+                                                        "nonceStr": res.nonceStr, //随机串
+                                                        "package": res.package,
+                                                        "signType": "MD5",         //微信签名方式：
+                                                        "paySign": res.paySign //微信签名
+                                                    },
+                                                    function (res) {
+                                                        //alert("3"+res.err_msg);
+                                                        if (res.err_msg == "get_brand_wcpay_request:ok") {
+                                                            //alert('支付成功');
+                                                            if (typeof params.callback == "string") {
+                                                                location.href = params.callback;
+                                                            } else {
+                                                                params.callback && params.callback.call(this);
+                                                            }
+                                                        }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
 
-                                                }
-                                            );
-                                        });
-                                    }
-                                }else{
-                                    WeixinJSBridge.invoke(
-                                        'getBrandWCPayRequest', {
-                                            "appId" : res.appId,     //公众号名称，由商户传入
-                                            "timeStamp":res.timeStamp,         //时间戳，自1970年以来的秒数
-                                            "nonceStr" : res.nonceStr, //随机串
-                                            "package" :res.package,
-                                            "signType" : "MD5",         //微信签名方式：
-                                            "paySign" : res.paySign //微信签名
-                                        },
-                                        function(res){
-                                            if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-                                                //alert('支付成功');
-                                                if(typeof params.callback == "string"){
-                                                    location.href = params.callback;
-                                                }else{
-                                                    params.callback && params.callback.call(this);
-                                                }
-                                            }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
-
+                                                    }
+                                                );
+                                            });
                                         }
-                                    );
-                                }
+                                    } else {
+                                        WeixinJSBridge.invoke(
+                                            'getBrandWCPayRequest', {
+                                                "appId": res.appId,     //公众号名称，由商户传入
+                                                "timeStamp": res.timeStamp,         //时间戳，自1970年以来的秒数
+                                                "nonceStr": res.nonceStr, //随机串
+                                                "package": res.package,
+                                                "signType": "MD5",         //微信签名方式：
+                                                "paySign": res.paySign //微信签名
+                                            },
+                                            function (res) {
+                                                if (res.err_msg == "get_brand_wcpay_request:ok") {
+                                                    //alert('支付成功');
+                                                    if (typeof params.callback == "string") {
+                                                        location.href = params.callback;
+                                                    } else {
+                                                        params.callback && params.callback.call(this);
+                                                    }
+                                                }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
 
-                            }
-                        })
+                                            }
+                                        );
+                                    }
+
+                                }
+                            })
+                        });
                     },
                     // 支付宝支付;
                     alipay: function (options) {
                         options.config && $.extend(options.config, this.config)
-                        var params = options;
-                        M.ajax({
-                            url: '/api/aliPay',
-                            data: params.data,
-                            success:function (res) {
-                                var $form = $(res.data);
-                                if(params.data.resource == 2){
-                                    var queryParam = '';
-                                    $form.find("input").each(function(){
-                                        var name = $(this).attr("name");
-                                        var value = $(this).attr("value");
-                                        //console.log(name+"  "+ value);
-                                        queryParam += name + '=' + encodeURIComponent(value) + '&';
-                                    });
-                                    var gotoUrl = $form.attr('action') + queryParam;
-                                    require.async('3rd/ap.js',function () {
-                                        _AP.pay(gotoUrl);
-                                    });
-                                }else{
-                                    $form.submit();
+                        var params = options, self = this;
+                        self.checkPay(params.data, function () {
+
+                            M.ajax({
+                                url: '/api/aliPay',
+                                data: params.data,
+                                success: function (res) {
+                                    var $form = $(res.data);
+                                    if (params.data.resource == 2) {
+                                        var queryParam = '';
+                                        $form.find("input").each(function () {
+                                            var name = $(this).attr("name");
+                                            var value = $(this).attr("value");
+                                            //console.log(name+"  "+ value);
+                                            queryParam += name + '=' + encodeURIComponent(value) + '&';
+                                        });
+                                        var gotoUrl = $form.attr('action') + queryParam;
+                                        require.async('3rd/ap.js', function () {
+                                            _AP.pay(gotoUrl);
+                                        });
+                                    } else {
+                                        $form.submit();
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        })
                     }
                 };
                 return {
+                    checkPay: util.checkPay,
                     weixin: util.weixin,
                     alipay: util.alipay
                 };
@@ -831,7 +878,7 @@ define(function (require, exports, module) {
                 var util = {
                     data: {
                         title: "妈妈好商城",
-                        url: "http://m.mamahao.com/",
+                        url: window.location.origin,
                         image: "http://s.mamhao.cn/common/images/icon-114.png",
                         desc: "好孩子集团旗下母婴电商平台，让每一件商品都是安全的！"
                     },
@@ -907,6 +954,7 @@ define(function (require, exports, module) {
                     /*分享*/
                     share: function (wx, opts) {
                         var me = util, params = $.extend({}, me.data, opts || {});
+                        console.log("share----------->", params);
                         //先初始化
                         util.init(wx, {
                             ready: function () {
@@ -943,7 +991,6 @@ define(function (require, exports, module) {
                                 wx.onMenuShareWeibo(wxData);
                             }
                         });
-
                     }
                 };
 
@@ -964,8 +1011,8 @@ define(function (require, exports, module) {
             var params = {
                 body: '' + text,
                 buttons: [
-                    {"text": "确定", "class": "success", "onClick": callback},
-                    {"text": "取消", "class": "", "onClick": null}
+                    {"text": "取消", "class": "", "onClick": null},
+                    {"text": "确定", "class": "success", "onClick": callback}
                 ]
             };
             MMH.dialog(params)
@@ -1283,10 +1330,10 @@ define(function (require, exports, module) {
                         s = setTimeout(fun.ui, 1000);
                     }
                 };
-                if(options.second){
+                if (options.second) {
                     // 如果已经传了时间差，那么直接进行倒计时;
                     fun.ui();
-                }else{
+                } else {
                     // 为传时间差，计算传的时间与当前时间的时间差进行倒计时;
                     var future = new Date(options.endDate), now = options.startDate ? new Date(options.startDate) : new Date();
                     options.second = Math.round((future.getTime() - now.getTime()) / 1000);

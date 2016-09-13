@@ -11,6 +11,7 @@ var Thenjs = require('thenjs');
 var store = {
     /*商品分类*/
     index: function (req, res, next) {
+        log.info("-------------->store.index");
         res.render('goods/index');
     },
     goodsType: function (req, res, next) {

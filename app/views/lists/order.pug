@@ -84,7 +84,7 @@ each order, index in rows
                                 button.u-btn.ban 已经失效
                         else
                             li
-                                a.u-btn.checked(href='/pay/?' + order.orderNo) 立即付款
+                                a.u-btn.checked(href='/pay/?orderNo=' + order.orderNo) 立即付款
                                 //a.u-btn.checked(href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx230909e739bb72fd&redirect_uri=http://api.mamhao.com/mamahao-app-api/pay/weixin/getOpenId.htm?orderNo='+order.orderNo+'&response_type=code&scope=snsapi_base&state=123456#wechat_redirect') 立即付款
                     when 4
                         li

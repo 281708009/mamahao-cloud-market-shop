@@ -142,11 +142,18 @@ define(function (require, exports, module) {
                     $this.on('click', '.js-review-submit', function () {
                         var data = $(this).data('params');
                         data.content = $('#reviewCtn').val();
-                        data.deliverySpeedStar = +$('#deliverySpeedStar').data('star');
-                        data.serveStar = +$('#serveStar').data('star');
-                        data.star = +$('#goodsStar').data('star');
+                        $('#deliverySpeedStar').length && (data.deliverySpeedStar = +$('#deliverySpeedStar').data('star'));
+                        $('#serveStar').length && (data.serveStar = +$('#serveStar').data('star'));
+                        $('#goodsStar').length && (data.star = +$('#goodsStar').data('star'));
                         if (data.content == '') return alert('商品评价内容为空');
                         if (data.content.length > 140) return alert('字数超出最大限制');
+                        var pics = [];
+                        $('.file li .item').each(function(){
+                           pics.push($(this).find('img').data('filename'));
+                        });
+                        if(pics.length){
+                            data.pics = pics.toString();
+                        }
                         M.ajax({
                             url: page.config.api['orderReviewSubmit'],
                             data: {data: JSON.stringify(data)},
@@ -162,7 +169,46 @@ define(function (require, exports, module) {
                     $this.on('click', '.js-star li', function () {
                         var star = $(this).text();
                         $(this).closest('ol').prev().attr('class', 'star star-' + star).data('star', star);
-                    })
+                    });
+
+                    // 上传图片
+                    $this.on('click','.js-upload',function(){
+                        $this.find('[type="file"]').trigger('click');
+                    });
+
+                    $('[type="file"]').on('change', function (e) {
+                        var file = e.target.files[0];
+                        console.log(file);
+                        $file = $(this);
+                        var formData = new FormData();
+                        formData.append('file', file);
+
+                        M.ajax({
+                            type: 'post',
+                            url: '/oss/uploadImage',
+                            cache: false,
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function (res) {
+                                console.log('res---->', JSON.stringify(res));
+                                if(res.success){
+                                    $file.closest('li').before('<li><div class="item"><img src="' + res.url +'" alt="" data-filename="' + res.name +'"><del></del></div></li>');
+                                    $file.val('');
+                                    if($('.file li .item').length >= 5){
+                                        $file.closest('li').hide();
+                                    }
+                                }
+                            }
+                        });
+                    });
+
+                    $this.on('click','del', function(){
+                       $(this).closest('li').remove();
+                        if($('.file li.item').length < 5){
+                            $file.closest('li').show();
+                        }
+                    });
                 }
             };
             // 评价/确认收货成功结果页

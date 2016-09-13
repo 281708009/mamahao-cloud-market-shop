@@ -28,7 +28,15 @@ var test = {
     },
     aliOSS: function (req, res, next) {
         var aliOSS = require('../utils/ali-oss');
-        new aliOSS().fileUpload();
+        new aliOSS().showBucket({
+            success: function (data) {
+                res.json(data);
+            }
+        });
+    },
+    uploadImage: function (req, res, next) {
+        var aliOSS = require('../utils/ali-oss');
+        new aliOSS().uploadImage(arguments);
     }
 };
 

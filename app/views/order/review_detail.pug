@@ -61,9 +61,9 @@ section.m-assess
             textarea(placeholder='长度在1-140个字之间写下购买体会或使用过程中带来的帮助，可以为其他小伙伴提供参考，也可以获得妈豆奖励哟！',id="reviewCtn")
         ul.file
             li
-                .add
-                    input(type='file')
+                .add.js-upload
                     span 添加晒单图片
+                input(type='file')
     footer.footer
         .btn
             button.u-btn.mini.success.js-review-submit(data-params={"shopId":shopId,"orderNo":orderNo,"itemId":item.itemId,"templateId":item.templateId}) 发表评价

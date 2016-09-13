@@ -1,7 +1,16 @@
 define(function(require, exports, module) {
 
     var wx = require('weixin');
-
+    $('#error').length && M.dialog({
+        title: "订单已经支付,请勿重复发起支付",
+        buttons: [
+            {
+                "text": "确定", "class": "success", "onClick": function () {
+                location.href = '/center#/orders'
+            }
+            }
+        ]
+    });
     (function (wx) {
         var ua = navigator.userAgent.toLowerCase();
         var isWeixin = ua.indexOf('micromessenger') != -1;

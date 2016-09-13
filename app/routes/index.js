@@ -15,6 +15,8 @@ var indexCtrl = require("../controller/index"),           //首页
     payCodeCtrl = require("../controller/pay_code"),      //扫码支付
     weChatCtrl = require("../controller/wechat");         //微信相关
 
+var ossCtrl = require("../controller/aliOSS");    //ali oss
+
 
 /*
  * 扫码支付
@@ -22,6 +24,7 @@ var indexCtrl = require("../controller/index"),           //首页
  * */
 router
     .get("/pay/code.html", payCodeCtrl.index)
+    .get("/pay/codeOrder.html", payCodeCtrl.order)
     .get("/pay/codeSuccess.html", payCodeCtrl.success)
     .post("/pay/codeImageVcode.html", payCodeCtrl.imageCode)
     .post("/pay/codeSMS.html", payCodeCtrl.sms)
@@ -42,7 +45,8 @@ router
     .post("/api/login", accountCtrl.doLogin)
     .post("/api/bind", accountCtrl.doBind)
     .post("/api/sendMessage", accountCtrl.sendMessage)
-    .post("/api/sendBindMessage", accountCtrl.sendBindMessage);
+    .post("/api/sendBindMessage", accountCtrl.sendBindMessage)
+;
 
 
 
@@ -50,22 +54,23 @@ router
 * 所有路由先经过微信授权，优先级教高，放在路由的最前面
 * ====================================================
 * */
-router.get("*", weChatCtrl.auth);
+
 
 /**
  * 网站主页
  */
 router
     .get("/demo", indexCtrl.demo)  //demo
-    .get("/", indexCtrl.index)
-    .get("/index", indexCtrl.index);
+    .get("/", weChatCtrl.auth, indexCtrl.index)
+    .get("/index", weChatCtrl.auth, indexCtrl.index)
+;
 
 
 /**
  * 门店
  */
 router
-    .get("/store", storeCtrl.index)
+    .get("/store", weChatCtrl.auth, storeCtrl.index)
     .post("/api/storeList", storeCtrl.storeList)
     .post("/api/storeDetail", storeCtrl.storeDetail)
     .post("/api/myServerStore", storeCtrl.myServerStore)
@@ -73,18 +78,16 @@ router
     .post("/api/myAddress", storeCtrl.myAddress)
     .post("/api/addCollect", storeCtrl.addCollect)
     .post("/api/delCollect", storeCtrl.delCollect)
-    .all("/store/assess/:shopId", storeCtrl.storeAssess)
+    .post("/api/delServiceShop", storeCtrl.delServiceShop)
+    .all("/store/assess/:shopId", weChatCtrl.auth, storeCtrl.storeAssess)
 ;
 
 /**
  * 商品相关
  */
 router
-    .get("/goods", goodsCtrl.index)
-    .get("/goods/brand", goodsCtrl.brand)
-    //.get("/goods/detail", goodsCtrl.detail)
-    //.get("/goods/qualityPic", goodsCtrl.qualityPic)
-
+    .get("/goods", weChatCtrl.auth, goodsCtrl.index)
+    .get("/goods/brand", weChatCtrl.auth, goodsCtrl.brand)
     .post("/api/goods_type", goodsCtrl.goodsType)
     .post("/api/goods_list", goodsCtrl.list)
     .post("/api/goodsTypeTree", goodsCtrl.getGoodsTypeTree)
@@ -96,7 +99,6 @@ router
     .post("/api/goods_quality", goodsCtrl.qualityPic)
     .post("/api/goods_promoteGroup", goodsCtrl.promoteGroup)
     .post("/api/goods_sku", goodsCtrl.sku)
-
     .post("/api/addToCart", goodsCtrl.addToCart)
 
 ;
@@ -105,10 +107,10 @@ router
  * 购物车
  */
 router
-    .get("/cart", cartCtrl.index)
-    .get("/pay/", cartCtrl.pay)
-    .get("/pay/alipay/pay.htm", cartCtrl.payTips)
-    .get("/pay/result", cartCtrl.payResult)
+    .get("/cart", weChatCtrl.auth, cartCtrl.index)
+    .get("/pay/", weChatCtrl.auth, cartCtrl.pay)
+    .get("/pay/alipay/pay.htm", weChatCtrl.auth, cartCtrl.payTips)
+    .get("/pay/result", weChatCtrl.auth, cartCtrl.payResult)
     .post("/api/pay/invoice", cartCtrl.submitInvoice)
     .post("/api/pay", cartCtrl.check)
     .post("/api/settlement", cartCtrl.settlement)
@@ -127,12 +129,13 @@ router
  */
 router
     .get("/wechat", weChatCtrl.toWechat)
-    .get("/weixin/callback", weChatCtrl.wechatCallBack);
+    .get("/weixin/callback", weChatCtrl.wechatCallBack)
+;
 
 
 /*用户个人中心*/
 router
-    .get('/center', auth.requiredAuthentication, centerCtrl.index)
+    .get('/center', weChatCtrl.auth, auth.requiredAuthentication, centerCtrl.index)
     .post('/api/address', centerCtrl.address)
     .post('/api/address_edit', centerCtrl.addressEdit)
     .post('/api/address_gps', centerCtrl.addressGPS)
@@ -159,6 +162,15 @@ router
     .post('/api/order_result', orderCtrl.orderResult)
     .post('/api/order/:option', orderCtrl.orderOption)
     .post('/api/order_rebuy', orderCtrl.orderRebuy)
+;
+
+
+/*
+ * aliOSS文件上传
+ * */
+router
+    .post('/oss/uploadFile', ossCtrl.uploadFile)
+    .post('/oss/uploadImage', ossCtrl.uploadImage)
 ;
 
 

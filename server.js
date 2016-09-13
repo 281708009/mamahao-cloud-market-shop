@@ -58,9 +58,9 @@ app.use(session({
 app.use(function (req, res, next) {
     var reqDomain = domain.create();
     reqDomain.on("error", function (err) {
-        console.error("====================异常捕获A-开始====================");
-        console.error(err.stack);
-        console.error("====================异常捕获A-结束====================");
+        log.error("====================异常捕获A-开始====================");
+        log.error(err.stack);
+        log.error("====================异常捕获A-结束====================");
 
         if (req.is('json')) {
             res.status(500).json({error_code: 500, msg: '出错啦'});
@@ -88,7 +88,7 @@ app.use('/test', testRouter);  //配置测试路由
 /**
  * 处理404
  */
-app.all('*', function (req, res, next) {
+app.use(function (req, res, next) {
     if (req.is('json')) {
         res.status(404).json({error_code: 404, msg: '迷路了'});
     } else {

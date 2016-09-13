@@ -124,10 +124,10 @@ define(function (require, exports, module) {
         // 最终支付金额 = 实付金额 + 邮费 - 优惠券discount - 妈豆抵扣 - gb积分抵扣 - mc积分抵扣
         // 计算优惠券
         // 计算折扣券
-        var payPrice = $('[name="payPrice"]').val(),    // 实付金额(已计算邮费)
+        var payPrice = +$('[name="payPrice"]').val(),    // 实付金额(已计算邮费)
             maxTotalDiscount = $('.js-point').data('totalDiscount'),  // 最大可抵扣金额
             voucherDiscount = $('.js-vouchers').length ? $('.js-vouchers').data('discount') : 0;   // 优惠券优惠金额
-
+        $('#deliveryFee:visible').length && (payPrice += +$('[name="mailPrice"]').val());
         // 计算妈豆
         // 计算gb积分
         // 计算mc积分
@@ -204,6 +204,13 @@ define(function (require, exports, module) {
                 deliveryType = $(this).data('type');
             $item.find('button[data-type=' + deliveryType + ']').addClass('checked').siblings().removeClass('checked');
             $item.find('.js-tips[for=' + deliveryType + ']').slideDown().siblings('.js-tips').slideUp();
+            // 配送方式门店配送时,去掉运费显示
+            if (deliveryType == 2){
+                $('#deliveryFee').hide();
+            }else{
+                $('#deliveryFee').show();
+            }
+            me.calcu()
         });
 
         // 保存 更新结算页配送方式信息

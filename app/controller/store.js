@@ -127,10 +127,22 @@ var store = {
             url: API.queryMemberServerShop,
             data: params,
             success: function (data) {
-                $.extend(data, {type: 0});
+                $.extend(data, {type: 1});
                 res.render("store/components/list", data, function (err, html) {
+                    //err && alert()
                     res.json({template: html});
                 });
+            }
+        });
+    },
+    // 删除我的服务店;
+    delServiceShop: function (req, res, next) {
+        var data = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        HttpClient.request(arguments, {
+            url: API.deletememberServiceShop,
+            data: data,
+            success: function (data) {
+                res.json(data);
             }
         });
     },

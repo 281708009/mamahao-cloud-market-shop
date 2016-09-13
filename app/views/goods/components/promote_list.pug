@@ -18,66 +18,59 @@ if $data.length
 
 
     // 促销列表 .show显示
-    section.u-fixed.bottom.m-sale-pop
-        .mask
-        .content
-            h3 促销
-            .list
-                each item in $data
-                    case item.promotionType
-                        when 1
-                            em 直降
-                        when 3
-                            //- em 满赠
-                            dl
-                                dt
-                                    span 满赠
-                                dd
-                                    each goods in item.giftGoodsList
-                                        a.u-arrow.right(href='/goods#/detail/inlet=6&templateId=' + goods.styleNumId + '&itemId=' + +goods.itemNumId) #{goods.styleTitle}
+    .none(data-pop="m-sale-pop")
+        each item in $data
+            case item.promotionType
+                when 1
+                    em 直降
+                when 3
+                    //- em 满赠
+                    dl
+                        dt
+                            span 满赠
+                        dd
+                            each goods in item.giftGoodsList
+                                a.u-arrow.right(href='/goods#/detail/inlet=6&templateId=' + goods.styleNumId + '&itemId=' + +goods.itemNumId) #{goods.styleTitle}
 
-                        when 4
-                            //- em 套餐
-                            dl
-                                dt
-                                    span 套餐
-                                dd
-                                    a.u-arrow.right(href='/goods#/promoteGroup/' + request.templateId)
-                                        .header
-                                            strong
-                                                | 最高省
-                                                em #{item.comboMaxDiscountAmount}
-                                                | 元
-                                            span 共#{item.comboPromotionList.length}种
-                                        ol
-                                            each group in item.comboPromotionList
-                                                li
-                                                    h4 套餐1
-                                                    .stuff
-                                                        each goods in group.comboGoodsList
-                                                            .item
-                                                                .pic
-                                                                    img(src=goods.stylePic + '@100w_100h_100q.jpg')
-                                                                if goods.count > 1
-                                                                    sub #{goods.count}件
+                when 4
+                    //- em 套餐
+                    dl
+                        dt
+                            span 套餐
+                        dd
+                            a.u-arrow.right(href='/goods#/promoteGroup/' + request.templateId)
+                                .header
+                                    strong
+                                        | 最高省
+                                        em #{item.comboMaxDiscountAmount}
+                                        | 元
+                                    span 共#{item.comboPromotionList.length}种
+                                ol
+                                    each group in item.comboPromotionList
+                                        li
+                                            h4 套餐1
+                                            .stuff
+                                                each goods in group.comboGoodsList
+                                                    .item
+                                                        .pic
+                                                            img(src=goods.stylePic + '@100w_100h_100q.jpg')
+                                                        if goods.count > 1
+                                                            sub #{goods.count}件
 
 
-                        when 5
-                            //- em 满减
-                            dl
-                                dt
-                                    span 满减
-                                dd
-                                    a(href='javascript:;') #{item.promotionName}
+                when 5
+                    //- em 满减
+                    dl
+                        dt
+                            span 满减
+                        dd
+                            a(href='javascript:;') #{item.promotionName}
 
-                        when 6
-                            //- em 赠品
-                            dl
-                                dt
-                                    span 赠品
-                                dd
-                                    each goods in item.giftGoodsList
-                                        a.u-arrow.right(href='/goods#/detail/inlet=6&templateId=' + goods.styleNumId + '&itemId=' + +goods.itemNumId) #{goods.styleTitle}
-
-            .footer
-                button.u-btn.success.max.alone.js-close 关闭
+                when 6
+                    //- em 赠品
+                    dl
+                        dt
+                            span 赠品
+                        dd
+                            each goods in item.giftGoodsList
+                                a.u-arrow.right(href='/goods#/detail/inlet=6&templateId=' + goods.styleNumId + '&itemId=' + +goods.itemNumId) #{goods.styleTitle}

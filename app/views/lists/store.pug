@@ -4,7 +4,7 @@ each item, index in rows
     .item(class="js-shop-" + item.shopId)
         a.content(href='#/detail/' + item.shopId)
             .pic
-                img(src=(item.outPageLogoPic || item.indexLogoPic) + '@300w_95q.jpg', alt=item.name)
+                img(src=(item.outPageLogoPic || item.indexLogoPic) + '@200w_160h_1e_100q.jpg', alt=item.name)
             .info
                 dl
                     dt #{item.name || item.shopName}
@@ -23,4 +23,4 @@ each item, index in rows
             p #{item.address || item.adr}
             if item.distance
                 span #{formatDistance(item.distance)}
-            del.js-collect(data-id=item.shopId, data-collectid=item.collectId)
+            del.js-collect(data-id=item.shopId, data-collectid=(item.collectId || item.ssid))

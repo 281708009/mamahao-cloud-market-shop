@@ -116,6 +116,9 @@ var cart = {
                 data: {orderNo: params.orderNo},
                 success: function (data) {
                     cont();
+                },
+                error: function (error){
+                    res.render('cart/pay', error);
                 }
             });
         }).then(function () {
@@ -252,6 +255,9 @@ var cart = {
             data: {orderNo: params.orderNo},
             success: function (data) {
                 res.json(data);
+            },
+            error: function(error){
+                res.json(error);
             }
         });
     }

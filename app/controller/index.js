@@ -3,6 +3,8 @@ var HttpClient = require("../utils/http_client"),
     API = require('../config/api');
 
 exports.index = function (req, res, next) {
+    log.info("exports.index");
+    //log.info("req.query---->", JSON.stringify(req.query));
     if(req.query.debug){
         var defaults = {
             pageSize: 10,
@@ -10,6 +12,7 @@ exports.index = function (req, res, next) {
         };
         var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
         params = $.extend({}, defaults, req.params, params);
+        //log.info("HttpClient----> index");
         HttpClient.request(arguments, {
             url: API.queryMainPage,
             data: params,
@@ -22,8 +25,10 @@ exports.index = function (req, res, next) {
             }
         });
     }else{
+        //log.info("res.render----> wait", res.render);
         // 正式环境显示等待界面;
         return res.render('wait');
+        //res.send('wait');
     }
 
 };

@@ -33,18 +33,20 @@ var weChat = {
     },
     //微信授权
     auth: function (req, res, next) {
+        log.info('走统一微信受权');
         var isWeChat = /micromessenger/gi.test(req.header("user-agent")),
             openId = req.cookies && req.cookies['openId'],
             token = req.cookies && req.cookies['token'];
 
         //console.info('[cookies]====', req.cookies)
-        log.info('[session_id]====', req.cookies['session_id'])
+        log.info('[校验微信授权]：url==', req.originalUrl, '，session_id==', req.cookies['session_id']);
         //if(req.query.debug) return next();
 
         if (isWeChat) {
             if (token) {
                 //已登录
                 log.info("[已登录]：有token--->", token);
+                log.info("cookie---->", JSON.stringify(req.cookies));
                 var crypto = require('../utils/crypto');
                 var user_session = {
                     id: crypto.decipher(req.cookies['memberId']),
@@ -54,6 +56,8 @@ var weChat = {
                 };
                 log.info("user_session--->", JSON.stringify(user_session));
                 req.session.user = user_session;//设置当前用户到session
+                log.info("写入user_session之后--->", JSON.stringify(req.session.user));
+                //log.info("next--->", next);
                 next();
             } else {
                 //微信授权并尝试登录

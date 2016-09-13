@@ -24,7 +24,7 @@ if rows && rows.length
                     ul.pic.js-comment-pic(data-json=item.pics)
                         each pic in item.pics
                             li
-                                img(src= pic ? pic + '@100w_100h_100q.jpg' : placeholderPic)
+                                img(src= pic ? pic + '@100w_100h_100q.jpg' : placeholderPic, data-pic=pic)
                 //- 回复
                 if item.shopReplyContent
                     .reply 门店回复：#{item.shopReplyContent}

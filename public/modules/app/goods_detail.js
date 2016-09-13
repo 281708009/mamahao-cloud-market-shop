@@ -94,7 +94,14 @@ define(function (require, exports, module) {
 
             //点击优惠券或促销列表
             $module.on('click', '.js-nav-list', function () {
-                $(this).siblings('.u-fixed').addClass('show');
+                var next = $(this).next(), pop = $("." + next.data("pop"));
+                pop.addClass("show");
+                if(!pop.find(".list").text()){
+                    pop.find(".list").html(next.html());
+                }
+                //$(".m-goods-coupon").addClass("show").find(".list");
+                //js-goods-coupon-list
+                //$(this).siblings('.u-fixed').addClass('show');
             });
 
             //点击领券优惠券
@@ -175,7 +182,7 @@ define(function (require, exports, module) {
                 require.async('weixin', function (wx) {
                     wx.previewImage({
                         urls: parents.data("json"),
-                        current: thas.attr("src")
+                        current: thas.data("pic")
                     });
                 });
             });

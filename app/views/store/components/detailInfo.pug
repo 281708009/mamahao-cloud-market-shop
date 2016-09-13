@@ -2,15 +2,15 @@ include ../../includes/let.pug
 // 门店头部
 .header
     .pic
-        img(src=basicInfo.shopLogo + '@95q.jpg')
+        img(src=basicInfo.shopLogo + '@640w_306h_1e_100q.jpg')
     .intro
         if basicInfo.pic
-            .logo
+            .logo.js-share-image(data-share=basicInfo.pic)
                 img(src=basicInfo.pic + '@95q.jpg')
         dl
-            dt #{basicInfo.shopName}
+            dt.js-share-title #{basicInfo.shopName}
             dd
-                em 集团自营
+                em 自营实体店
                 span
                     sub.js-collect-count #{collect.count}
                     | 人关注
@@ -49,8 +49,8 @@ if level
 .basic.js-store-basic.up
     dl.addr
         dt.u-arrow.right.js-open-location(data-basic=JSON.stringify(basicInfo))
-            strong #{basicInfo.shopAddr}
-            //span 4.1km 门店详情页面距离计算;
+            strong.js-share-desc #{basicInfo.shopAddr}
+            span #{formatDistance(basicInfo.distance)}
         dd
             a(href='tel:'+ basicInfo.shopTel) 联系电话
     if shopServiceLabels && shopServiceLabels.length

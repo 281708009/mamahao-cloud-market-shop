@@ -166,7 +166,7 @@ section.m-order-detail
                             button.u-btn.ban 订单失效
                         else
                             button.u-btn.js-btn-cancel(data-id=detail.orderNo) 取消订单
-                            a.u-btn.success(href='/pay/' + detail.orderNo) 立即付款
+                            a.u-btn.success(href='/pay/?orderNo=' + detail.orderNo) 立即付款
                     when 4
                         unless detail.deliveryId == 2
                             button.u-btn.js-btn-remind(data-id=detail.orderNo) 提醒发货

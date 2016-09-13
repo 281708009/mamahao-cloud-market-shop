@@ -26,7 +26,7 @@ block content
                     else
                         a.u-arrow.right(href='/center#/address/f=1')
                             p.add 填写收货地址
-                //- 物品信息
+                //- 物流信息
                 - var deliveryDesc = '';
                 - var deliveryInfo = [];
                 .u-order
@@ -132,7 +132,7 @@ block content
                                     span 免费
                                 else
                                     span ￥#{money.price}
-                    li
+                    li#deliveryFee(data-fee=mailPrice)
                         em 运费
                         span
                             if mailPrice == 0
@@ -146,7 +146,8 @@ block content
                     if stockOut
                         button.u-btn.success.ban 去付款
                     else
-                        input(type='hidden',name='payPrice',value=payPrice + mailPrice)
+                        input(type='hidden',name='payPrice',value=payPrice)
+                        input(type='hidden',name='mailPrice',value=mailPrice)
                         p 实付
                             em.js-finalPrice ￥#{payPrice + mailPrice}
                         button.u-btn.success.js-pay 去付款

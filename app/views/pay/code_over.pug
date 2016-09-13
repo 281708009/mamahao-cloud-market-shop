@@ -1,0 +1,36 @@
+extends ../layouts/initial.pug
+block title
+    title 正在为您生成订单
+block meta
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+block css
+    link(rel='stylesheet', href='http://s.mamhao.cn/m/v1/style/pay-code.css')
+    style.
+        html, body {height: 100%; overflow: hidden;}
+        body {background: #f0f0f0;color: #333;}
+block js
+    script seajs.run('app/pay_code');
+block content
+    if isWeChat || isAlipay
+        // JS脚本;
+        script.
+            var location = window.location;
+            window.location.href = [location.origin, "/pay/codeOrder.html", "?k=", encodeURIComponent(M.url.query("k"))].join("");
+    else
+        // 外部
+        section.m-code-block.m-code-other.show
+            .m-notice
+                .tip
+                    span
+                    dl
+                        dt 您的姿势不对哈！
+                        dd 请使用以下APP扫码付款
+                ul.app
+                    li.alipay
+                        a(href='alipays://') 支付宝
+                    li.weixin
+                        a(href='weixin://') 微信
+                    li.mamahao
+                        a(href='mamahao://') 妈妈好
+            .m-service
+                a(href='javascript:;') 妈妈好平台提供支持

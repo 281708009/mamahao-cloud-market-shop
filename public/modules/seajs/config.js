@@ -59,7 +59,7 @@
     };
 
     //添加seajs：run函数
-    seajs.dependencies = ['jquery', 'fastclick', 'AMap', 'common'];
+    seajs.dependencies = ['jquery', 'fastclick', 'weixin', 'AMap', 'common'];
     seajs.run = function (path, callback) {
         seajs.use(seajs.dependencies, function () {
             seajs.use(path, function (e) {

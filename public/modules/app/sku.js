@@ -19,9 +19,6 @@ define(function (require, exports, module) {
         delimiter: 'b'      //分隔符
     };
 
-    //sku结果集
-    var skuMap = {};
-
 
     //初始化，组合新的结果集
     sku.init = function (container) {
@@ -29,6 +26,7 @@ define(function (require, exports, module) {
         console.time('skuInit time');
 
         sku.container = $(container);  //存储skuData的外容器
+        var skuMap = sku.skuMap = {};  //sku结果集
 
         var data = $(container).data('sku-map');
         if (!data || sku.container.data('initialized')) return;
@@ -76,7 +74,7 @@ define(function (require, exports, module) {
         //打印一下sku字典拼装花费的时间
         console.timeEnd('skuInit time');
 
-        //console.info(JSON.stringify(skuMap));
+        console.info(JSON.stringify(skuMap));
 
 
         //点击sku选项
@@ -203,6 +201,7 @@ define(function (require, exports, module) {
 
     //获取已选中的sku信息
     sku.selected = function () {
+        var skuMap = sku.skuMap
         var $skuSelected = $('.' + className.sku + '.' + className.active);
         var result = {
             keys: []

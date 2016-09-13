@@ -12,9 +12,12 @@ var testCtrl = require('../controller/test');
  */
 testRouter
     .get("/",testCtrl.index)
+    .get("/:id/:pid", testCtrl.info)
+
     .post("/request",testCtrl.request)
     .post("/ali-oss", testCtrl.aliOSS)
-    .get("/:id/:pid",testCtrl.info);
+    .post("/ossUpload", testCtrl.uploadImage)
+;
 
 
 

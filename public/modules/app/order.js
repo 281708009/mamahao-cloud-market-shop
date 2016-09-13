@@ -75,7 +75,7 @@ define(function (require, exports, module) {
                         $this.closest('.item').find('.js-option').html('<li><button class="u-btn ban">已经失效</button></li>');
                     }else{
                         $this.html('订单已失效，请重新生成。');
-                        $this.closest('dl').find('button').remove();
+                        $this.closest('dl').find('.u-btn').remove();
                         $this.closest('dl').append('<button class="u-btn ban"> 订单失效</button>');
                     }
                 }

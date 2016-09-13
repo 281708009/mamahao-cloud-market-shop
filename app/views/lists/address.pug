@@ -3,5 +3,5 @@ if data && data.length
     each item in data
         li(data-json=item)
             label(for='add-' + item.deliveryAddrId)
-                input.u-radio(id='add-' + item.deliveryAddrId, type='radio', name='address')
+                input.u-checkbox(id='add-' + item.deliveryAddrId, type='radio', name='address')
                 span #{item.gpsAddr + item.addrDetail}

@@ -1,26 +1,24 @@
 //- 支付页面
 extends ../layouts/layout
-block title
-    title 选择支付方式
 block js
     script seajs.run('app/pay');
 
-
 block content
-    include ../includes/let.pug
-    include ../includes/mixin.pug
-    section.m-pay-form
-        dl.flex-center
-            dt 请支付
-            dd ￥#{price}
-        ul
-            li.u-arrow.right.js-weixin(data-no=orderBatchNo,data-openid=openid)
-                a.weixin(href='javascript:;') 微信支付
-            li.u-arrow.right.js-alipay(data-no=orderBatchNo,data-openid=openid)
-                a.alipay(href='javascript:;') 支付宝支付
-            li.u-arrow.right.js-codepay(data-no=orderBatchNo,data-openid=openid)
-                a.codepay(href='javascript:;') 二维码支付
-        .code
-            p 如果微信支付和支付宝支付都不能正常支付，请长按下图二维码并识别二维码进行支付!
-            p.js-code-pay-img
-                span 正在生成支付二维码
+    if error_code
+        input#error(type='hidden',error-code=error_code)
+    else
+        section.m-pay-form
+            dl.flex-center
+                dt 请支付
+                dd ￥#{price}
+            ul
+                li.u-arrow.right.js-weixin(data-no=orderBatchNo,data-openid=openid)
+                    a.weixin(href='javascript:;') 微信支付
+                li.u-arrow.right.js-alipay(data-no=orderBatchNo,data-openid=openid)
+                    a.alipay(href='javascript:;') 支付宝支付
+                li.u-arrow.right.js-codepay(data-no=orderBatchNo,data-openid=openid)
+                    a.codepay(href='javascript:;') 二维码支付
+            .code
+                p 如果微信支付和支付宝支付都不能正常支付，请长按下图二维码并识别二维码进行支付!
+                p.js-code-pay-img
+                    span 正在生成支付二维码
