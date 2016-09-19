@@ -163,14 +163,19 @@ function Swipe(container, options) {
     var style = slide && slide.style;
 
     if (!style) return;
-
     style.webkitTransitionDuration =
     style.MozTransitionDuration =
     style.msTransitionDuration =
     style.OTransitionDuration =
     style.transitionDuration = speed + 'ms';
 
-    style.webkitTransform = 'translate(' + dist + 'px,0)';
+    if (options.disableTranslate) {
+      style.position = 'absolute';
+      style.left = dist + 'px';
+      return;
+    }
+
+    style.webkitTransform =
     style.msTransform =
     style.MozTransform =
     style.OTransform = 'translateX(' + dist + 'px)';

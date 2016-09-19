@@ -40,8 +40,14 @@ define(function (require, exports, module) {
                 //获取当前选中的sku信息
                 require.async('app/sku', function (sku) {
                     var skuInfo = sku.selected();
+
                     if (!skuInfo.itemId) {
-                        return M.tips('请选择商品规格');
+                        var specTips = $.map($('.sku dl dt'), function (item) {
+                            if (!$(item).closest('dl').find('.sku-key.active')[0]) {
+                                return $(item).text();
+                            }
+                        })[0];
+                        return M.tips('请选择' + specTips);
                     }
 
                     //显示已选sku信息

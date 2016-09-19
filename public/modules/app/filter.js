@@ -17,13 +17,13 @@ define(function (require, exports, module) {
             var c = page.config;
             var hashParams = c.hashParams(), searchParams = c.searchParams();
             //选中当前筛选条件
-            hashParams.ages && $.each(hashParams.ages.split(','), function (i, v) {
+            searchParams.ages && $.each(searchParams.ages.split(','), function (i, v) {
                 $('.ages .content li[data-id="' + v + '"]').addClass('active');
             });
-            hashParams.types && $.each(hashParams.types.split(','), function (i, v) {
+            searchParams.categoryId && $.each(searchParams.categoryId.split(','), function (i, v) {
                 $('.types .content li[data-id="' + v + '"]').addClass('active');
             });
-            hashParams.brands && $.each(hashParams.brands.split(','), function (i, v) {
+            searchParams.brandIds && $.each(searchParams.brandIds.split(','), function (i, v) {
                 $('.brands .content li[data-id="' + v + '"]').addClass('active');
             });
 
@@ -52,6 +52,8 @@ define(function (require, exports, module) {
         /*筛选商品*/
         filterGoods: function () {
             var c = page.config;
+            var hashParams = c.hashParams(), searchParams = c.searchParams();
+
             //组装参数
             var $items = $('.item'), params = {};
             $.each($items, function () {
@@ -65,7 +67,10 @@ define(function (require, exports, module) {
                 })();
             });
 
-            var hashParams = $.extend({}, c.hashParams(), params);
+            //将参数存储到本地
+            localStorage.setItem(CONST.local_search_params, JSON.stringify($.extend(searchParams, hashParams, params)));
+
+            var hashParams = $.extend({}, c.hashParams());
             window.location.href = '#/list/' + $.param(hashParams);
         }
     };

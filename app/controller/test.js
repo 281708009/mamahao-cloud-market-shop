@@ -28,11 +28,7 @@ var test = {
     },
     aliOSS: function (req, res, next) {
         var aliOSS = require('../utils/ali-oss');
-        new aliOSS().showBucket({
-            success: function (data) {
-                res.json(data);
-            }
-        });
+        new aliOSS().showBucket(arguments);
     },
     uploadImage: function (req, res, next) {
         var aliOSS = require('../utils/ali-oss');

@@ -153,13 +153,13 @@ define(function (require, exports, module) {
 
             //加入购物车、立即购买
             $module.on('click', '.js-addToCart, .js-buy', function () {
-                if(!$module.find('.sku').data()) return false;
+                if (!$module.find('.sku').data('sku-map')) return false;
                 var action = $(this).is('.js-buy') ? 'buy' : 'addToCart';
-                $module.find('.u-sku').addClass('show');
                 require.async('app/sku', function (sku) {
                     sku.init($module.find('.sku'));
                     $module.find('.u-quantity .number').spinner();  //改变数量控制
                     $module.find('.js-sku-confirm').data('action', action);
+                    $module.find('.u-sku').addClass('show');
                 });
             });
 
@@ -186,6 +186,40 @@ define(function (require, exports, module) {
                     });
                 });
             });
+
+            // 妈豆商品计时;
+            var beanTime = $(".js-bean-time");
+            if(beanTime.length){
+                var thas = $(this), start = Number(thas.data("start")), end = Number(thas.data("end")), current = Number(thas.data("current"));
+                console.log(start, end, current);
+                if(start > current){
+                    // 未开始;
+                    thas.timeCountDown({
+                        startDate: current,
+                        endDate: start,
+                        callback: function () {
+                            thas.timeCountDown({
+                                startDate: start,
+                                endDate: end,
+                                callback: function () {
+                                    // 已结束
+                                    window.location.replace();
+                                }
+                            });
+                        }
+                    });
+                }else if(start <= current && current <= end){
+                    // 进行中;
+                    thas.timeCountDown({
+                        startDate: current,
+                        endDate: end,
+                        callback: function () {
+                            // 已结束
+                            window.location.replace();
+                        }
+                    });
+                }
+            }
 
 
         },

@@ -192,6 +192,7 @@ var store = {
     /*搜索入口*/
     search: function (req, res, next) {
         var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        if (params.keywords) params.keywords = decodeURIComponent(params.keywords);
         HttpClient.request(arguments, {
             url: API.searchHotWords,
             success: function (data) {

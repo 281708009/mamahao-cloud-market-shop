@@ -1,6 +1,9 @@
 //- 商品详情
 //- inlet(入口): 1.门店 2.妈豆尊享  3.预售  4.订单  5.口碑  6.类目 7.条形码
 //- jsonTerm: {"templateId":"182972","itemId":"326588"}
+
+// 是否为妈豆商品;
+-var isBeanGoods = mBeanPay > 0 && request.inlet ? true : false;
 include ../includes/let.pug
 section.m-goods-detail.flex
 
@@ -21,20 +24,35 @@ section.m-goods-detail.flex
             // 渐变蒙板
             .mask
 
-    // 价格
-    dl.price
-        dt
-            strong ￥#{price}
-            if price < originalPrice
-                del ￥#{originalPrice}
-                em 直降
-        dd
-            if totalSaleCount
-                span 已售#{totalSaleCount}件
-            a(href='http://h5.mamahao.com/help/beans/')
-                | 购买后可获得
-                em #{getmBean}
-                | 个妈豆
+    if isBeanGoods
+        // 妈豆商品价格;
+        dl.bean
+            dt
+                strong #{mBeanPay}
+                em 妈豆+￥#{price}
+            dd
+                .time.js-bean-time(data-start=buyBeginTime, data-end=buyEndTime, data-current=currentTime)
+                    s.hour -
+                    |:
+                    s.minute -
+                    |:
+                    s.second -
+                span 还剩#{stock}份
+    else
+        // 普通商品价格
+        dl.price
+            dt
+                strong ￥#{price}
+                if price < originalPrice
+                    del ￥#{originalPrice}
+                    em 直降
+            dd
+                if totalSaleCount
+                    span 已售#{totalSaleCount}件
+                a(href='http://h5.mamahao.com/help/beans/')
+                    | 购买后可获得
+                    em #{getmBean}
+                    | 个妈豆
     // 标题
     dl.title
         dt
@@ -159,18 +177,33 @@ section.m-goods-detail.flex
                     // 口碑列表
                     .list
 
-
-
+// []字符替换;
+- function formatTextReplace(text){return text.replace(/\[/g, '<em>').replace(/\]/g, '</em>')}
 // 加入购物车
 .u-cart
+    // 会员商品;
+    if vipDiscount && vipDiscount.discountDes
+        .vip(class="type-" + vipDiscount.type)
+            p !{formatTextReplace(vipDiscount.discountDes)}
+    // 妈豆商品
+    if isBeanGoods && stock <= 0
+        .bean 不好意思，您来晚了，商品已经被抢光了!
     .content
         a.cart.js-goods-cart(href='/cart#/') 购物车
         .tools
-            if isInStock
-                button.u-btn.js-addToCart 加入购物车
-                button.u-btn.success.js-buy 立即购买
+            if isBeanGoods
+                // 妈豆商品;
+                if stock > 0
+                    button.u-btn.success.js-buy 立即购买
+                else
+                    button.u-btn.ban 立即购买
             else
-                button.u-btn.ban 所在区域缺货
+                // 普通商品;
+                if isInStock
+                    button.u-btn.js-addToCart 加入购物车
+                    button.u-btn.success.js-buy 立即购买
+                else
+                    button.u-btn.ban 所在区域缺货
 
 // SKU
 section.u-fixed.bottom.u-sku

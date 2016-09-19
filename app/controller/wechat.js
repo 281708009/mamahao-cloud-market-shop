@@ -33,7 +33,7 @@ var weChat = {
     },
     //微信授权
     auth: function (req, res, next) {
-        log.info('走统一微信受权');
+        log.info('wechat.auth..........');
         var isWeChat = /micromessenger/gi.test(req.header("user-agent")),
             openId = req.cookies && req.cookies['openId'],
             token = req.cookies && req.cookies['token'];

@@ -9,14 +9,14 @@ if wholeItems && wholeItems.length
             if cartTopDesc.length > 0
                 dd
                     each promotion in cartTopDesc
+                        //- 0 无 1商品详情 2三级类目列表 3 H5链接 4 品牌列表
                         case promotion.landingType
-                            //-0 无 1商品详情 2三级类目列表 3 H5链接 4 品牌列表
                             when 3
                                 a.right.u-arrow(href=promotion.landingDetail) #{promotion.desc}
                             when 4
-                                a.right.u-arrow(href='/goods#/list/entry=0&brandIds='+ promotion.landingDetail) #{promotion.desc}
+                                a.right.u-arrow(href='/goods#/list/entry=0&brandIds=' + promotion.landingDetail) #{promotion.desc}
                             when 2
-                                a.right.u-arrow(href='/goods#/list/entry=1&categoryId='+ promotion.landingDetail) #{promotion.desc}
+                                a.right.u-arrow(href='/goods#/list/entry=1&categoryId=' + promotion.landingDetail) #{promotion.desc}
                             default
                                 a.right(href='javascript:;') #{promotion.desc}
         .content
@@ -37,9 +37,9 @@ if wholeItems && wholeItems.length
                             each goods in item.cartCompoents
                                 ul.js-jump(url='/goods#/detail/inlet=6&templateId=' + goods.templateId + '&itemId=' + goods.itemId)
                                     if goods.isGift
-                                        li.li-1
+                                        li.li-1(data-compoent-id=goods.compoentId || '')
                                     else
-                                        li.li-1
+                                        li.li-1(data-compoent-id=goods.compoentId || '')
                                             if goods.selected
                                                 input.u-checkbox(type='checkbox',checked='checked')
                                             else
@@ -60,9 +60,9 @@ if wholeItems && wholeItems.length
                                             p #{goods.compoentCount}件
                                         else
                                             .u-quantity
-                                                a.decrement.js-update(href='javascript:;',data-count=item.compoentCount - 1,class=item.compoentCount == 1 || item.invalid ? 'disabled' : '') -
+                                                a.decrement.js-update(href='javascript:;',data-count=goods.compoentCount - 1,class=item.compoentCount == 1 || item.invalid ? 'disabled' : '') -
                                                 .number #{goods.compoentCount}
-                                                a.increment.js-update(href='javascript:;',data-count=item.compoentCount + 1,data-max=1,class=item.invalid ? 'disabled' : '') +
+                                                a.increment.js-update(href='javascript:;',data-count=goods.compoentCount + 1,data-max=1,class=item.invalid ? 'disabled' : '') +
                                     if goods.isGift
                                         li.li-4
                                             .price
@@ -93,13 +93,13 @@ if wholeItems && wholeItems.length
                                     .u-quantity
                                         a.decrement.js-update(href='javascript:;',class=item.compoentCount == 1 || item.invalid ? 'disabled' : '',data-count=item.compoentCount - 1,data-max-count=item.maxCount) -
                                         .number #{item.compoentCount}
-                                        a.increment.js-update(href='javascript:;',class=item.invalid ? 'disabled' : '',data-count=item.compoentCount + 1) +
+                                        a.increment.js-update(href='javascript:;',class=item.compoentCount == item.maxCount || item.invalid ? 'disabled' : '',data-count=item.compoentCount + 1,data-max=item.maxCount,data-tips=item.comboTip) +
                                 li.li-4
                                     .delete.js-del 删除
                         .body
                             each goods in item.cartCompoents
                                 ul.js-jump(url='/goods#/detail/inlet=6&templateId=' + goods.templateId + '&itemId=' + goods.itemId)
-                                    li.li-1
+                                    li.li-1(data-compoent-id=goods.compoentId || '')
                                     li.li-2
                                         .pic
                                             img(src= goods.itemPic + '@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
@@ -125,7 +125,7 @@ if wholeItems && wholeItems.length
                     //- 单品
                     .item.single(class=item.invalid ? 'fail' : '',class=item.invalid && item.invalidStatus == 1 ? 'under' : '' ,data-compoent-id=item.compoentId, data-compoent-type=item.compoentType)
                         .body
-                            ul.js-jump(url=item.invalid && item.invalidStatus == 1?'':'/goods#/detail/inlet=6&templateId=' + item.templateId + '&itemId=' + item.itemId)
+                            ul.js-jump(url=item.invalid && item.invalidStatus == 1 ? '' : '/goods#/detail/inlet=6&templateId=' + item.templateId + '&itemId=' + item.itemId)
                                 li.li-1
                                     unless item.invalid
                                         if item.selected

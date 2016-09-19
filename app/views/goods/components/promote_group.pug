@@ -1,6 +1,6 @@
 section.m-goods-group
     each item, index in rows
-        .item(data-no=item.reservedNo)(class={"in": index === 0})
+        .item(data-no=item.reservedNo,class={"in": index === 0})
             .header.u-arrow.bottom.js-collapse
                 strong #{item.promotionName || ('套餐' + (index + 1))}
                 em ￥#{item.priceSection}

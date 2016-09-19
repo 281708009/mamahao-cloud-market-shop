@@ -12,16 +12,23 @@ block css
             padding: 10px;
         }
 
-        .ali-oss .content {
+        .ali-oss dl {
             padding: 2px 10px;
+            counter-reset: dl;
         }
 
-        .ali-oss .content dd {
+        .ali-oss dl dd {
             padding: 2px 10px;
+            font-size: 12px;
+        }
+
+        .ali-oss dl dd:before {
+            content: counter(dl) '. ';
+            counter-increment: dl;
             color: #aaa;
         }
 
-        .ali-oss .content img {
+        .ali-oss .images img {
             width: 80px;
         }
 
@@ -34,7 +41,9 @@ block content
             button.u-btn.success.js-ali-oss 点击测试 ali-oss
         p.opts
             input.js-upload(type='file',value='请选择文件',multiple)
-        dl.content
+        dl.images
+        dl.buckets
+        dl.files
 
 
 

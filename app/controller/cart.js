@@ -210,7 +210,7 @@ var cart = {
     },
     aliPay: function (req, res, next) {
         var params = req.body;
-        console.info(params);
+        console.info("aliPay---->", params);
         HttpClient.request(arguments, {
             url: API.aliPay,
             data: params,
@@ -238,6 +238,7 @@ var cart = {
     //获取微信prePayId
     wxPay: function (req, res, next) {
         var params = req.body;
+        console.info("wxPay---->", params);
         HttpClient.request(arguments, {
             url: API.wxPay,
             type: 'get',
@@ -248,11 +249,12 @@ var cart = {
         });
     },
     // 校验是否可以支付
-    checkPay: function(req,res,next){
-        var params = req.params;
+    checkPay: function(req, res, next){
+        var params = req.body;
+        console.log(params);
         HttpClient.request(arguments, {
             url: API.checkPay,
-            data: {orderNo: params.orderNo},
+            data: {orderNo: params.batchNo},
             success: function (data) {
                 res.json(data);
             },

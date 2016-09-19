@@ -56,7 +56,7 @@ define(function (require, exports, module) {
                             selected = $(this).is(':checked') ? 0 : 1,
                             data = JSON.stringify($.extend(true, home.params, {
                                 isSelected: selected,
-                                compoentId: $item.data('compoentId')
+                                compoentId: $(this).closest('li').data('compoentId') || $item.data('compoentId')
                             }));
                         M.ajax({
                             location: true,
@@ -92,7 +92,11 @@ define(function (require, exports, module) {
                         e.stopPropagation();
                         var $item = $(this).closest('.item'),
                             count = +$(this).data('count');
-                        if (count <= 0 || $(this).is('.disabled')) return;
+                        if (count <= 0 || $(this).is('.disabled')) {
+                            if($(this).data('tips')) return alert($(this).data('tips'));
+                            return;
+                        }
+
                         var data = JSON.stringify($.extend(true, home.params, {
                             newCount: count,
                             compoentId: $item.data('compoentId')

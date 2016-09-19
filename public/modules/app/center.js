@@ -373,6 +373,8 @@ define(function (require, exports, module) {
                     page.renderModule('beans', callback);
                 },
                 bind: function () {
+                    var $container = $('.m-record .list');
+                    if (!$container.children()[0]) $container.data('locked', true);
                     $.pagination({
                         container: '.m-record .list',
                         api: page.config.api['beans'],
@@ -402,6 +404,11 @@ define(function (require, exports, module) {
                     require.async('swipe', function () {
                         M.swipe.init();//初始化Swipe
                     });
+
+                    var $container = $('.ui-swipe-item .list');
+                    $.each($container, function () {
+                        if (!$(this).children()[0]) $(this).data('locked', true);
+                    });
                     $.pagination({  //分页
                         keys: {page: "pageNo"},   //设置分页参数关键字
                         container: '.ui-swipe-item .list',
@@ -427,6 +434,11 @@ define(function (require, exports, module) {
                     //加载swipe
                     require.async('swipe', function () {
                         M.swipe.init();//初始化Swipe
+                    });
+
+                    var $container = $('.ui-swipe-item .list');
+                    $.each($container, function () {
+                        if (!$(this).children()[0]) $(this).data('locked', true);
                     });
                     $.pagination({  //分页
                         container: '.ui-swipe-item .list',

@@ -19,17 +19,19 @@ define(function (require, exports, module) {
             data: {},
             success: function (res) {
                 //console.log('res---->', JSON.stringify(res));
-                var html = ['<dt>Buckets List:</dt>'];
+                var html = ['<dt>Buckets List:(' + res.buckets.length + ')</dt>'];
                 var buckets = $.map(res.buckets, function (v) {
                     return '<dd>' + v.name + '</dd>';
                 }).join('');
-                var files = ['<dt>File List:</dt>'];
+                $('.ali-oss .buckets').empty().append(html + buckets);
+
+                var files = ['<dt>File List:(' + res.fileList.objects.length + ')</dt>'];
                 if (res.fileList.objects) {
                     var content = $.map(res.fileList.objects, function (v) {
                         return '<dd>' + v.name + '</dd>';
                     }).join('');
                 }
-                $('.ali-oss .content').empty().append(html + buckets + files + (content || ''));
+                $('.ali-oss .files').empty().append(files + (content || ''));
             }
         });
     });
@@ -56,7 +58,7 @@ define(function (require, exports, module) {
             contentType: false,
             success: function (res) {
                 console.log('res---->', JSON.stringify(res));
-                $('.ali-oss .content').empty().append('<img src="' + res.url + '"/>');
+                $('.ali-oss .images').empty().append('<img src="' + res.url + '"/>');
                 alert(res.msg);
             }
         });

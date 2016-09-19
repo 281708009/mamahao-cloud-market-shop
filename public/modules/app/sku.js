@@ -26,11 +26,12 @@ define(function (require, exports, module) {
         console.time('skuInit time');
 
         sku.container = $(container);  //存储skuData的外容器
-        var skuMap = sku.skuMap = {};  //sku结果集
 
         var data = $(container).data('sku-map');
         if (!data || sku.container.data('initialized')) return;
         //console.log(JSON.stringify(data))
+
+        var skuMap = sku.skuMap = {};  //sku结果集
 
         //拿到已有skuMap中所有的sku组合key
         var skuKeys = $.map(data, function (val, key) {

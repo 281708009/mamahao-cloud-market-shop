@@ -54,13 +54,14 @@ define(function(require, exports, module) {
                 });
             };
         },
-        // 处理妈豆尊享商品;
+        // 处理妈豆尊享商品 callproces;
         setBeans: function () {
             var beans = $(".js-link-type-5");
             beans.each(function () {
                 var thas = $(this), json = thas.data("json"),
-                    start = json.buyBeginTime, end = json.buyEndTime,
-                    current = json.currentTime, stock = json.stock;
+                    start = Number(json.buyBeginTime), end = Number(json.buyEndTime),
+                    current = Number(json.currentTime), stock = json.stock;
+                //console.log(start, end, current);
                 if(stock > 0 && start > current){
                     // 未开始;
                     thas.append('<ol class="time"><li class="hour"></li><li class="minute"></li><li class="second"></li></ol>').timeCountDown({

@@ -144,7 +144,7 @@ section.m-order-detail
             dl
                 if detail.orderStatus == 3 && detail.failureMillisecond > 0
                     dt
-                        time.js-countdown(data-seconds=detail.failureMillisecond,data-page-type=2)
+                        time.shot.js-countdown(data-seconds=detail.failureMillisecond,data-page-type=2)
                             span.minute 15
                             | 分
                             span.second 00

@@ -150,7 +150,7 @@ define(function (require, exports, module) {
                     page.renderModule('quality', callback, qualityPic);
                 },
                 bind: function () {
-                    M.lazyLoad.init();
+                    //M.lazyLoad.init();
                 }
             };
 

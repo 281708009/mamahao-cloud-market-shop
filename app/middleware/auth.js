@@ -4,6 +4,7 @@
 
 //登录验证
 exports.requiredAuthentication = function (req, res, next) {
+    log.info('auth.requiredAuthentication..........');
     var originalUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
     var isWeChat = /micromessenger/gi.test(req.header("user-agent"));
 

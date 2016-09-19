@@ -91,16 +91,23 @@ define(function (require, exports, module) {
 
             if ($this.hasClass('active') && !$this.find('em')[0]) return false;
 
+            if ($this.hasClass('active')) {
+                $this.toggleClass('down');  //js动态控制，不在pug文件中控制
+            } else {
+                $this.addClass('active').siblings().removeClass('active');
+            }
+
             //hashParams
             var hashParams = c.hashParams();  //json params
 
             //sortParams: //searchType: 0综合，1销量，2价格，3最新  sort: 0从高到低, 1从低到高
             var sortParams = {
                 searchType: index,
-                sort: $this.hasClass('down') ? 1 : 0
+                sort: $this.hasClass('down') ? 0 : 1
             };
 
-            var params = $.extend({}, sortParams, hashParams);
+            var searchParams = JSON.parse(localStorage.getItem(CONST.local_search_params));
+            var params = $.extend({}, searchParams, sortParams, hashParams);
 
             //将参数存储到本地
             localStorage.setItem(CONST.local_search_params, JSON.stringify(params));
@@ -110,7 +117,9 @@ define(function (require, exports, module) {
                 url: '/api/goods_list',
                 data: {data: JSON.stringify(params)},
                 success: function (res) {
-                    $module.empty().append(res.template);
+                    var $list = $(res.template).find('.list').html();
+                    $module.find('.list').empty().append($list);
+
                     //重新绑定事件
                     page.bindEvents();
                 }

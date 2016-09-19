@@ -79,6 +79,8 @@ define(function (require, exports, module) {
                 history.unshift(keywords);
                 localStorage.setItem(CONST.local_search_history, JSON.stringify(history.unique().slice(0, 10)));
             }
+            //清除更新本地存储的筛选参数
+            localStorage.removeItem(CONST.local_search_params);
 
             window.location.href = '#/list/keywords=' + keywords;
         }
