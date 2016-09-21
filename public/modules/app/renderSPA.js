@@ -21,7 +21,8 @@ define(function (require, exports, module) {
                     return M.tips({
                         body: "您还未登录，请登录后再试！",
                         callback: function () {
-                            location.href = '/login?origin=' + location.href;
+                            var isWeixin = /micromessenger/gi.test(navigator.userAgent);
+                            location.href = (isWeixin ? '/account/bind' : '/login') + '?origin=' + location.href;
                         }
                     });
                 }

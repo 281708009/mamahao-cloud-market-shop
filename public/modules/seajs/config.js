@@ -6,9 +6,9 @@
 
         // 路径配置
         paths: {
-            "app": '/modules/app',
-            "jquery": '/modules/jquery',
-            "3rd": '/modules/3rd'
+            "app": 'http://s.mamhao.cn/m/v1/js/modules/app',
+            "jquery": 'http://s.mamhao.cn/m/v1/js/modules/jquery',
+            "3rd": 'http://s.mamhao.cn/m/v1/js/modules/3rd'
         },
 
         // 设置别名，方便调用

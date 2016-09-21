@@ -59,7 +59,7 @@ define(function (require, exports, module) {
                 //alert("touchstart");
                 M.pay.weixin({
                     data: {orderNo: c.orderNo, openId: c.openId, shopId: c.shopId, resource: c.resource},
-                    callback: '/pay/codeSuccess.html'
+                    callback: '/pay/codeSuccess.html?orderPayType=2'
                 });
             });
             // 图文验证码;

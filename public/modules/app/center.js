@@ -513,6 +513,8 @@ define(function (require, exports, module) {
                 isDefault: form.find('.isDefault').is(':checked') ? 1 : 0
             };
 
+            console.log(JSON.stringify(data))
+
             var AddrId = form.data('id');
             AddrId && (data.deliveryAddrId = AddrId);    //区域地址
 
@@ -546,9 +548,8 @@ define(function (require, exports, module) {
                     break;
             }
 
-            if (/-1/.test(params.id)) {
-                $target.empty().append(dom);
-            } else {
+            $target.empty().append(dom);
+            if (!/-1/.test(params.id)) {
                 M.ajax({
                     showLoading: false,
                     url: page.config.api['queryArea'],
@@ -811,18 +812,19 @@ define(function (require, exports, module) {
             //读取已有数据
             var $spa = $("#app"), $module = module;
             var data = $spa.data('data');
+            console.log('xxx',JSON.stringify(data))
             if (data) {
-                data.gpsAddr && $module.find('.street').val(data.gpsAddr).data({lat: data.lat, lng: data.lng});
-                data.consignee && $module.find('.name').val(data.consignee);
-                data.phone && $module.find('.mobile').val(data.phone);
-                data.district && $module.find('.district').val(data.district).data({
+                typeof data.gpsAddr !== 'undefined' && $module.find('.street').val(data.gpsAddr).data({lat: data.lat, lng: data.lng});
+                typeof data.consignee !== 'undefined' && $module.find('.name').val(data.consignee);
+                typeof data.phone !== 'undefined' && $module.find('.mobile').val(data.phone);
+                typeof data.district !== 'undefined' && $module.find('.district').val(data.district).data({
                     'area-id': data.areaId,
                     'prv': data.prv,
                     'city': data.city,
                     'area': data.area
                 });
-                data.addrDetail && $module.find('.house-number').val(data.addrDetail);
-                data.isDefault && $module.find('.isDefault').prop('checked', data.isDefault ? true : false);
+                typeof data.addrDetail !== 'undefined' && $module.find('.house-number').val(data.addrDetail);
+                typeof data.isDefault !== 'undefined' && $module.find('.isDefault').prop('checked', data.isDefault ? true : false);
             }
 
         },

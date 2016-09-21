@@ -228,15 +228,20 @@ define(function(require, exports, module) {
     // 获取订单状态;
     function queryOrderState(orderNo) {
         M.ajax({
+            showLoading: false,
             url: '/api/queryOrderState',
             data: {batchNo: orderNo},
             success: function (res) {
-                console.log(res);
+                if(res.success != 200){
+                    setTimeout(function(){
+                        queryOrderState(orderNo);
+                    }, 1000);
+                }else{
+                   window.location.href = '/pay/result?orderPayType=2&batchNo=' + orderNo;
+                }
+                //console.log(res);
             },
             error: function (error) {
-                setTimeout(function(){
-                    queryOrderState(orderNo);
-                }, 100);
                 console.log("error---->", error);
             }
         });

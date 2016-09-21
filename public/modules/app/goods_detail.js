@@ -116,7 +116,7 @@ define(function (require, exports, module) {
                             $this.addClass('ban').text('已领取');
                             M.tips({
                                 class: 'true',
-                                body: "'领取成功'"
+                                body: '领取成功'
                             });
                         } else {
                             return M.tips(res.msg);
@@ -156,7 +156,7 @@ define(function (require, exports, module) {
 
             //加入购物车、立即购买
             $module.on('click', '.js-addToCart, .js-buy', function () {
-                if (!$module.find('.sku').data('sku-map')) return false;
+                if ($(this).hasClass('ban') || !$module.find('.sku').data('sku-map')) return false;
                 var action = $(this).is('.js-buy') ? 'buy' : 'addToCart';
                 require.async('app/sku', function (sku) {
                     sku.init($module.find('.sku'));
@@ -197,15 +197,18 @@ define(function (require, exports, module) {
                 console.log(start, end, current);
                 if(start > current){
                     // 未开始;
+                    $(".js-buy").addClass("ban");
                     thas.timeCountDown({
                         startDate: current,
                         endDate: start,
                         callback: function () {
+                            $(".js-buy").removeClass("ban");
                             thas.timeCountDown({
                                 startDate: start,
                                 endDate: end,
                                 callback: function () {
                                     // 已结束
+                                    $(".js-buy").addClass("ban");
                                     window.location.reload();
                                 }
                             });
@@ -213,16 +216,18 @@ define(function (require, exports, module) {
                     });
                 }else if(start <= current && current <= end){
                     // 进行中;
+                    $(".js-buy").removeClass("ban");
                     thas.timeCountDown({
                         startDate: current,
                         endDate: end,
                         callback: function () {
                             // 已结束
+                            $(".js-buy").addClass("ban");
                             window.location.reload();
                         }
                     });
                 }else{
-                    $(".js-buy").removeClass("js-buy").addClass("ban");
+                    $(".js-buy").addClass("ban");
                     thas.html("已结束");
                 }
             }

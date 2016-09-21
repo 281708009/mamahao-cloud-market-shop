@@ -103,9 +103,9 @@ define(function (require, exports, module) {
             $vouchers = $this.find('.js-vouchers'),
             $mbean = $('.open input[name="mbean"]'),
             $gbCount = $('.open input[name="gbCount"]'),
-            $mcCount = $('.open input[name="mcCount"]'),
-
-            data = {
+            $mcCount = $('.open input[name="mcCount"]');
+        if($('#mbean').find('.u-switch:checked').length) $mbean = $('input[name="mbean"]');  
+        var data = {
                 orderBatchNo: $this.find('[name="orderNo"]').val(),
                 dealingType: 1,      // 支付方式 1 线上支付 2 线下支付
                 madouCount: $mbean.length ? +$mbean.val() : 0,       // 妈豆数
@@ -114,6 +114,7 @@ define(function (require, exports, module) {
                 deliveryAddrId: $deliveryAddrId.length ? $deliveryAddrId.val() : '', // 收货地址id
                 deliveryWays: JSON.stringify(deliveryWays),    // 配送方式
             };
+
         if ($vouchers.length && $vouchers.data('ids')) {
             data.voucherIds = '' + $vouchers.data('ids');    // 优惠券ids
         }
@@ -145,6 +146,7 @@ define(function (require, exports, module) {
         }
 
         $.each($('.js-point li').not('.open'), function () {
+            if($(this).find('.u-switch').is('.disabled')) return false;
             var $input = $(this).find('input[type="tel"]'), // 当前虚拟货币数量输入框
                 ratio = $input.data('ratio'),   // 当前虚拟货币的比率
                 max = $input.data('max'),
@@ -170,7 +172,7 @@ define(function (require, exports, module) {
                     $(this).find('.u-switch').removeClass('diabled').attr('disabled', false);
                 }
             }
-        })
+        });
 
     };
     //绑定事件
@@ -200,7 +202,7 @@ define(function (require, exports, module) {
         });
         $this.on('click', '.js-cancel', function () {
             $(this).closest('.u-fixed').removeClass('show');
-        })
+        });
 
         // 切换配送方式
         var $delivery = $('#delivery-ways');
@@ -341,5 +343,5 @@ define(function (require, exports, module) {
             });
 
         });
-    }
+    };
 });

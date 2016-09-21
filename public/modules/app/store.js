@@ -83,6 +83,20 @@ define(function (require, exports, module) {
                             ele.append(data.template);
                         }
                     });
+                    // 关注店，服务店;
+                    $(".u-stores.attention .js-collect").on("click", function () {
+                        var thas = $(this), data = JSON.stringify({
+                            collectIds: thas.data("collectid")
+                        });
+                        page.delCollect({
+                            api: page.config.api['delCollect'],
+                            data: data,
+                            shopId: thas.data("id"),
+                            callback: function () {
+                                window.location.reload();
+                            }
+                        });
+                    });
                 }
             };
             // 门店详情;
@@ -220,8 +234,13 @@ define(function (require, exports, module) {
                         var thas = $(this), data = JSON.stringify($.extend({}, {
                             msId: thas.data("collectid")
                         }));
-                        M.dialog({
-                            body: "确定删除此服务店?",
+                        page.delCollect({
+                            api: page.config.api['delServiceShop'],
+                            data: data,
+                            shopId: thas.data("id")
+                        });
+                        /*M.dialog({
+                            body: "确定要删除这个门店吗?",
                             buttons: [
                                 {"text": "取消"},
                                 {"text": "确定", "class": "success", "onClick": function () {
@@ -237,7 +256,7 @@ define(function (require, exports, module) {
                                     });
                                 }}
                             ]
-                        });
+                        });*/
                     });
                 }
             };
@@ -259,8 +278,13 @@ define(function (require, exports, module) {
                         var thas = $(this), data = JSON.stringify($.extend({}, {
                             collectIds: thas.data("collectid")
                         }));
-                        M.dialog({
-                            body: "确定取消关注此店?",
+                        page.delCollect({
+                            api: page.config.api['delCollect'],
+                            data: data,
+                            shopId: thas.data("id")
+                        });
+                        /*M.dialog({
+                            body: "确定要删除这个门店吗?",
                             buttons: [
                                 {"text": "取消"},
                                 {"text": "确定", "class": "success", "onClick": function () {
@@ -276,7 +300,7 @@ define(function (require, exports, module) {
                                     });
                                 }}
                             ]
-                        });
+                        });*/
                     });
                 }
             };
@@ -374,7 +398,7 @@ define(function (require, exports, module) {
                 }
             });
         },
-        // 设置门店关注;
+        // 门店详情页-设置门店关注;
         setCollect: function (params) {
             var o = page.info, count = $(".js-collect-count");
             if(params.status){
@@ -408,6 +432,29 @@ define(function (require, exports, module) {
                     }
                 });
             }
+        },
+        // 取消关注;
+        delCollect: function (params) {
+            M.dialog({
+                body: "确定要删除这个门店吗?",
+                buttons: [
+                    {"text": "取消"},
+                    {"text": "确定", "class": "success", "onClick": function () {
+                        var dialog = this;
+                        M.ajax({
+                            url: params.api,
+                            data: {data: params.data},
+                            success:function(){
+                                $(".js-shop-" + params.shopId).remove();
+                                M.tips({body: "取消关注成功", callback: function () {
+                                    params.callback && params.callback.call(this);
+                                }});
+                                dialog.hide();
+                            }
+                        });
+                    }}
+                ]
+            });
         },
         // 打开地图;
         openLocation: function () {

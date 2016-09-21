@@ -539,13 +539,13 @@ define(function (require, exports, module) {
                         }
 
                         if (o.autoFixNav[0]) {
+                            var $scrollArea = $(c.options.scrollArea) || o.body;
                             if (!o.placeholder_hd[0]) {
-                                o.placeholder_hd = $('<div class="placeholder-hd"></div>').prependTo(o.body);
+                                o.placeholder_hd = $('<div class="placeholder-hd"></div>').prependTo($scrollArea);
                             }
                             o.placeholder_hd.css({"height": c.navHeight, "display": "none"});
 
                             /*绑定touchmove和scroll事件*/
-                            var $scrollArea = $(c.options.scrollArea) || $(document);
                             $scrollArea.on('scroll touchmove', function () {
                                 util.fixNav();//固定导航
                             });
@@ -560,7 +560,6 @@ define(function (require, exports, module) {
                             var nav = o.nav,
                                 holder = o.placeholder_hd,
                                 scrollTop = $scrollArea.scrollTop();
-                            console.log('c.navTop--->', c.navTop)
                             if (scrollTop > c.navTop) {
                                 holder.show();
                                 nav.addClass(c.fixTopClass);
@@ -856,6 +855,7 @@ define(function (require, exports, module) {
                                         _AP.pay(gotoUrl);
                                     });
                                 } else {
+                                    // 支付宝支付成功后的跳转是由服务端api控制;
                                     $form.submit();
                                 }
                             }
