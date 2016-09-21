@@ -36,7 +36,7 @@ var HttpClient = {
 
         //处理session过期的情况
         if (!session.user && req.cookies['token']) {
-            var crypto = require('crypto');
+            var crypto = require('./crypto');
             var user_session = {
                 id: crypto.decipher(req.cookies['memberId']),
                 token: crypto.decipher(req.cookies['token']),
