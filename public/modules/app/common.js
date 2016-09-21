@@ -105,7 +105,8 @@ define(function (require, exports, module) {
             config: {
                 isAjax: {}, //正在ajax的api对象
                 // api调用域，区分正式环境及测试环境;
-                api: /mamahao.com/gi.test(location.host) ? "http://api.mamahao.com/" : "http://api.mamhao.com/mamahao-app-api/"
+                api: /mamahao.com/gi.test(location.host) ? "http://api.mamahao.com/" : "http://api.mamhao.com/mamahao-app-api/",
+                isWeixin: /micromessenger/gi.test(navigator.userAgent)
             },
             init: function () {
 
@@ -114,8 +115,6 @@ define(function (require, exports, module) {
                     FastClick.attach(document.body);
                     /*初始化回到顶部按钮*/
                     MMH.toTop.init();
-                    /*初始化自动滑动导航条*/
-                    MMH.nav.init();
                     // 全局微信自定义分享一次;
                     require.async('weixin', function (wx) {
                         //console.log("weixin----------------->", wx);
@@ -198,7 +197,7 @@ define(function (require, exports, module) {
                                     return MMH.tips({
                                         body: "您还未登录，请登录后再试！",
                                         callback: function () {
-                                            location.href = '/login?origin=' + location.href;
+                                            location.href = (c.isWeixin ? '/account/bind' : '/login') + '?origin=' + location.href;
                                         }
                                     });
                                 }
@@ -519,9 +518,10 @@ define(function (require, exports, module) {
                         autoFix: '.auto-fix', //页面滚动可固定在顶部nav对象
                         fixTopClass: 'affix affix-top' //添加固定class
                     },
-                    init: function () {
+                    init: function (options) {
                         /*点击分类导航*/
                         var c = util.config, o = util.elements;
+                        c.options = options || {};
 
                         o.body = $('body');
                         o.nav = $(c.autoScroll);
@@ -545,7 +545,8 @@ define(function (require, exports, module) {
                             o.placeholder_hd.css({"height": c.navHeight, "display": "none"});
 
                             /*绑定touchmove和scroll事件*/
-                            $(document).on('scroll touchmove', function () {
+                            var $scrollArea = $(c.options.scrollArea) || $(document);
+                            $scrollArea.on('scroll touchmove', function () {
                                 util.fixNav();//固定导航
                             });
                         }
@@ -553,17 +554,20 @@ define(function (require, exports, module) {
                     /*固定tab*/
                     fixNav: function () {
                         var c = util.config, o = util.elements;
+                        var $scrollArea = $(c.options.scrollArea) || $("body");
+
                         if (o.nav[0]) {
                             var nav = o.nav,
                                 holder = o.placeholder_hd,
-                                scrollTop = $("body").scrollTop();
+                                scrollTop = $scrollArea.scrollTop();
+                            console.log('c.navTop--->', c.navTop)
                             if (scrollTop > c.navTop) {
                                 holder.show();
                                 nav.addClass(c.fixTopClass);
                             } else {
                                 holder.hide();
                                 nav.removeClass(c.fixTopClass);
-                                c.navTop = o.nav.offset().top; //nav距离顶部的距离
+                                //c.navTop = o.nav.offset().top; //nav距离顶部的距离
                             }
                         }
                     },
@@ -704,10 +708,22 @@ define(function (require, exports, module) {
             pay: function () {
                 var util = {
                     config: {},
+                    // 微信受权支付链接跳转;
+                    order: function (orderNo) {
+                        location.href = "/pay/?orderNo=" + orderNo;
+                        /*if(M.config.isWeixin){
+                         // 微信appi，区分正式环境及测试环境;
+                         var appid = /mamahao.com/gi.test(location.host) ? "wxd62811cd601f0061" : "wx230909e739bb72fd";
+                         location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='+ appid +'&redirect_uri='+ M.config.api +'pay/weixin/getOpenId.htm?orderNo=' + orderNo + '&response_type=code&scope=snsapi_base&state=123456#wechat_redirect';
+                         }else{
+                         location.href = "/pay/?orderNo=" + orderNo;
+                         }*/
+                    },
                     // 微信支付;
                     weixin: function (options) {
                         options.config && $.extend(options.config, this.config)
                         var params = options, self = this;
+                        console.log("M-pay-weixin----->", JSON.stringify(params.data));
                         M.ajax({
                             url: '/api/wxPay',
                             data: params.data,
@@ -821,6 +837,7 @@ define(function (require, exports, module) {
                     alipay: function (options) {
                         options.config && $.extend(options.config, this.config)
                         var params = options, self = this;
+                        console.log("M-pay-alipay----->", JSON.stringify(params.data));
                         M.ajax({
                             url: '/api/aliPay',
                             data: params.data,
@@ -846,7 +863,7 @@ define(function (require, exports, module) {
                     }
                 };
                 return {
-                    checkPay: util.checkPay,
+                    order: util.order,
                     weixin: util.weixin,
                     alipay: util.alipay
                 };
@@ -1205,6 +1222,23 @@ define(function (require, exports, module) {
                 function calcInit() {
                     //赋值
                     !$this.text() && $this.text(options.value);
+                    var count = +$this.text(),
+                        maxCount = $this.data('max'),
+                        minCount = $this.data('min') || options.min;
+                    if (minCount && count <= minCount) {
+                        $decrement.addClass(options.disabled);
+                        count = minCount;
+                    } else {
+                        $decrement.removeClass(options.disabled);
+                    }
+
+                    if (maxCount && count >= maxCount) {
+                        count = maxCount;
+                        $increment.addClass(options.disabled);
+                    } else {
+                        $increment.removeClass(options.disabled);
+                    }
+                    $this.text(count);
 
                     //绑定事件
                     $this.siblings(options.decrement + ',' + options.increment).off().on('click', calc);
@@ -1217,20 +1251,20 @@ define(function (require, exports, module) {
                     if ($that.hasClass(options.disabled)) return false;
 
                     var count = +$num.text(),
-                        maxCount = +$num.data('max'),
-                        minCount = +($num.data('min') || options.min);
+                        maxCount = $num.data('max'),
+                        minCount = $num.data('min') || options.min;
 
                     if ($that.is(options.decrement)) --count;
                     else  ++count;
 
-                    if (!isNaN(minCount) && count <= minCount) {
+                    if (minCount && count <= minCount) {
                         $decrement.addClass(options.disabled);
                         count = minCount;
                     } else {
                         $decrement.removeClass(options.disabled);
                     }
 
-                    if (!isNaN(maxCount) && count >= maxCount) {
+                    if (maxCount && count >= maxCount) {
                         count = maxCount;
                         $increment.addClass(options.disabled);
                     } else {

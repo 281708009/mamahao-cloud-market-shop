@@ -2,7 +2,7 @@ define(function(require, exports, module) {
 
     var wx = require('weixin');
     $('#error').length && M.dialog({
-        title: "订单已经支付,请勿重复发起支付",
+        body: "订单已经支付,请勿重复发起支付",
         buttons: [
             {
                 "text": "确定", "class": "success", "onClick": function () {
@@ -44,14 +44,37 @@ define(function(require, exports, module) {
         }
     })(wx);
 
-
+    var checkPay = function(data, fn){
+        M.ajax({
+            url: '/api/checkPay',
+            data: data,
+            success: function (res) {
+                if (res.error_code && res.error_code == 5000) {
+                    M.dialog({
+                        body: "订单已经支付,请勿重复发起支付",
+                        buttons: [{
+                            "text": "确定", "class": "success", "onClick": function () {
+                                location.href = '/center#/orders'
+                            }
+                        }]
+                    });
+                } else {
+                    fn();
+                }
+            }
+        });
+    };
     //支付宝支付
     $('.js-alipay').on('click',function () {
         var $this = $(this);
+        var params = {batchNo: $this.data('no'), resource: 2};
         // 调用通用支付方法;
-        M.pay.alipay({
-            data: {batchNo: $this.data('no'), resource: 2}
+        checkPay({orderNo: $this.data('no')},function(){
+            M.pay.alipay({
+                data: params
+            });
         });
+
         /*M.ajax({
             url: '/api/aliPay',
             data: {'batchNo': $this.data('no'),'resource':2},
@@ -81,10 +104,13 @@ define(function(require, exports, module) {
     //微信支付
     $('.js-weixin').on('click',function () {
         var $this = $(this);
+        var params = {orderNo: $this.data('no'), openId: $this.data('openid')};
         // 调用通用支付方法;
-        M.pay.weixin({
-            data: {orderNo: $this.data('no'), openId: $this.data('openid')},
-            callback: '/pay/result?orderPayType=2&batchNo=' + $this.data('no')
+        checkPay({orderNo: $this.data('no')},function(){
+            M.pay.weixin({
+                data: params,
+                callback: '/pay/result?orderPayType=2&batchNo=' + $this.data('no')
+            });
         });
         /*M.ajax({
             url: '/api/wxPay',
@@ -184,15 +210,36 @@ define(function(require, exports, module) {
         var $this = $(this), code = $('.code');
         if(code.data("show")) return; // 已经显示，不再处理;
         code.show().data("show", true);
-        var orderNo = $this.data('no');
-        var openId = $this.data('openid');
-        //TODO 二维码地址暂时写死，回头再改
-        var img = new Image(), src = M.config.api +'pay/weixin/makeWeixinScanCode.htm?batchNo='+orderNo+'&openId='+openId+'&size=240';
-        img.src = src;
-        img.onload = function () {
-            $('.code').find('.js-code-pay-img').html(img);
-        };
-        //$('.code').show().find('.js-code-pay-img img').attr('src', M.config.api +'pay/weixin/makeWeixinScanCode.htm?batchNo='+orderNo+'&openId='+openId+'&size=240');
+        checkPay({orderNo: $this.data('no')},function(){
+            var orderNo = $this.data('no');
+            var openId = $this.data('openid');
+            //TODO 二维码地址暂时写死，回头再改
+            var img = new Image(), src = M.config.api +'pay/weixin/makeWeixinScanCode.htm?batchNo='+orderNo+'&openId='+openId+'&size=240';
+            img.src = src;
+            img.onload = function () {
+                $('.code').find('.js-code-pay-img').html(img);
+            };
+            // 定时器去刷新订单状态，如果为支付成功，进行跳转;
+            queryOrderState(orderNo);
+            //$('.code').show().find('.js-code-pay-img img').attr('src', M.config.api +'pay/weixin/makeWeixinScanCode.htm?batchNo='+orderNo+'&openId='+openId+'&size=240');
+        });
     });
+
+    // 获取订单状态;
+    function queryOrderState(orderNo) {
+        M.ajax({
+            url: '/api/queryOrderState',
+            data: {batchNo: orderNo},
+            success: function (res) {
+                console.log(res);
+            },
+            error: function (error) {
+                setTimeout(function(){
+                    queryOrderState(orderNo);
+                }, 100);
+                console.log("error---->", error);
+            }
+        });
+    };
 
 });

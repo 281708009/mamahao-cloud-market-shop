@@ -21,8 +21,8 @@ var payCode = {
         if(!cryptoOpenId && isWeChat){
             // 微信端需要做一个静默受权;
             var originalUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-            var baseUrl = 'http://' + AppConfig.site.api.host + AppConfig.site.api.root; //baseUrl
-            var redirect_uri = encodeURIComponent(baseUrl + 'V1/weixin/oauth/callback.htm?resource=3' + '&go=' + originalUrl); // resource=3  静默受权;
+            var apiURL = AppConfig.site.wechat.apiURL; //apiURL
+            var redirect_uri = encodeURIComponent(apiURL + 'V1/weixin/oauth/callback.htm?resource=3' + '&go=' + originalUrl); // resource=3  静默受权;
             var authUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + AppConfig.site.wechat.app_id + '&redirect_uri=' + redirect_uri + '&response_type=code&scope=snsapi_base&state=12345465#wechat_redirect';
             return res.redirect(authUrl);
         }else{

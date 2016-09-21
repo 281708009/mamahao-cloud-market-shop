@@ -84,6 +84,7 @@ var api = {
     "aliPay": "pay/wapalipay/submit.htm",   // 阿里支付
     "wxPrePay": "pay/weixin/getOpenId.htm", // 微信预支付
     "wxPay": "pay/weixin/submit.htm",       // 微信确认支付
+    "queryOrderState": "pay/weixin/queryOrderState.htm", // 微信二维码识别支付成功后跳转
     "submitInvoice": "V1/order/basic/addOrderInvoice.htm", // 提交发票信息
     "getExtraScore": "V1/order/basic/queryExtraScore.htm", // 获取可得妈豆积分数量
     "orderLock": "V1/order/basic/paylock.htm",  // 支付成功后锁定订单 不允许取消或删除订单

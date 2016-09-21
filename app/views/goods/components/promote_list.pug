@@ -17,6 +17,8 @@ if $data.length
                 | #{list.promotionName}
 
 
+    //- 促销类型枚举值：1.直降, 5满减促销,3满赠促销,4组合促销,6赠品促销
+    //- 落地类型枚举值：1.无, 2.商品详情页, 3.H5链接, 4.原生ID页面, 5.妈豆商品, 6.众筹商品, 7.类目主页, 8.品牌商品列表, 9.三级类目商品列表, 10.门店;
     // 促销列表 .show显示
     .none(data-pop="m-sale-pop")
         each item in $data
@@ -30,7 +32,7 @@ if $data.length
                             span 满赠
                         dd
                             each goods in item.giftGoodsList
-                                a.u-arrow.right(href='/goods#/detail/inlet=6&templateId=' + goods.styleNumId + '&itemId=' + +goods.itemNumId) #{goods.styleTitle}
+                                a.u-arrow.right(href='/goods#/detail/inlet=6&templateId=' + goods.styleNumId + '&itemId=' + goods.itemNumId) #{goods.styleTitle}
 
                 when 4
                     //- em 套餐
@@ -64,7 +66,45 @@ if $data.length
                         dt
                             span 满减
                         dd
-                            a(href='javascript:;') #{item.promotionName}
+                            - var landingLink = 'javascript:;';
+                            case item.landingType
+                                when 2
+                                    //- 2.商品详情页
+                                    - landingLink = '/goods#/detail/inlet=6&templateId='+ item.landingPage;;
+                                when 3
+                                    //- 3.H5链接
+                                    - landingLink = item.landingPage;
+                                when 5
+                                    //- 5.妈豆商品
+                                    - landingLink = '/goods#/detail/inlet=2&templateId='+ item.landingPage;;
+                                when 7
+                                    //- 7.类目主页
+                                    - landingLink = '/goods#/';
+                                when 8
+                                    //- 8.品牌商品列表
+                                    - landingLink = '/goods#/list/entry=0&brandIds=' + item.landingPage;
+                                when 9
+                                    //- 9.三级类目商品列表
+                                    - landingLink = '/goods#/list/entry=1&categoryId=' + item.landingPage;
+                                when 10
+                                    //- 10.门店;
+                                    - landingLink = '/store#/detail/' + item.landingPage;
+                                default
+                                    //- 1.无 //- 4.原生ID页面  //- 6.众筹商品
+                                    - landingLink = 'javascript:;';
+
+
+                            case item.landingType
+                                when 2
+                                when 3
+                                when 5
+                                when 7
+                                when 8
+                                when 9
+                                when 10
+                                    a.u-arrow.right(href=landingLink) #{item.promotionName}
+                                default
+                                    a(href=landingLink) #{item.promotionName}
 
                 when 6
                     //- em 赠品
@@ -73,4 +113,4 @@ if $data.length
                             span 赠品
                         dd
                             each goods in item.giftGoodsList
-                                a.u-arrow.right(href='/goods#/detail/inlet=6&templateId=' + goods.styleNumId + '&itemId=' + +goods.itemNumId) #{goods.styleTitle}
+                                a.u-arrow.right(href='/goods#/detail/inlet=6&templateId=' + goods.styleNumId + '&itemId=' + goods.itemNumId) #{goods.styleTitle}

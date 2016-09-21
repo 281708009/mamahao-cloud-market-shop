@@ -166,16 +166,16 @@ section.m-order-detail
                             button.u-btn.ban 订单失效
                         else
                             button.u-btn.js-btn-cancel(data-id=detail.orderNo) 取消订单
-                            a.u-btn.success(href='/pay/?orderNo=' + detail.orderNo) 立即付款
+                            button.u-btn.success.js-topay(data-order-no=detail.orderNo) 立即付款
                     when 4
-                        unless detail.deliveryId == 2
+                        if detail.deliveryId == 3
                             button.u-btn.js-btn-remind(data-id=detail.orderNo) 提醒发货
                     when 5
-                        unless detail.deliveryId == 2
+                        if detail.deliveryId == 3
                             a.u-btn(href='#/order/express/' + detail.orderNo) 查看物流
                         a.u-btn.success.js-btn-receive(data-id=detail.orderNo) 确认收货
                     when 6
-                        unless detail.deliveryId == 2
+                        if detail.deliveryId == 3
                             a.u-btn(href='#/order/express/' + detail.orderNo) 查看物流
                         if detail.data[0].goodsList.length > 1
                             a.u-btn.checked(href='#/order/review/' + detail.orderNo) 评价晒单

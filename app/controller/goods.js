@@ -114,7 +114,8 @@ var store = {
     detailExtra: function (req, res, next) {
         var data = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
 
-        var task = bigPipeTask.goodsDetail;
+        var task = $.extend(true, bigPipeTask.goodsDetail);  //避免引用关系
+
         task.common.data = {
             inlet: data.inlet,
             templateId: data.templateId
@@ -136,6 +137,12 @@ var store = {
         task.module[5].data = {
             styleNumId: data.templateId
         };
+
+        //如果是麻豆商品，特殊处理
+        if (data.inlet == 2) {
+            //不需要请求促销和优惠券列表
+            task.module.splice(4, 2);
+        }
 
         bigPipe.prototype.succeed = function () {
             var me = this;

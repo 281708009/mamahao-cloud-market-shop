@@ -63,7 +63,7 @@ section.m-assess
             li
                 .add.js-upload
                     span 添加晒单图片
-                input(type='file')
+                    input(class="js-oss-file", type='file', accept="image/*")
     footer.footer
         .btn
             button.u-btn.mini.success.js-review-submit(data-params={"shopId":shopId,"orderNo":orderNo,"itemId":item.itemId,"templateId":item.templateId}) 发表评价

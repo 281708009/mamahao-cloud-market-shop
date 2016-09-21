@@ -125,9 +125,11 @@ var order = {
     orderResult:function(req, res, next){
         var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
         console.log('params',params);
+        var data = {}
+        params.templateId && (data.templateId = params.templateId);
         HttpClient.request(arguments, {
             url: API.goodsGuessYouLike,
-            data: params,
+            data: data,
             success: function (data) {
                 var json = {
                     rows: data.data,

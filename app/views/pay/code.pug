@@ -32,6 +32,8 @@ block content
                         a.u-btn.checked.js-code-reload(href='javascript:;') 刷新
                 .m-service
                     a(href='javascript:;') 妈妈好平台提供支持
+                    if shop && shop.posName
+                        p #{shop.posName}
         else if status
             // 验证码
             section.m-code-block.m-code-verify.show
@@ -48,6 +50,8 @@ block content
                             a.u-btn.success.js-submit(href='javascript:;') 确定
                 .m-service
                     a(href='javascript:;') 妈妈好平台提供支持
+                    if shop && shop.posName
+                        p #{shop.posName}
         else
             -if(isWeChat){var clas = "weixin";}else if(isAlipay){var clas = "alipay";}
             section.m-code-goods(class=clas)
@@ -75,6 +79,8 @@ block content
                         p 支付完成后，如需退款请及时联系商家
                         .m-service
                             a(href='javascript:;') 妈妈好平台提供支持
+                            if shop && shop.posName
+                                p #{shop.posName}
                 .footer
                     .actual
                         | 实付
@@ -100,6 +106,8 @@ block content
                         a(href='mamahao://') 妈妈好
             .m-service
                 a(href='javascript:;') 妈妈好平台提供支持
+                if shop && shop.posName
+                    p #{shop.posName}
 
     // JS脚本;
     script.

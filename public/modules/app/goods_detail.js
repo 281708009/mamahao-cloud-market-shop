@@ -114,7 +114,10 @@ define(function (require, exports, module) {
                     success: function (res) {
                         if (res.success_code == 200) {
                             $this.addClass('ban').text('已领取');
-                            M.tips('领取成功');
+                            M.tips({
+                                class: 'true',
+                                body: "'领取成功'"
+                            });
                         } else {
                             return M.tips(res.msg);
                         }
@@ -190,7 +193,7 @@ define(function (require, exports, module) {
             // 妈豆商品计时;
             var beanTime = $(".js-bean-time");
             if(beanTime.length){
-                var thas = $(this), start = Number(thas.data("start")), end = Number(thas.data("end")), current = Number(thas.data("current"));
+                var thas = beanTime, start = Number(thas.data("start")), end = Number(thas.data("end")), current = Number(thas.data("current"));
                 console.log(start, end, current);
                 if(start > current){
                     // 未开始;
@@ -203,7 +206,7 @@ define(function (require, exports, module) {
                                 endDate: end,
                                 callback: function () {
                                     // 已结束
-                                    window.location.replace();
+                                    window.location.reload();
                                 }
                             });
                         }
@@ -215,9 +218,12 @@ define(function (require, exports, module) {
                         endDate: end,
                         callback: function () {
                             // 已结束
-                            window.location.replace();
+                            window.location.reload();
                         }
                     });
+                }else{
+                    $(".js-buy").removeClass("js-buy").addClass("ban");
+                    thas.html("已结束");
                 }
             }
 
@@ -243,7 +249,7 @@ define(function (require, exports, module) {
                 var params = {
                     cartId: local_cartId,
                     jsonTerm: JSON.stringify([{
-                        "isBindShop": false,
+                        "isBindShop": hashParams.shopId ? true : false,
                         "itemId": skuInfo.itemId,
                         "shopId": hashParams.shopId,
                         "templateId": hashParams.templateId,
@@ -288,14 +294,14 @@ define(function (require, exports, module) {
                 }
 
                 var params = {
-                    inlet: 2,  //1 购物车  2 商品详情 4 麻豆尊享
+                    inlet: hashParams.inlet == 2 ? 4 : 2,  //1 购物车  2 商品详情 4 麻豆尊享
                     jsonTerm: JSON.stringify({
                         "itemId": skuInfo.itemId,
                         "templateId": hashParams.templateId,
                         "count": +$('.u-sku .u-quantity .number').text(),
                         "shopId": hashParams.shopId,
                         "companyId": hashParams.companyId,
-                        "isBindShop": 0
+                        "isBindShop": hashParams.shopId ? 1 : 0
                     })
                 };
                 location.href = '/cart#/settlement/' + $.param(params);

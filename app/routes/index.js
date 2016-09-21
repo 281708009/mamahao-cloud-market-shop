@@ -118,6 +118,7 @@ router
     .post("/api/aliPay", cartCtrl.aliPay)
     .post("/api/wxPrePay", cartCtrl.wxPrePay)
     .post("/api/wxPay", cartCtrl.wxPay)
+    .post("/api/queryOrderState", cartCtrl.queryOrderState)
     .post('/api/cart/:option', cartCtrl.cartOption)
     .post('/api/coupon', cartCtrl.coupon)
     .post('/api/checkpay', cartCtrl.checkPay)

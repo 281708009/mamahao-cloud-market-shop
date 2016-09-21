@@ -43,7 +43,7 @@ define(function (require, exports, module) {
                         M.ajax({
                             location: true,
                             url: '/api/cart/selectedCart',
-                            data: {data: data},//areaId=330102&isSelected=2
+                            data: {data: data},
                             success: function (res) {
                                 $spa.html(res.template);
                             }
@@ -132,7 +132,13 @@ define(function (require, exports, module) {
                         params.inlet = hashParams.inlet;
                         params.jsonTerm = jsonTerm;
                     }
+                    var localData = localStorage.getItem(CONST.local_settlement_addr);
+                    if (localData) {
+                        localData = JSON.parse(localData);
+                        params.deliveryAddr = localData;
+                    }
                     console.log(params);
+
                     page.renderModule('settlement', callback, params);
                 },
                 bind: function () {

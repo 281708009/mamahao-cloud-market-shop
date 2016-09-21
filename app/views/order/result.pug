@@ -24,7 +24,7 @@ if mbeans
                 ul.u-goods-list
                     each item in rows
                         li
-                            a(href='/goods/detail?inlet=6&templateId='+item.styleNumId+'&itemId='+item.itemId)
+                            a(href='/goods#/detail/inlet=6&templateId='+item.styleNumId+'&itemId='+item.itemId)
                                 .pic
                                     img(data-original=item.pic, src=placeholderPic, alt=item.itemName)
                                     //- topRightTag，枚举：0不显示 1 赠 2 券

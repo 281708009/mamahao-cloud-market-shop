@@ -79,9 +79,9 @@ define(function (require, exports, module) {
 
 
         //点击sku选项
-        var showPrice, skuDesc,
+        var showPrice, showPic, skuDesc,
             defaultPrice = $('.sku-price').text(),
-            showPic = $('.sku-pic').attr('src'),
+            defaultPic = $('.sku-pic').attr('src'),
             defaultDesc = '请选择' + $.map(sku.container.find('dl dt'), function (item) {
                     return $(item).text();
                 }).join(',');
@@ -123,6 +123,10 @@ define(function (require, exports, module) {
                     return '<span>' + v + '</span>';
                 }).join('');
 
+                //限购数量
+                var limitCount = skuSelected.detail && skuSelected.detail.limit ? skuSelected.detail.limit : null;
+                sku.container.siblings('.quantity').find('.number').data('max', limitCount).spinner();  //改变数量控制;
+
                 //验证其他sku按钮
                 var $skuOthers = $('.' + className.sku).not('.' + className.active).not($this);
                 $.each($skuOthers, function () {
@@ -153,6 +157,7 @@ define(function (require, exports, module) {
             } else {
                 //设置默认价格、描述
                 showPrice = defaultPrice;
+                showPic = defaultPic;
                 skuDesc = defaultDesc;
                 $.each($('.' + className.sku), function () {
                     var $this = $(this);
@@ -202,7 +207,7 @@ define(function (require, exports, module) {
 
     //获取已选中的sku信息
     sku.selected = function () {
-        var skuMap = sku.skuMap
+        var skuMap = sku.skuMap;
         var $skuSelected = $('.' + className.sku + '.' + className.active);
         var result = {
             keys: []
@@ -219,7 +224,8 @@ define(function (require, exports, module) {
             });
 
             if (skuMap[result.keys.join(sku.delimiter)].itemId) {
-                result.itemId = skuMap[result.keys.join(sku.delimiter)].itemId;
+                result.detail = skuMap[result.keys.join(sku.delimiter)];
+                result.itemId = result.detail.itemId;
             }
 
         }

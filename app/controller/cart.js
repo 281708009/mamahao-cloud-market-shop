@@ -22,9 +22,9 @@ var cart = {
                     res.json({template: html});
                 });
             },
-            error: function () {
+            error: function (data) {
 
-                res.render('cart/components/home', {}, function (err, html) {
+                res.render('cart/components/home', data, function (err, html) {
                     res.json({template: html});
                 });
             }
@@ -51,12 +51,16 @@ var cart = {
         var args = arguments;
 
         Thenjs(function (cont) {
-            HttpClient.request(args, {
-                url: API.getDefaultDeliveryAddr,
-                success: function (data) {
-                    cont(null, data);
-                }
-            });
+            if (params.deliveryAddr) {
+                cont(null, params.deliveryAddr)
+            } else {
+                HttpClient.request(args, {
+                    url: API.getDefaultDeliveryAddr,
+                    success: function (data) {
+                        cont(null, data);
+                    }
+                });
+            }
         }).then(function (cont, arg) {
 
             var data = {inlet: params.inlet || 1, stockTip: 1};
@@ -66,21 +70,21 @@ var cart = {
             if (arg && arg.areaId) {
                 data.areaId = arg.areaId;
             }
-            if(data.inlet == 2 || data.inlet == 4){
+            if (data.inlet == 2 || data.inlet == 4) {
                 data.jsonTerm = JSON.stringify(params.jsonTerm);
             }
 
             HttpClient.request(args, {
                 url: API.settlement,
                 data: data,
-                success: function (data) {
-                    var json = data;
+                success: function (resJson) {
+                    var json = resJson;
                     if (arg && arg.deliveryAddrId) {
-                        json = $.extend(data, {deliveryAddr: arg});
+                        json = $.extend(resJson, {deliveryAddr: arg, inlet: data.inlet});
                     }
 
                     var task = bigPipeTask.settlement;
-                    task.common.data = {orderNo : json.orderNo};
+                    task.common.data = {orderNo: json.orderNo};
                     new bigPipe(task, args);
                     bigPipe.prototype.succeed = function () {
                         var me = this;
@@ -96,6 +100,11 @@ var cart = {
                         });
                     };
 
+                },
+                error: function (data) {
+                    res.render('cart/components/home', data, function (err, html) {
+                        res.json({template: html});
+                    });
                 }
             });
 
@@ -117,24 +126,27 @@ var cart = {
                 success: function (data) {
                     cont();
                 },
-                error: function (error){
+                error: function (error) {
                     res.render('cart/pay', error);
                 }
             });
         }).then(function () {
+            var crypto = require('../utils/crypto');
+            console.log("pay-cookies-openId----->", req.cookies['openId'])
+            params.openId = crypto.decipher(req.cookies['openId']);
             HttpClient.request(args, {
                 url: API.pay,
-                data: {orderBatchNo: params.orderNo, openid: params.openid},
+                data: {orderBatchNo: params.orderNo, openid: params.openId},
                 success: function (data) {
-                    data.openid = params.openid;
+                    data.openid = params.openId;
                     res.render('cart/pay', data);
                 }
             });
         }, function (cont, err) {
-            console.log(err)
+            console.log("pay----->", err)
         })
     },
-    payResult: function(req, res, next){
+    payResult: function (req, res, next) {
         var args = arguments;
         var params = req.query; // 请求参数值;
         console.log(params);
@@ -142,7 +154,7 @@ var cart = {
         Thenjs(function (cont) {
             HttpClient.request(args, {
                 url: API.orderLock,
-                data: {orderBatchNo: params.batchNo,orderPayType:params.orderPayType},
+                data: {orderBatchNo: params.batchNo, orderPayType: params.orderPayType},
                 success: function (data) {
                     cont();
                 }
@@ -159,7 +171,7 @@ var cart = {
             });
 
         }, function (cont, err) {
-            console.log(err);
+            console.log("payResult----->", err)
         })
 
     },
@@ -208,6 +220,7 @@ var cart = {
          console.log(err)
          })*/
     },
+    // 支付宝支付通用方法;
     aliPay: function (req, res, next) {
         var params = req.body;
         console.info("aliPay---->", params);
@@ -235,7 +248,7 @@ var cart = {
         });
 
     },
-    //获取微信prePayId
+    //获取微信prePayId，微信支付通用方法;
     wxPay: function (req, res, next) {
         var params = req.body;
         console.info("wxPay---->", params);
@@ -249,16 +262,31 @@ var cart = {
         });
     },
     // 校验是否可以支付
-    checkPay: function(req, res, next){
+    checkPay: function (req, res, next) {
         var params = req.body;
-        console.log(params);
+        console.log("checkPay---->", JSON.stringify(params));
         HttpClient.request(arguments, {
             url: API.checkPay,
-            data: {orderNo: params.batchNo},
+            data: params,
             success: function (data) {
                 res.json(data);
             },
-            error: function(error){
+            error: function (error) {
+                res.json(error);
+            }
+        });
+    },
+    // 微信二维码识别支付状态获取
+    queryOrderState: function (req, res, next) {
+        var params = req.body;
+        console.log("queryOrderState---->", JSON.stringify(params));
+        HttpClient.request(arguments, {
+            url: API.queryOrderState,
+            data: params,
+            success: function (data) {
+                res.json(data);
+            },
+            error: function (error) {
                 res.json(error);
             }
         });

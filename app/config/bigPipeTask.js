@@ -92,14 +92,14 @@ var task = {
         module: [
             {
                 selector: ".list:eq(0)",
-                blank: {tips: '您暂时还没有Goodbaby积分哦~'},
+                blank: {tips: '暂未获取到您的GoodBaby积分记录哦~'},
                 data: {
                     type: 0   //GB
                 }
             },
             {
                 selector: ".list:eq(1)",
-                blank: {tips: '您暂时还没有Mothercare积分哦~'},
+                blank: {tips: '暂未获取到您的Mothercare积分记录哦~'},
                 data: {
                     type: 1   //MC
                 }

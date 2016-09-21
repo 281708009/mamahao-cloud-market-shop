@@ -15,6 +15,7 @@ define(function(require, exports, module) {
             // 首页顶部banner滚动;
             if($("#js-swiper-home li").length > 1){
                 var swiper = new Swiper('#js-swiper-home', {
+                    autoplay: 3000,
                     loop: true,
                     pagination: '.swiper-pagination',
                     paginationClickable: true

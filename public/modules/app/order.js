@@ -178,6 +178,7 @@ define(function (require, exports, module) {
             var $item = $(this).closest('.item'),
                 orderNo = $(this).data('id'),
                 data = JSON.stringify({orderNo: orderNo});
+            return console.log(data);
             confirm('是否确认收货', function () {
                 M.ajax({
                     url: '/api/order/orderReceive',
@@ -255,7 +256,9 @@ define(function (require, exports, module) {
             rebuy(goodsArr);
         })
 
-
+        $this.on('click','.js-topay',function(){
+            M.pay.order($(this).data('orderNo'));
+        })
     };
 
 

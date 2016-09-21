@@ -172,11 +172,11 @@ define(function (require, exports, module) {
                     });
 
                     // 上传图片
-                    $this.on('click','.js-upload',function(){
+                    /*$this.on('click','.js-oss-file',function(){
                         $this.find('[type="file"]').trigger('click');
-                    });
+                    });*/
 
-                    $('[type="file"]').on('change', function (e) {
+                    $('.js-oss-file').on('change', function (e) {
                         var file = e.target.files[0];
                         console.log(file);
                         $file = $(this);
@@ -747,6 +747,12 @@ define(function (require, exports, module) {
                             M.tips(TIPS_MAP[key]);
                             return check_res = false;
                         }
+
+                        if (data[key].match(/\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]/g)) {
+                            M.tips('不能输入特殊字符或表情');
+                            return check_res = false;
+                        }
+
                         //手机号码校验
                         if (/(phone)/.test(key) && !/^1[3,4,5,7,8]\d{9}$/.test(data[key])) {
                             M.tips(TIPS_MAP.phone_valid);

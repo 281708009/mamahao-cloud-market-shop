@@ -39,6 +39,9 @@ define(function (require, exports, module) {
             }
             // 刷新页面;
             $(".js-code-reload").on("click", function () {
+                if(c.isReload) return;
+                c.isReload = true;
+                $(this).addClass("ban").html("正在更新，请稍后...");
                 var location = window.location;
                 window.location.href = [location.origin, location.pathname, "?k=", encodeURIComponent(M.url.query("k"))].join("");
                 //window.location.reload();

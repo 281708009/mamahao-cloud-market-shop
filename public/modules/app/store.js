@@ -155,6 +155,12 @@ define(function (require, exports, module) {
                         });
                         console.log($(this).data("id"));
                     });
+
+                    /*初始化自动滑动导航条*/
+                    M.nav.init({
+                        scrollArea: $('.spa')
+                    });
+
                     //懒加载
                     M.lazyLoad.init({
                         container: ".node-stores-detail-goods"
@@ -328,6 +334,10 @@ define(function (require, exports, module) {
                 success:function(res){
                     if(res.template){
                         o.popAddress.find(".list").html(res.template);
+                        var location = JSON.parse(localStorage.getItem(CONST.local_storeAddr)) || {}
+                        if(location.deliveryAddrId){
+                            $("#add-" + location.deliveryAddrId).attr("checked", "checked");
+                        }
                         self.setAddress();
                     }
                     //console.log(res);

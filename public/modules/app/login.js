@@ -86,15 +86,14 @@ define(function(require, exports, module) {
                 url: '/api/bind',
                 data: $form.serialize(),
                 success: function (res) {
-                    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxx::::" + res);
-                    // if (res.success) {
+                    if (res.success) {
                         M.tips({
                             body: '绑定成功！',
                             callback: function () {
                                 location.href = M.url.query('origin') || location.origin;
                             }
                         });
-                    // }
+                    }
                 }
             });
         },

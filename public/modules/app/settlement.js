@@ -83,7 +83,7 @@ define(function (require, exports, module) {
         htmlArr.push('<a class="u-arrow right" href="/center#/address/f=1&amp;id=' + data.deliveryAddrId + '">');
         if (data.isDefult) {
             htmlArr.push('<dl class="default"><dt><strong>');
-        }else{
+        } else {
             htmlArr.push('<dl><dt><strong>');
         }
         htmlArr.push(data.consignee + '</strong><em>' + data.phone + '</em></dt><dd>' + data.addr);
@@ -124,13 +124,11 @@ define(function (require, exports, module) {
         // 最终支付金额 = 实付金额 + 邮费 - 优惠券discount - 妈豆抵扣 - gb积分抵扣 - mc积分抵扣
         // 计算优惠券
         // 计算折扣券
-        var payPrice = +$('[name="payPrice"]').val(),    // 实付金额(已计算邮费)
+        var payPrice = +$('[name="payPrice"]').val(),    // 商品金额
+            mailPrice = +$('[name="mailPrice"]').val(),     // 邮费
             maxTotalDiscount = $('.js-point').data('totalDiscount'),  // 最大可抵扣金额
             voucherDiscount = $('.js-vouchers').length ? $('.js-vouchers').data('discount') : 0;   // 优惠券优惠金额
-        $('#deliveryFee:visible').length && (payPrice += +$('[name="mailPrice"]').val());
-        // 计算妈豆
-        // 计算gb积分
-        // 计算mc积分
+        //payPrice += mailPrice;
         var $mbean = $('.open input[name="mbean"]'),
             $gbCount = $('.open input[name="gbCount"]'),
             $mcCount = $('.open input[name="mcCount"]');
@@ -140,7 +138,11 @@ define(function (require, exports, module) {
 
         var discount = voucherDiscount + mbeansDiscount + gbDiscount + mcDiscount,
             price = M.calc.subtract(payPrice, discount);
-        $('.js-finalPrice').html('￥' + price);
+        if ($('#deliveryFee:visible').length) {
+            $('.js-finalPrice').html('￥' + (price + mailPrice));
+        } else {
+            $('.js-finalPrice').html('￥' + price);
+        }
 
         $.each($('.js-point li').not('.open'), function () {
             var $input = $(this).find('input[type="tel"]'), // 当前虚拟货币数量输入框
@@ -159,6 +161,15 @@ define(function (require, exports, module) {
             $input.val(useableCount);
             $input.next().html('￥' + M.calc.divide(useableCount, ratio));
             $input.prev().html(useableCount);
+
+            // 可用虚拟货币数量为0时 不可点击
+            if(!$(this).find('.u-switch').is('.disabled')){
+                if (useableCount == 0) {
+                    $(this).find('.u-switch').addClass('diabled').attr('disabled', true);
+                } else {
+                    $(this).find('.u-switch').removeClass('diabled').attr('disabled', false);
+                }
+            }
         })
 
     };
@@ -205,9 +216,9 @@ define(function (require, exports, module) {
             $item.find('button[data-type=' + deliveryType + ']').addClass('checked').siblings().removeClass('checked');
             $item.find('.js-tips[for=' + deliveryType + ']').slideDown().siblings('.js-tips').slideUp();
             // 配送方式门店配送时,去掉运费显示
-            if (deliveryType == 2){
+            if (deliveryType == 2) {
                 $('#deliveryFee').hide();
-            }else{
+            } else {
                 $('#deliveryFee').show();
             }
             me.calcu()
@@ -216,6 +227,7 @@ define(function (require, exports, module) {
         // 保存 更新结算页配送方式信息
         $this.on('click', '.js-ok', function () {
             var ways = [], desc = '';
+
             $this.find('.js-delivery-item').each(function () {
                 var $item = $(this);
                 ways.push({
@@ -237,7 +249,7 @@ define(function (require, exports, module) {
 
         // 点击切换优惠券 弹出层隐藏
         $this.on('click', '.js-coupon-item', function () {
-            $('.open').each(function(){
+            $('.open').each(function () {
                 $(this).find('.u-switch').trigger('click');
             });
             $('.u-radio:checked').prop('checked', false);
@@ -261,6 +273,7 @@ define(function (require, exports, module) {
         // 妈豆积分使用
         $this.on('click', '.u-switch', function () {
 
+            if ($(this).is('.disabled')) return;
             if ($(this).is(':checked')) {
                 $(this).closest('li').addClass('open');
                 var $input = $(this).closest('li').find('input[type="tel"]');
@@ -321,7 +334,8 @@ define(function (require, exports, module) {
                 success: function (res) {
                     if (res.success_code == 200) {
                         // 跳转支付方式选择页
-                        location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx230909e739bb72fd&redirect_uri='+ M.config.api +'pay/weixin/getOpenId.htm?orderNo=' + res.orderBatchNo + '&response_type=code&scope=snsapi_base&state=123456#wechat_redirect';
+                        M.pay.order(res.orderBatchNo);
+                        // location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='+ M.config.appid +'&redirect_uri='+ M.config.api +'pay/weixin/getOpenId.htm?orderNo=' + res.orderBatchNo + '&response_type=code&scope=snsapi_base&state=123456#wechat_redirect';
                     }
                 }
             });

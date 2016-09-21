@@ -1,7 +1,11 @@
 
 var test = {
     index: function (req, res, next) {
-        res.render('test');
+        var isMamahao = /mamhao/gi.test(req.header("user-agent")),
+            memberId = req.cookies && req.cookies['memberId'],
+            token = req.cookies && req.cookies['token'];
+        var defaults = $.extend({}, {token: token, memberId: memberId, isMamahao: isMamahao});
+        res.render('test', defaults);
     },
     info: function (req, res, next) {
         console.log('id------>',req.params.id)

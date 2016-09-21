@@ -2,7 +2,7 @@ include ../../includes/mixin.pug
 -var inlet = 1, extra = '&shopId=' + request.shopId;
 if tab && tab.length
     .goods
-        .tab.js-goods-tab
+        .tab.js-goods-tab.auto-fix.auto-scroll
             ul
                 li(class="active", data-id=-1)
                     a(href='javascript:;') 全部

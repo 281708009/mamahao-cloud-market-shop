@@ -3,7 +3,7 @@
 //- jsonTerm: {"templateId":"182972","itemId":"326588"}
 
 // 是否为妈豆商品;
--var isBeanGoods = mBeanPay > 0 && request.inlet ? true : false;
+-var isBeanGoods = mBeanPay > 0 && (request.inlet == 2) ? true : false;
 include ../includes/let.pug
 section.m-goods-detail.flex
 
@@ -30,6 +30,7 @@ section.m-goods-detail.flex
             dt
                 strong #{mBeanPay}
                 em 妈豆+￥#{price}
+                del ￥#{originalPrice}
             dd
                 .time.js-bean-time(data-start=buyBeginTime, data-end=buyEndTime, data-current=currentTime)
                     s.hour -
@@ -38,6 +39,7 @@ section.m-goods-detail.flex
                     |:
                     s.second -
                 span 还剩#{stock}份
+
     else
         // 普通商品价格
         dl.price
@@ -58,16 +60,19 @@ section.m-goods-detail.flex
         dt
             strong.js-share-title #{title}
             sup 自营
-            sub 实体店
+            if shop
+                sub 实体店
         dd.js-share-desc #{subtitle}
-    // 促销
-    .sale
-        // 优惠劵
-        .coupon
+
+    if !isBeanGoods
+        // 促销
+        .sale
+            // 优惠劵
+            .coupon
 
 
-        // 满减、赠品、套餐
-        .promote
+            // 满减、赠品、套餐
+            .promote
 
 
     // 好妈妈说
@@ -91,28 +96,31 @@ section.m-goods-detail.flex
                     else
                         p #{paramsLocation.street}
 
-                    if isInStock
-                        time
-                            | 现在下单，预计
-                            em
-                                case deliveryTime.arriveType
-                                    when 0
-                                        | 今日
-                                    when 1
-                                        | 次日
-                                if deliveryTime.arriveTime
-                                    | 的#{deliveryTime.arriveTime}前
-                            if deliveryTime.isKuaidi
-                                | 发货
-                            else
-                                | 送达
-                    else
-                        time 所在区域缺货
+                    if !isBeanGoods
+                        if isInStock
+                            time
+                                | 现在下单，预计
+                                em
+                                    case deliveryTime.arriveType
+                                        when 0
+                                            | 今日
+                                        when 1
+                                            | 次日
+                                    if deliveryTime.arriveTime
+                                        | #{deliveryTime.arriveTime}前
+                                if deliveryTime.isKuaidi
+                                    | 发货
+                                else
+                                    | 送达
+                        else
+                            time 所在区域缺货
 
-        dl
-            dt 运费
-            dd
-                p 订单总额不满#{formatPrice(mailPriceTerm)}元收取运费#{formatPrice(mailPrice)}元
+        if !isBeanGoods
+            dl
+                dt 运费
+                dd
+                    p 订单总额不满#{formatPrice(mailPriceTerm)}元收取运费#{formatPrice(mailPrice)}元
+
 
         dl
             dt 服务

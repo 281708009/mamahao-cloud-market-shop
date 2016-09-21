@@ -21,8 +21,6 @@ var weChat = {
         console.log('----weixin callback -----')
         var code = req.query.code;
         client.getAccessToken(code, function (err, result) {
-            console.dir(err)
-            console.dir(result)
             var accessToken = result.data.access_token;
             var openid = result.data.openid;
             console.log('token=' + accessToken);
@@ -33,7 +31,6 @@ var weChat = {
     },
     //微信授权
     auth: function (req, res, next) {
-        log.info('wechat.auth..........');
         var isWeChat = /micromessenger/gi.test(req.header("user-agent")),
             openId = req.cookies && req.cookies['openId'],
             token = req.cookies && req.cookies['token'];
@@ -56,8 +53,6 @@ var weChat = {
                 };
                 log.info("user_session--->", JSON.stringify(user_session));
                 req.session.user = user_session;//设置当前用户到session
-                log.info("写入user_session之后--->", JSON.stringify(req.session.user));
-                //log.info("next--->", next);
                 next();
             } else {
                 //微信授权并尝试登录
@@ -65,8 +60,8 @@ var weChat = {
                     log.info("[未授权，进行授权操作]：无token，无openId");
                     //未授权或者已授权但未绑定，这个地方得保证微信授权后到绑定页面成功在client设置cookie
                     var originalUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-                    var baseUrl = 'http://' + AppConfig.site.api.host + AppConfig.site.api.root; //baseUrl
-                    var redirect_uri = encodeURIComponent(baseUrl + 'V1/weixin/oauth/callback.htm?resource=1' + '&go=' + originalUrl);
+                    var apiURL = AppConfig.site.wechat.apiURL; //apiURL
+                    var redirect_uri = encodeURIComponent(apiURL + 'V1/weixin/oauth/callback.htm?resource=1' + '&go=' + originalUrl);
                     var authUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + AppConfig.site.wechat.app_id + '&redirect_uri=' + redirect_uri + '&response_type=code&scope=snsapi_base&state=12345465#wechat_redirect';
                     return res.redirect(authUrl);
                 } else {

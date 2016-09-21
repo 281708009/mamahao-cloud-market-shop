@@ -26,10 +26,25 @@ var HttpClient = {
 
         //console.log('req---->',req);
 
-        /*根据配置文件取api地址*/
-        var config_api = AppConfig.site.api;  //config api
-        var baseUrl = 'http://' + config_api.host + ':' + config_api.port + config_api.root; //baseUrl
+        /*根据配置文件取api地址,随机取一个*/
+        var apiURL = AppConfig.site.api.concat().sort(function () {
+            return .5 - Math.random();
+        })[0];
+
+
         var session = req && req.session || {};  //session
+
+        //处理session过期的情况
+        if (!session.user && req.cookies['token']) {
+            var crypto = require('crypto');
+            var user_session = {
+                id: crypto.decipher(req.cookies['memberId']),
+                token: crypto.decipher(req.cookies['token']),
+                nickname: crypto.decipher(req.cookies['nick']),
+                avatar: crypto.decipher(req.cookies['head'])
+            };
+            req.session.user = user_session;//设置当前用户到session
+        }
 
         var headers = {"User-Agent": "[node request], MamHao V2.5.6 2016072803"};
         if (session.user) {
@@ -50,7 +65,7 @@ var HttpClient = {
         var options = {
             method: params.type || 'POST',
             baseUrl: '',  //基础路径设置为空
-            uri: /^http/.test(params.url) ? params.url : (baseUrl + params.url || '/'),
+            uri: /^http/.test(params.url) ? params.url : (apiURL + params.url || '/'),
             headers: $.extend({}, headers, params.headers || {}),
             form: formData
         };
