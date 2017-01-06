@@ -1,0 +1,36 @@
+extends ../layouts/layout.pug
+block title
+    title 选择身份
+block js
+    script seajs.run('app/user_identity');
+block content
+    section.m-identity
+        .before
+            img(src='//img.mamhao.cn/s/m/v2/images/bg-account-1.jpg')
+        .content
+            dl.title
+                dt 选身份，好服务
+                dd 小编已选好适合的商品等你
+            ul.type
+                li.li-0
+                    label
+                        .icon
+                            input.u-checkbox(type='radio', name='baby', data-status=3)
+                        em 备孕
+                li.li-1
+                    label
+                        .icon
+                            input.u-checkbox(type='radio', name='baby', data-status=1)
+                        em 孕妈
+                li.li-2
+                    label
+                        .icon
+                            input.u-checkbox(type='radio', name='baby', data-status=2, data-gender=1)
+                        em 男孩
+                li.li-3
+                    label
+                        .icon
+                            input.u-checkbox(type='radio', name='baby', data-status=2, data-gender=2)
+                        em 女孩
+        .after
+            img(src='//img.mamhao.cn/s/m/v2/images/bg-account-2.jpg')

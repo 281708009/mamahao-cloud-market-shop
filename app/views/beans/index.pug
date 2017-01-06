@@ -1,0 +1,128 @@
+extends ../layouts/initial.pug
+block title
+    title 摇妈豆
+block meta
+    script(type='text/javascript').
+        var sw = window.screen.width > 414 ? 414 : window.screen.width;
+        /ucbrowser/gi.test(navigator.userAgent) && (sw = window.screen.width);
+        var phoneScale = parseInt(sw) / 750;
+        document.write('<meta name="viewport" content="width=750, minimum-scale=' + phoneScale + ', maximum-scale=' + phoneScale + ', target-densitydpi=device-dpi">');
+    meta(itemprop='name', content='快来摇，你有1棵摇钱树')
+    meta(itemprop='description', name='description', content='速来围观！我刚摇下一大波金豆子，可以直接兑换成现金使用！')
+    meta(itemprop='image', content='http://img.mamhao.cn/s/app/beans/images/share.jpg')
+block css
+    link(type='text/css', href='http://s.mamhao.cn/app/beans/style/v3.css', rel='stylesheet')
+block js
+    script seajs.run('mamahao/beans');
+block content
+    h1(style='display:none;')
+        | 快来摇，你有1棵摇钱树
+        p 速来围观！我刚摇下一大波金豆子，可以直接兑换成现金使用！
+        img(src='http://img.mamhao.cn/s/app/beans/images/share.jpg')
+    div(style='display:none;')
+        img(src='//img.mamhao.cn/s/app/beans/images/share.jpg')
+        img(src='http://img.mamhao.cn/s/app/beans/images/bg-main.png')
+        img(src='http://img.mamhao.cn/s/app/beans/images/bg-pop.png')
+        img(src='http://img.mamhao.cn/s/app/beans/images/bg-pop-main.png')
+        img(src='http://img.mamhao.cn/s/app/beans/images/bg-tree.png')
+        img(src='http://img.mamhao.cn/s/app/beans/images/logo.png')
+        img(src='http://img.mamhao.cn/s/app/beans/images/p-01.png')
+        img(src='http://img.mamhao.cn/s/app/beans/images/p-02.png')
+        img(src='http://img.mamhao.cn/s/app/beans/images/p-03.png')
+        img(src='http://img.mamhao.cn/s/app/beans/images/p-06.png')
+        img(src='http://img.mamhao.cn/s/app/beans/images/p-07.png')
+        img(src='http://img.mamhao.cn/s/app/beans/images/p-09.png')
+    .sunlight
+    if !friend || isMamahao
+        if(rows.mBeanCount >= 0)
+            dl#my-beans.my-beans.clearfix.js-beans-record
+                dd 我的妈豆:
+                dt #{rows.mBeanCount}
+        else
+            dl#my-beans.my-beans.clearfix.js-login
+                dd 请登录
+    else
+        .logo
+            s
+            em 好孩子集团用户服务平台
+    span.explain.js-explain
+        em 妈豆说明
+    // 鸟
+    .bird-1.bg-main
+    .bird-2.bg-main
+    // 云
+    ul.yun
+        li.li-1
+        li.li-2
+        li.li-3
+    // 山
+    .mountain.mountain-1
+    .mountain.mountain-2
+    // 树
+    ul.tree-block.ratio
+        li.li-1.bg-tree.yao
+        li.li-2.bg-tree.bole
+        li.li-3.bg-tree.yao
+        li.li-4.bg-tree.yao
+        li.li-5.yao
+            ol.beans
+                li.beans-1
+                    span
+                li.beans-2
+                    span
+                li.beans-3
+                    span
+                li.beans-4
+                    span
+                li.beans-5
+                    span
+                li.beans-6
+                    span
+                li.beans-7
+                    span
+                li.beans-8
+                    span
+        li.li-6
+            s
+    // 人
+    .girl.ratio.bg-main
+    // 提示
+    dl.tip
+        dt
+            if !friend
+                | 每人每天可摇
+                em 1
+                | 次哟
+            else
+                | 帮助好友摇妈豆，给TA惊喜!
+        dd
+            ul
+                each record in rows.record
+                    li #{record.phone} 摇到#{record.count}妈豆
+    if isIos
+        .apple-inc 妈妈好特此申明，本活动与苹果公司（Apple Inc.）无关。
+
+
+    // loading
+    .MMH-loading.js-loading
+        s
+    // orientation
+    .orientation
+    // POP
+    .pop-all
+        .pop-block
+            span.close.js-close 关闭
+            .pop-content
+    // 分享提示;
+    .pop-share.js-share
+    // DEBGU
+    .debut-all
+        em.debut debug
+
+    //each data, i in record
+    //    p #{data.phone}
+
+    script.
+        var VM = {id: '#{id}'};
+
+

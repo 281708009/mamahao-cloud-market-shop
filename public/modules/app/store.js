@@ -41,15 +41,13 @@ define(function (require, exports, module) {
             var home = {
                 url: '/',
                 render: function (callback) {
-                    var params = {}, location = JSON.parse(localStorage.getItem(CONST.local_storeAddr)) || {};
-                    // 本地是否缓存了地址;
-                    if(location.deliveryAddrId){
-                        $.extend(params, location, {
-                            formattedAddress: location.gpsAddr + location.addrDetail
-                        });
+                    var defaults = M.url.params(), params = {};
+                    // 门店类型;
+                    if(defaults.shopType && Number(defaults.shopType)){
+                        params.shopType = Number(defaults.shopType);
                     }
-                    //$.extend(params, {memberId: 18}); // 临时用户id;
-                    console.log(params);
+
+                    //console.log(params);
                     callback.loadingDelay = 10; //出现loading的时机
                     page.renderModule('index', callback, params);
                 },
@@ -62,14 +60,43 @@ define(function (require, exports, module) {
                     $(".js-change-address").on("click", function () {
                         o.popAddress.addClass("show");
                         page.getAddress();
-                    })
-                    o.popAddress.on("click", ".js-close", function () {
+                        if(!page.config.PCD){
+                            // 选择其他地址;
+                            require.async('app/choose_pcd', function (pcd) {
+                                page.config.PCD = new pcd({
+                                    trigger: $('.js-select-gps'),
+                                    //className: "bottom",
+                                    confirmed: function (data) {
+                                        var storageGPS = JSON.parse(new M.Base64().decode(localStorage.getItem(CONST.local_store_gps))) || {};
+                                        var info = {
+                                            lat: storageGPS.lat, // 当前定位的lat
+                                            lng: storageGPS.lng, // 当前定位的lng
+                                            areaId: data.areaID,
+                                            district: data.areaName,
+                                            city: data.cityName,
+                                            province: data.proName,
+                                            formattedAddress: data.proName + data.cityName + data.areaName,
+                                            timestamp: +new Date()
+                                        };
+                                        if(storageGPS.city != data.cityName) info.nolocal = true;
+                                        //console.log(info);
+                                        $.cookie(CONST.local_cookie_location, new M.Base64().encode(JSON.stringify(info)), { expires: 365, path: '/' });
+                                        M.reload();
+                                    }
+                                }).init();
+                            });
+                        }
+                    });
+                    o.popAddress.on("click", ".js-close,.js-select-gps", function () {
                         o.popAddress.removeClass("show");
                     });
+                    // 用当前GPS定位地址;
                     o.popAddress.on("click", ".js-gps-address", function () {
-                        localStorage.removeItem(CONST.local_storeAddr);
-                        window.location.reload();
+                        //localStorage.removeItem(CONST.local_storeAddr);
+                        $.removeCookie(CONST.local_cookie_location, {path: '/'});
+                        M.reload();
                     });
+
                     // 首页附近的实体店分页;
                     $.pagination({
                         keys: {count: "count"},
@@ -83,7 +110,7 @@ define(function (require, exports, module) {
                             ele.append(data.template);
                         }
                     });
-                    // 关注店，服务店;
+                    // 关注店;
                     $(".u-stores.attention .js-collect").on("click", function () {
                         var thas = $(this), data = JSON.stringify({
                             collectIds: thas.data("collectid")
@@ -93,7 +120,21 @@ define(function (require, exports, module) {
                             data: data,
                             shopId: thas.data("id"),
                             callback: function () {
-                                window.location.reload();
+                                M.reload();
+                            }
+                        });
+                    });
+                    // 服务店;
+                    $(".u-stores.service .js-collect").on("click", function () {
+                        var thas = $(this), data = JSON.stringify({
+                            msId: thas.data("collectid")
+                        });
+                        page.delCollect({
+                            api: page.config.api['delServiceShop'],
+                            data: data,
+                            shopId: thas.data("id"),
+                            callback: function () {
+                                M.reload();
                             }
                         });
                     });
@@ -103,13 +144,7 @@ define(function (require, exports, module) {
             var store_detail = {
                 url: '/detail/:shopId/',
                 render: function (callback) {
-                    var params = this.params, location = JSON.parse(localStorage.getItem(CONST.local_storeAddr)) || {};
-                    // 本地是否缓存了地址;
-                    if(location.deliveryAddrId){
-                        $.extend(params, location, {
-                            formattedAddress: location.gpsAddr + location.addrDetail
-                        });
-                    }
+                    var params = this.params;
                     store_detail.params = params;
                     page.renderModule('detail', callback, params);
                 },
@@ -172,7 +207,7 @@ define(function (require, exports, module) {
 
                     /*初始化自动滑动导航条*/
                     M.nav.init({
-                        scrollArea: $('.spa')
+                        scrollArea: $module
                     });
 
                     //懒加载
@@ -348,17 +383,16 @@ define(function (require, exports, module) {
             //console.log(data);
         },
         // 获取收货地址列表;
-        getAddress: function(params){
-            var self = this, o = self.info, data = JSON.stringify($.extend({}, params));
+        getAddress: function(){
+            var self = this, o = self.info;
             // memberId: 23
             if(o.popAddress.find(".list li").length) return;
             M.ajax({
                 url: page.config.api['myAddress'],
-                data: {data:data},
                 success:function(res){
                     if(res.template){
                         o.popAddress.find(".list").html(res.template);
-                        var location = JSON.parse(localStorage.getItem(CONST.local_storeAddr)) || {}
+                        var location = JSON.parse(new M.Base64().decode($.cookie(CONST.local_cookie_location))) || {};
                         if(location.deliveryAddrId){
                             $("#add-" + location.deliveryAddrId).attr("checked", "checked");
                         }
@@ -373,10 +407,15 @@ define(function (require, exports, module) {
         setAddress: function () {
             var self = this, o = self.info;
             o.popAddress.on("change", ".u-checkbox", function () {
-                var thas = $(this).parents("li");
-                localStorage.setItem(CONST.local_storeAddr, JSON.stringify(thas.data("json")));
-                window.location.reload();
-                //console.log(localStorage.getItem(CONST.local_storeAddr));
+                var thas = $(this).parents("li"), info = thas.data("json"),
+                    storageGPS = JSON.parse(new M.Base64().decode(localStorage.getItem(CONST.local_store_gps))) || {};
+                info.timestamp = +new Date(); // 记录当前切换定位的时间;
+                // 校验切换后的地址是否为当前城市内；
+                if(storageGPS.city && storageGPS.city != info.city){
+                    info.nolocal = true;
+                }
+                $.cookie(CONST.local_cookie_location, new M.Base64().encode(JSON.stringify(info)), { expires: 365, path: '/' });
+                M.reload();
             });
         },
         // 门店商品列表

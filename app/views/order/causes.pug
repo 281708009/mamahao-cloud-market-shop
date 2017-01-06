@@ -1,0 +1,24 @@
+section.u-fixed.bottom.m-returns-pop.show
+    .mask
+    .content.flex-column
+        .title
+            if type == 1
+                | 取消订单
+            else
+                | 取消发货
+            del.js-close
+        .u-alert #{desc}
+        .tip
+            if type == 1
+                | 请选择取消订单的原因（必填）
+            else
+                | 请选择取消发货的原因（必填）
+        .i-scroll
+            ul.list
+                each li in data
+                    li
+                        label
+                            input.u-checkbox(type="radio" name="causeId" value=li.a_value)
+                            span #{li.a_key}
+        .u-footer-button
+            button.u-btn.max.success.alone.js-submit-causes 提交

@@ -2,10 +2,9 @@ extends layouts/layout.pug
 block meta
     meta(name='toTop',content='.container')
 block css
-    link(rel='stylesheet', href='http://s.mamhao.cn/common/style/swiper.min.css')
+    //-link(rel='stylesheet', href='http://s.mamhao.cn/common/style/swiper.min.css')
     link(rel='stylesheet', href='/css/index.css')
 block js
-    script(src='http://s.mamhao.cn/common/js/swiper.min.js')
     script seajs.run('app/index');
 
 block content
@@ -16,37 +15,43 @@ block content
             .u-search
                 .content
                     .sort
-                        a(href='/goods#') 分类
+                        a(href='/goods#/') 分类
                     .field.search
                         a(href="/goods#/search") 搜索妈妈好平台商品
                 .f-space
             each grid, i in rows
                 case grid.type
                     when 14
-                        // 顶部Banner
-                        #js-swiper-home.swiper
-                            ol.swiper-wrapper
+                        //- 顶部Banner
+                        .ui-swipe.swiper
+                            ol.ui-swipe-wrap
                                 each d in grid.data
-                                    li.swiper-slide
+                                    li.ui-swipe-item
                                         a(href=formatHomeLink(d))
                                             img(src=d.pic + jpgSize)
-                            // 点点点
-                            .swiper-pagination
+                            if grid.data.length > 1
+                                //- 点点点
+                                .ui-swipe-tab#swipe-tab-banner
+                                    ul
+                                        each d, i in grid.data
+                                            li(class={active: i === 0})
+
                     when 5
-                        // 图标ICON
-                        .home-icon(style="margin-bottom: "+ (grid.bottomPx / 2) +"px;")
-                            // 1-5个.fiex 6个.span3 7-8个.span4 9-10个.span5
+                        //- 图标ICON
+                        -var iconBgPic = grid.iconBgPic ? "" : "nobg";
+                        .home-icon(style="margin-bottom: "+ (grid.bottomPx / 2) +"px;", class=iconBgPic)
+                            //- 1-5个.fiex 6个.span3 7-8个.span4 9-10个.span5
                             -var fiex = "flex", len = grid.data.length;
                             -if(len==6){fiex="span3"}else if(len==7||len==8){fiex="span4"}else if(len==9||len==10){fiex="span5"}
+                            if grid.iconBgPic
+                                img(data-original=grid.iconBgPic + pngSize, src=placeholderPicMin, alt=grid.resourceName)
                             ul(class=fiex)
                                 each d in grid.data
                                     li
                                         a(href=formatHomeLink(d))
-                                           .pic
-                                               img(data-original=d.pic + pngSize, src=placeholderPic)
-                                           em #{d.title}
+                                            img(data-original=d.picForIcon + pngSize, src=placeholderPic, alt=d.title)
                     when 6
-                        // 组合三宫格
+                        //- 组合三宫格
                         .grid.group(style="margin-bottom: "+ (grid.bottomPx / 2) +"px;")
                             -var first = grid.data[0];
                             a(href=formatHomeLink(first))
@@ -58,7 +63,7 @@ block content
                                             img(data-original=d.pic + pngSize, src=placeholderPic, alt=d.name)
 
                     when 7
-                        // 组合五宫格
+                        //- 组合五宫格
                         .grid.group(style="margin-bottom: "+ (grid.bottomPx / 2) +"px;")
                             dl
                                 -var first = grid.data[0];
@@ -71,7 +76,7 @@ block content
                                             a(href=formatHomeLink(d))
                                                 img(data-original=d.pic + pngSize, src=placeholderPic, alt=d.name)
                     when 8
-                        // 组合七宫格
+                        //- 组合七宫格
                         .grid.group(style="margin-bottom: " + (grid.bottomPx / 2) + "px;")
                             dl
                                 -var first = grid.data[0];
@@ -91,40 +96,40 @@ block content
                             a(href=formatHomeLink(last))
                                 img(data-original=last.pic + pngSize, src=placeholderPic, alt=last.name)
                     when 9
-                        // 黄金坑位（并列两宫格）
+                        //- 黄金坑位（并列两宫格）
                         +getHomeGroup(grid)
                     when 10
-                        // 黄金坑位（并列三宫格）
+                        //- 黄金坑位（并列三宫格）
                         +getHomeGroup(grid)
                     when 11
-                        // 黄金坑位（并列四宫格）
+                        //- 黄金坑位（并列四宫格）
                         +getHomeGroup(grid)
                     when 12
-                        // 黄金坑位（并列六宫格）
+                        //- 黄金坑位（并列六宫格）
                         .grid.span9(style="margin-bottom: "+ (grid.bottomPx / 2) +"px;")
                             each d in grid.data
                                 a(href=formatHomeLink(d))
                                     img(data-original=d.pic + pngSize, src=placeholderPic, alt=d.name)
                     when 13
-                        // 黄金坑位（并列九宫格）
+                        //- 黄金坑位（并列九宫格）
                         .grid.span9(style="margin-bottom: "+ (grid.bottomPx / 2) +"px;")
                             each d in grid.data
                                 a(href=formatHomeLink(d))
                                     img(data-original=d.pic + pngSize, src=placeholderPic, alt=d.name)
                     when 15
-                        // 钻展（活动Banner）
+                        //- 钻展（活动Banner）
                         +getHomeGrid(grid)
                     when 16
-                        // 钻展（活动大型Banner）
+                        //- 钻展（活动大型Banner）
                         +getHomeGrid(grid)
                     when 17
-                        // 小蛮腰
+                        //- 小蛮腰
                         +getHomeGrid(grid)
                     when 18
-                        // 文字导航（活动横幅Banner）
+                        //- 文字导航（活动横幅Banner）
                         +getHomeGrid(grid)
                     when 19
-                        // 吊顶栏
+                        //- 吊顶栏
                         each d in grid.data
                             .grid.hang(style="margin-bottom: "+ (grid.bottomPx / 2) +"px;")
                                 dl
@@ -142,14 +147,31 @@ block content
                                                             strong #{g.title}
                                                             em ￥#{g.price}
                     when 20
-                        // 横排广告展示（图片）
+                        //- 横排广告展示（图片）
                         .grid(style="margin-bottom: "+ (grid.bottomPx / 2) +"px;")
                             .horizontal
                                 each d in grid.data
                                     a(href=formatHomeLink(d))
                                         img(src=d.pic + pngSize, alt=d.title)
+                    when 22
+                        //- 猜您喜欢
+                        each d in grid.data
+                            div(style="margin-bottom: "+ (grid.bottomPx / 2) +"px;")
+                                a(href=formatHomeLink(d))
+                                    img(data-original=d.pic + pngSize, src=placeholderPicMin, alt=d.name)
+                                ul.and
+                                    each g in d.goods
+                                        li
+                                            a(href=formatHomeLink(g))
+                                                span.pic
+                                                    img(data-original=g.pic + itemPngSize, src=placeholderPic + itemPngSize, alt=g.title)
+                                                p.title #{g.title}
+                                                p.price
+                                                    em ￥#{g.price}
+                                                    if g.retailPrice > g.price
+                                                        del ￥#{g.retailPrice}
                     when 24
-                        // 横排广告展示（商品）
+                        //- 横排广告展示（商品）
                         .grid(style="margin-bottom: " + (grid.bottomPx / 2) + "px;")
                             .horizontal.goods
                                 each d in grid.data
@@ -160,7 +182,7 @@ block content
                                             strong #{d.title}
                                             em ￥#{d.price}
                     when 1
-                        // 为您优选
+                        //- 为您优选
                         .suit
                             each d in grid.data
                                 p

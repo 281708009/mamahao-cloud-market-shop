@@ -1,8 +1,15 @@
-if $data.length
+-var mbean = basicInfo.mbeanSection;
+
+- if(mbean) promotionList.unshift({promotionType: 0, promotionName: "购买后可获得" + mbean + "个妈豆"});
+
+if promotionList.length
     .nav-list.js-nav-list
-        each list in $data
-            p
+
+        each list,index in promotionList
+            p(class={mbean: list.promotionType === 0})
                 case list.promotionType
+                    when 0
+                        em 妈豆
                     when 1
                         em 直降
                     when 3
@@ -13,15 +20,28 @@ if $data.length
                         em 满减
                     when 6
                         em 赠品
+                    when 7
+                        em 凑单
 
-                | #{list.promotionName}
-
+                if promotionList.length > 3
+                    if index < 2
+                        | #{list.promotionName}
+                else
+                    | #{list.promotionName}
 
     //- 促销类型枚举值：1.直降, 5满减促销,3满赠促销,4组合促销,6赠品促销
     //- 落地类型枚举值：1.无, 2.商品详情页, 3.H5链接, 4.原生ID页面, 5.妈豆商品, 6.众筹商品, 7.类目主页, 8.品牌商品列表, 9.三级类目商品列表, 10.门店;
     // 促销列表 .show显示
     .none(data-pop="m-sale-pop")
-        each item in $data
+        if mbean
+            //- 妈豆
+            dl
+                dt
+                    span 妈豆
+                dd
+                    a.u-arrow.right(href='http://h5.mamahao.com/help/beans/') 购买后可获得#{mbean}个妈豆
+
+        each item in promotionList
             case item.promotionType
                 when 1
                     em 直降
@@ -32,25 +52,25 @@ if $data.length
                             span 满赠
                         dd
                             each goods in item.giftGoodsList
-                                a.u-arrow.right(href='/goods#/detail/inlet=6&templateId=' + goods.styleNumId + '&itemId=' + goods.itemNumId) #{goods.styleTitle}
-
+                                a.u-arrow.right(href='/goods/detail/?inlet=6&templateId=' + goods.styleNumId + '&itemId=' + goods.itemNumId) #{goods.styleTitle}
                 when 4
                     //- em 套餐
                     dl
                         dt
                             span 套餐
                         dd
-                            a.u-arrow.right(href='/goods#/promoteGroup/' + request.templateId)
+                            //a.u-arrow.right(href='/goods#/promoteGroup/' + request.templateId)
+                            a.u-arrow.right(href='/goods/group/?styleNumId=' + request.templateId)
                                 .header
                                     strong
                                         | 最高省
                                         em #{item.comboMaxDiscountAmount}
                                         | 元
                                     span 共#{item.comboPromotionList.length}种
-                                ol
-                                    each group in item.comboPromotionList
+                                ol.flex-box
+                                    each group, index in item.comboPromotionList
                                         li
-                                            h4 套餐1
+                                            h4 #{'套餐' + (index + 1)}
                                             .stuff
                                                 each goods in group.comboGoodsList
                                                     .item
@@ -58,8 +78,6 @@ if $data.length
                                                             img(src=goods.stylePic + '@100w_100h_100q.jpg')
                                                         if goods.count > 1
                                                             sub #{goods.count}件
-
-
                 when 5
                     //- em 满减
                     dl
@@ -70,13 +88,13 @@ if $data.length
                             case item.landingType
                                 when 2
                                     //- 2.商品详情页
-                                    - landingLink = '/goods#/detail/inlet=6&templateId='+ item.landingPage;;
+                                    - landingLink = '/goods/detail/?inlet=6&templateId='+ item.landingPage;;
                                 when 3
                                     //- 3.H5链接
                                     - landingLink = item.landingPage;
                                 when 5
                                     //- 5.妈豆商品
-                                    - landingLink = '/goods#/detail/inlet=2&templateId='+ item.landingPage;;
+                                    - landingLink = '/goods/detail/?inlet=2&templateId='+ item.landingPage;;
                                 when 7
                                     //- 7.类目主页
                                     - landingLink = '/goods#/';
@@ -92,8 +110,6 @@ if $data.length
                                 default
                                     //- 1.无 //- 4.原生ID页面  //- 6.众筹商品
                                     - landingLink = 'javascript:;';
-
-
                             case item.landingType
                                 when 2
                                 when 3
@@ -105,12 +121,23 @@ if $data.length
                                     a.u-arrow.right(href=landingLink) #{item.promotionName}
                                 default
                                     a(href=landingLink) #{item.promotionName}
-
                 when 6
                     //- em 赠品
                     dl
                         dt
                             span 赠品
                         dd
-                            each goods in item.giftGoodsList
-                                a.u-arrow.right(href='/goods#/detail/inlet=6&templateId=' + goods.styleNumId + '&itemId=' + goods.itemNumId) #{goods.styleTitle}
+                            if item.giftGiveType == 0
+                                each goods in item.giftGoodsList
+                                    a.u-arrow.right(href='/goods/detail/?inlet=6&templateId=' + goods.styleNumId + '&itemId=' + goods.itemNumId) #{goods.styleTitle}
+                            else
+                                a.u-arrow.right(href='/goods/gifts/?itemNumId=' + basicInfo.itemId + '&reservedNo=' + item.reservedNo) #{item.promotionName}
+
+
+                when 7
+                    //- em 凑单
+                    dl
+                        dt
+                            span 凑单
+                        dd
+                            a(href='javascript:;') #{item.promotionName}

@@ -1,0 +1,100 @@
+//- 选择是否验货付款
+if stockOut || error_code
+    section.m-pay#settlement(data-stockout=(stockOut || error_code || 0),data-stockout-goods=(data || []))
+else if data && data.length
+    section.m-pay-select.flex
+        input(type='hidden',name='orderNo',value=orderNo)
+        input(type='hidden',name='deliveryAddrId',value=deliveryAddr ? deliveryAddr.deliveryAddrId : '')
+        input(type='hidden',name='reqParams',value=reqParams)
+        input(type='hidden',name='inspectTopayAlert',value=inspectTopayAlert)
+        //- 收货地址
+        .u-send.js-address
+            if deliveryAddr
+                a.u-arrow.right(href='/center#/address/f=1&id=' + deliveryAddr.deliveryAddrId)
+                    dl(class=deliveryAddr.isDefault?'default':'')
+                        dt
+                            strong #{deliveryAddr.consignee}
+                            em #{deliveryAddr.phone}
+                        dd #{deliveryAddr.prvName}#{deliveryAddr.cityName}#{deliveryAddr.areaName}#{deliveryAddr.gpsAddr}#{deliveryAddr.addrDetail}
+            else
+                a.u-arrow.right(href='/center#/address/f=1')
+                    p.add 填写收货地址
+
+        //- 商品图片
+        .items(onclick="$('.m-pay-select-goods').addClass('show');")
+            ul
+                - var goodsCount = 0, showCount = 0;
+                - var deliveryWay = [];
+                each item in data
+                    - deliveryWay.push({"type": item.shopId ? 1 : 2,"sid": item.shopId || item.warehouseId,"deliveryWay":item.delivery[0].id})
+                    each goods in item.goodsList
+                        - showCount ++;
+                        - goodsCount += goods.quantity;
+                        if showCount <= 3
+                                li
+                                    img(src=goods.itemPic + "@1e_400w_400h_0c_0i_0o_100q_1x.jpg")
+
+            .u-arrow.right 共#{goodsCount}件
+
+        input(type='hidden',name='deliveryWay',value=JSON.stringify(deliveryWay))
+
+        ul.pay.js-ctn-selection
+            li
+                label
+                    input.u-checkbox(type="radio",name="dealingType",value=1)
+                    em 在线付款
+            li(class=inspect.isSupport?'':'ban')
+                label
+                    if inspect.isSupport
+                        input.u-checkbox(type="radio",name="dealingType",value=2)
+                    else
+                        input.u-checkbox(type="radio",name="dealingType",value=2, disabled)
+
+                    em 验货付款
+                .prompt
+                    if inspect.isSupport
+                        .tip
+                            each a in inspect.supportDes
+                                p #{a}
+                    else if inspect.noSupportDes
+                        .tip
+                            dl
+                                dt #{inspect.noSupportDes.title}
+                                dd #{inspect.noSupportDes.content}
+    .u-go-cart
+        p 合计：
+            strong ￥#{payPrice}
+        a.js-btn-confirm(href="javascript:;") 确定
+
+    //- 商品清单
+    .u-fixed.bottom.m-pay-select-goods
+        .mask(onclick="$('.m-pay-select-goods').removeClass('show');")
+        .content.flex-column
+            .header
+                span 共#{goodsCount}件
+                em 商品清单
+                del(onclick="$('.m-pay-select-goods').removeClass('show');") x
+            .list.flex
+                .u-order
+                    .item
+                        each item in data
+                            each goods in item.goodsList
+                                .content
+                                    .pic
+                                        img(src=goods.itemPic + "@1e_400w_400h_0c_0i_0o_100q_1x.jpg")
+                                    figure
+                                        figcaption #{goods.itemName}
+                                        p
+                                            each sp in goods.spec
+                                                | #{sp.value}&nbsp;
+                                    dl
+                                        dt
+                                            if goods.isGift
+                                                sub 赠品
+                                            else
+                                                | ￥#{goods.itemPrice}
+                                                if goods.oPrice > goods.itemPrice
+                                                    del ￥#{goods.oPrice}
+                                        dd x#{goods.quantity}
+else
+    p 没有商品

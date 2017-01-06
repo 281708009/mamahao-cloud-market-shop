@@ -1,0 +1,36 @@
+extends ../layouts/initial.pug
+block title
+    title 每月购封面预览
+block meta
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+block css
+    //- 加CDN
+    link(rel='stylesheet', href='//img.mamhao.cn/s/m/v2/style/common.css')
+    link(rel='stylesheet', href='//img.mamhao.cn/s/m/v2/style/module.css')
+    link(rel='stylesheet', href='//img.mamhao.cn/s/m/v2/style/sale.css')
+    //- 不加CDN
+    //-link(rel='stylesheet', href='/style/common.css')
+    //-link(rel='stylesheet', href='/style/module.css')
+    //-link(rel='stylesheet', href='/style/sale.css')
+block content
+    section.m-sale-cover#js-sale-cover
+        .pic(style="background-image: url(" + data.coverInfo.backgroundImg + "@750w);")
+            .logo
+            .info
+                if data.isLogin
+                    dl.user
+                        dt
+                            .avatar
+                                img(src='//img.mamhao.cn/s/common/images/icon-114.png')
+                            strong 妈妈好用户名
+                        dd
+                            span.vip(class="vip-4") 钻粉会员
+                .title
+                    ul
+                        li.li-0
+                            img(src=data.coverInfo.longImg + "@540w.png")
+                        li.li-1.js-text
+                            img(src=data.coverInfo.titleText + "@310w.png")
+                        li.li-2.js-move
+                            img(src=data.coverInfo.circleImg + "@110w.png")
+                .time(style="color:#" + data.coverInfo.countDownColor) 距结束 18天21:22:59

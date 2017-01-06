@@ -2,44 +2,8 @@
 dl
     dt 规格参数
     dd
-        if itemName
-            p.flex-center
-                strong 商品名称
-                span #{itemName}
-        if brandName
-            p.flex-center
-                strong 品牌名称
-                span #{brandName}
-
-        p.flex-center
-            strong 适用性别
-            //- 0 通用 1 男宝宝 2女宝宝 3 宝妈
-            case styleApplySex
-                when 1
-                    span 男宝宝
-                when 1
-                    span 女宝宝
-                when 3
-                    span 宝妈
-                default
-                    span 通用
-
-        if styleDesc
-            p.flex-center
-                strong 型号
-                span #{styleDesc}
-        if colorName
-            p.flex-center
-                strong 颜色
-                span #{colorName}
-        if sizeName
-            p.flex-center
-                strong 尺寸
-                span #{sizeName}
-
-        if spec && spec.length
-            each sp in spec
-                if sp.value
-                    p.flex-center
-                        strong #{sp.key}
-                        span #{sp.value}
+        each param in goodsParams
+            if param.value
+                p.flex-center
+                    strong #{param.key}
+                    span #{param.value}

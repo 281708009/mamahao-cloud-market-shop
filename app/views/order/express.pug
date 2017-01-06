@@ -1,12 +1,10 @@
-//- 物流详情
-if logistics.length == 1
-    -var logistic = logistics[0]
-
-section.m-courier
-    .u-order(class=logistic.goodsList.length > 1 && 'more')
+//- 商品物流
+mixin goodsLogistics(item)
+    - var itemLen = item.goodsList.length;
+    .u-order.express(class={more: itemLen > 1})
         .item.js-list
             // 商品列表
-            each goods in logistic.goodsList
+            each goods in item.goodsList
                 .content.flex-center
                     .pic
                         img(src=goods.itemPic)
@@ -19,20 +17,72 @@ section.m-courier
                                         | ,
                                     | #{sp.value}
                     dl
-                        dt ￥#{goods.itemPrice}
+                        dt
+                            if goods.isGift
+                                sub 赠品
+                            else
+                                | ￥#{goods.itemPrice}
                         dd x#{goods.quantity}
-        if logistic.goodsList.length > 1
-            .more-show(data-num = logistic.goodsList.length - 1)
-                em 显示其余#{logistic.goodsList.length - 1}件
+
+        if itemLen > 1
+            .more-show(data-num = itemLen - 1)
+                em 显示其余#{itemLen - 1}件
+
     .info
-        dl.header.flex-center
-            dt.flex 物流公司：#{logistic.platformName}
-            dd 物流单号：#{logistic.waybillNumber}
-        dl.record
-            dt 物流详情
-            dd
+        dl.header
+            dt 物流公司：#{item.platformName}
+            dd 物流单号：#{item.waybillNumber}
+        .record
+            ol
+                each info in item.data
+                    li
+                        p #{info.description}
+                        time #{info.time}
+
+//- 发票物流
+mixin invoiceLogistic(item)
+    .info
+        if item.type == 0
+            dl.header
+                dt 物流公司：#{item.platformName}
+                dd 物流单号：#{item.waybillNumber}
+                dd 快递电话：#{item.telephone}
+            .record
                 ol
-                    each item in logistic.data
+                    each info in item.data
                         li
-                            p #{item.description}
-                            time #{item.time}
+                            p #{info.description}
+                            time #{info.time}
+        else
+            dl.header
+                dt #{item.platformName}
+                dd 配送人员：#{item.pickName}
+                dd 配送电话：#{item.telephone}
+
+
+if logistics.length && invoiceLogistics.length
+    .u-tab.ui-swipe-tab
+        ul
+            li.active 商品物流
+            li 发票物流
+    .ui-swipe.flex
+        .ui-swipe-wrap
+            .ui-swipe-item
+                //- 商品物流
+                each item in logistics
+                    +goodsLogistics(item)
+
+            .ui-swipe-item
+                //- 发票物流
+                each item in invoiceLogistics
+                    +invoiceLogistic(item)
+
+else if logistics.length
+    //- 商品物流
+    each item in logistics
+        +goodsLogistics(item)
+
+else if invoiceLogistics.length
+    //- 发票物流
+    each item in invoiceLogistics
+        +invoiceLogistic(item)

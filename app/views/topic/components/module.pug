@@ -1,0 +1,26 @@
+mixin Module(rows)
+    case rows.type
+        when 1
+            //- 头图模块
+            include ../components/type_1.pug
+        when 2
+            //- 倒计时模块
+            include ../components/type_2.pug
+        when 3
+            //- 优惠劵模块
+            include ../components/type_3.pug
+        when 4
+            //- 楼层导航模块
+            include ../components/type_4.pug
+        when 5
+            //- 楼层盒子模块
+            include ../components/type_5.pug
+        when 6
+            //- 混合盒子
+            include ../components/type_6.pug
+        when 7
+            //- 选项卡盒子
+            include ../components/type_7.pug
+mixin Goods(rows)
+    //- 商品结构拼接
+    include ../components/goods.pug

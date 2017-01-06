@@ -21,22 +21,22 @@ var order = {
             });
         } else {
             var task = bigPipeTask.orders;
-
-            bigPipe.prototype.succeed = function () {
-                var me = this;
-                res.render('order/index', {}, function (err, html) {
-                    var template = html + me.scripts.join('');
-                    res.json({template: template});
-                });
-            };
-
-            new bigPipe(task, arguments);
+            new bigPipe(task, arguments, {
+                succeed: function () {
+                    var me = this;
+                    res.render('order/index', {}, function (err, html) {
+                        var template = html + me.scripts.join('');
+                        res.json({template: template});
+                    });
+                }
+            });
         }
 
     },
     /* 订单详情 */
     orderDetail: function (req, res, next) {
         var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+
         HttpClient.request(arguments, {
             url: API.orderDetail,
             data: params,
@@ -74,6 +74,7 @@ var order = {
             success: function (data) {
                 var json = data;
                 res.render('order/express', json, function (err, html) {
+                    err && log.error(err);
                     res.json({template: html});
                 });
             }
@@ -124,26 +125,59 @@ var order = {
     /*订单评价完成、确认收货结果页*/
     orderResult:function(req, res, next){
         var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
-        console.log('params',params);
-        var data = {}
-        params.templateId && (data.templateId = params.templateId);
-        HttpClient.request(arguments, {
-            url: API.goodsGuessYouLike,
-            data: data,
+        $.extend(params,req.query);
+        var args = arguments;
+        if(params.mbeanGet){
+            // 评价成功
+            res.render('order/result', params, function (err, html) {
+                res.json({template: html});
+            });
+        }else{
+            // 确认收货
+            // 请求待评价商品列表/推荐商品列表
+            HttpClient.request(args, {
+                url: API.orderReview,
+                data: {orderNo: params.orderNo},
+                success: function (data) {
+                    res.render('order/result', data, function (err, html) {
+                        res.json({template: html});
+                    });
+                }
+            });
+        }
+    },
+
+    /* 验货付款订单结算 */
+    settlement: function(req, res, next){
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        $.extend(params, req.query);
+        params.channel=1;
+        var args = arguments;
+        HttpClient.request(args, {
+            url: API.settlementByInspect,
+            data: params,
             success: function (data) {
-                var json = {
-                    rows: data.data,
-                    orderNo:params.orderNo
-                };
-                params.mbeans && (json.mbeans = params.mbeans);
-                res.render('order/result', json, function (err, html) {
+                res.render('order/settlement', data);
+            }
+        });
+    },
+
+
+
+    /* 获取取消原因列表 */
+    getCauses: function(req, res, next){
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        HttpClient.request(arguments, {
+            url: API.getCancelCauses,
+            data: params,
+            success: function (data) {
+                $.extend(data,params);
+                res.render('order/causes', data, function (err, html) {
                     res.json({template: html});
                 });
             }
         });
-
     }
-
 };
 
 module.exports = order;

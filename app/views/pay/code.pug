@@ -8,7 +8,10 @@ block title
 block meta
     meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
 block css
-    link(rel='stylesheet', href='http://s.mamhao.cn/m/v1/style/pay-code.css')
+    //- 加CDN
+    link(rel='stylesheet', href='//img.mamhao.cn/s/m/v2/style/pay-code.css')
+    //- 不加CND
+    //-link(rel='stylesheet', href='/style/pay-code.css')
     style.
         html, body {height: 100%; overflow: hidden;}
         body {background: #f0f0f0;color: #333;}
@@ -45,7 +48,7 @@ block content
                     .form
                         .input
                             input(class="js-code", type='tel', placeholder='请输入验证码', maxlength='4')
-                            img.js-image-vcode(src='http://s.mamhao.cn/common/images/placeholder-2.png')
+                            img.js-image-vcode(src='//img.mamhao.cn/s/common/images/placeholder-2.png')
                         .submit
                             a.u-btn.success.js-submit(href='javascript:;') 确定
                 .m-service
@@ -56,8 +59,9 @@ block content
             -if(isWeChat){var clas = "weixin";}else if(isAlipay){var clas = "alipay";}
             section.m-code-goods(class=clas)
                 .content
-                    .address
-                        span #{shop.shopAddress}
+                    if shop.shopAddress
+                        .address
+                            span #{shop.shopAddress}
                     .goods
                         ul.list
                             each goods in shop.goodsList

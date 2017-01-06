@@ -82,19 +82,27 @@ define(function(require, exports, module) {
         bind:function(){
             var $form = $('.fm-login');
             if (!page.validate($form)) return false;
+            var formData = $form.serialize(), query_k = M.url.query('k');
             M.ajax({
                 url: '/api/bind',
-                data: $form.serialize(),
+                data: query_k ? [formData, '&k=', query_k].join('') : formData,
                 success: function (res) {
                     if (res.success) {
                         M.tips({
                             body: '绑定成功！',
                             callback: function () {
-                                location.href = M.url.query('origin') || location.origin;
+                                window.location.href = M.url.query('origin') || location.origin;
                             }
                         });
                     }
-                }
+                }/*,
+                error: function (res) {
+                    if(res.error_code == 201 && res.msg == "绑定失败,此帐号已经绑定过其他的微信号，请更换手机号码！"){
+                        location.href = "/activity/autologin/?origin=" + M.url.query('origin') || location.origin;
+                    }else{
+                        M.tips(res.msg);
+                    }
+                }*/
             });
         },
         /*校验表单输入*/
@@ -103,7 +111,7 @@ define(function(require, exports, module) {
             var items = $(obj).find(':text,:password,[type="tel"],[type="email"],[type="number"],[type="date"],[type="search"],[type="time"],[type="url"]');
             $.each(items, function () {
                 var _this = $(this), this_val = $.trim(_this.val()), this_type = _this.data('type');
-                var tips = _this.closest('li').find('em').text().replace(/\s|\*|:|：/g, '');
+                var tips = (_this.closest('li').find('em').text() || _this.data('name')).replace(/\s|\*|:|：/g, '');
                 if (this_val === '') {
                     M.tips(tips + '不能为空！');
                     return check = false;

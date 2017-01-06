@@ -1,0 +1,161 @@
+extends ../layouts/layout.pug
+block js
+    script seajs.run('app/order_settlement');
+block content
+    include ../includes/let.pug
+    include ../includes/mixin.pug
+    if stockOut || error
+        section.m-pay#settlement(data-stockout=(stockOut || error_code || 0),data-stockout-goods=(data || []))
+    else
+        section.m-pay.flex#settlement
+
+            if stockOut
+
+            else
+                input(type='hidden',name='orderNo',value=orderNo)
+                //- 优惠信息
+                .sale
+                    if inlet == 4
+                        // 妈豆尊享商品没有优惠券
+                    else
+                        .header
+                            if coupon
+                                - var voucherIds = [];
+                                each voucher, index in coupon.discountList
+                                    - voucherIds.push(voucher.voucherId);
+                                - voucherIds = voucherIds.join(',');
+                                a.u-arrow.right.js-modal(data-target='#coupon',href='javascript:;')
+                                    strong 优惠劵
+                                    em.js-vouchers(data-ids=voucherIds,data-discount=coupon.discount) 省#{coupon.discount}元
+                            else
+                                a.right(href='javascript:;')
+                                    strong 优惠劵
+                                        span 当前订单没有适用的优惠劵
+
+                            //em 未使用
+
+                    if inlet == 4
+                        // 妈豆尊享商品没有优惠券
+                        ul.noborder.js-point(data-total-discount=useCouponlimit.maxReducePrice)
+                            if (coupon && useCouponlimit.mbeanMaxLimit > 0) || (!coupon && limit.mbeanMaxLimit > 0)
+                                li#mbean
+                                    p 使用
+                                        span #{limit.mbeanMaxLimit}
+                                        input(type='tel', name='mbean',value=limit.mbeanMaxLimit, data-max=limit.mbeanMaxLimit, data-ratio=ratio.mbeanRatio)
+                                        | 妈豆，抵
+                                        em ￥#{limit.mbeanMaxLimit / ratio.mbeanRatio}
+                                    label
+                                        input.u-switch.disabled(type='checkbox', checked='checked', disabled)
+                    else
+                        ul.js-point(data-total-discount=useCouponlimit.maxReducePrice)
+                            if (coupon && useCouponlimit.mbeanMaxLimit > 0) || (!coupon && limit.mbeanMaxLimit > 0)
+                                li#mbean
+                                    p 可用
+                                        span #{useCouponlimit.mbeanMaxLimit}
+                                        input(type='tel', name='mbean',value=useCouponlimit.mbeanMaxLimit, data-max=limit.mbeanMaxLimit, data-ratio=ratio.mbeanRatio)
+                                        | 妈豆，抵
+                                        em ￥#{useCouponlimit.mbeanMaxLimit / ratio.mbeanRatio}
+                                    label
+                                        input.u-switch(type='checkbox')
+                            if useCouponlimit.gbMaxLimit > 0
+                                li#gbPoint
+                                    p 可用
+                                        span #{useCouponlimit.gbMaxLimit}
+                                        input(type='tel', name='gbCount',value=useCouponlimit.gbMaxLimit, data-max=limit.gbMaxLimit, data-ratio=ratio.gbRatio)
+                                        | GB积分，抵
+                                        em ￥#{useCouponlimit.gbMaxLimit / ratio.gbRatio}
+                                    label
+                                        input.u-switch(type='checkbox')
+                            if useCouponlimit.mcMaxLimit > 0
+                                li#mcPoint
+                                    p 可用
+                                        - var mcMax = ~~(limit.mcMaxLimit/100)*100
+                                        - var mcUseable = ~~(useCouponlimit.mcMaxLimit/100)*100
+                                        span #{mcUseable}
+                                        input(type='tel', name='mcCount', value=mcUseable, data-max=mcMax, data-ratio=ratio.mcRatio)
+                                        | MC积分，抵
+                                        em ￥#{mcUseable / ratio.mcRatio}
+                                    label
+                                        input.u-switch(type='checkbox',chekced='')
+                //if supportInvoice
+                .courier
+                    a.right.u-arrow.js-modal.js-invoice(data-target='.m-invoice-pop',href='javascript:;')
+                        strong 发票信息
+                        em 不开发票
+                //- 结算金额明细
+                ul.total
+                    each money in price
+                        li
+                            em #{money.name}
+                            if money.name == '商品金额'
+                                span ￥#{money.price}
+                            else
+                                if money.price == 0
+                                    span 免费
+                                else
+                                    span ￥#{money.price}
+                    li#deliveryFee(data-fee=mailPrice)
+                        em 运费
+                        span
+                            if mailPrice == 0
+                                | 免运费
+                            else
+                                | ￥#{mailPrice}
+
+        //- 结算按钮
+        .m-pay-footer
+            .field
+                if stockOut
+                    button.u-btn.success.ban 去付款
+                else
+                    input(type='hidden',name='payPrice',value=payPrice)
+                    input(type='hidden',name='mailPrice',value=mailPrice)
+                    input(type='hidden',name='finalPrice',value=payPrice)
+                    p 实付
+                        em.js-finalPrice ￥#{payPrice + mailPrice}
+                    button.u-btn.success.js-inspect-pay 去付款
+
+    if coupon
+        // 优惠券选择弹出层
+        section.u-fixed.bottom.m-pay-coupon#coupon
+            .mask
+            .content
+                h3 选择优惠券
+                .list
+                    label.item.js-coupon-item(data-id=coupon.discountList[0].voucherId,data-discount=coupon.discount)
+                        .flex-center
+                            input.u-radio(type='radio',name='coupon',checked='checked',value=coupon.discountList[0].voucherId)
+                        dl
+                            dt
+                                span 省#{coupon.discount}元
+                                p
+                                    em 推荐
+                            dd
+                                p #{coupon.discountList[0].voucherDes}
+                    //- 可用优惠券列表
+                    .more-coupon
+                    label.item.js-coupon-item
+                        .flex-center
+                            input.u-radio(type='radio',name='coupon')
+                        .not 不使用优惠券
+
+                .footer
+                    button.u-btn.success.max.alone.js-cancel 关闭
+
+    // 发票信息
+    section.u-fixed.bottom.u-stores-service.m-invoice-pop
+        .mask
+        .content
+            h2 发票信息
+            .form
+                dl
+                    dt 发票类型
+                    dd.invoice-type
+                        em(data-type=1,data-txt=invoiceOneName) 个人
+                        em(data-type=2) 公司
+                        em.active(data-type=0) 不开发票
+                dl.invoice-cont.none
+                    dt 发票抬头
+                    dd
+                        input(type="text" placeholder="请输入发票抬头名称")
+            button.u-btn.success.max.js-confirm-invoice 保存

@@ -1,0 +1,60 @@
+//- 凑单商品列表
+extends ../layouts/layout.pug
+block js
+    script seajs.run('app/goods_supplement');
+block title
+    title 妈妈好商城
+block content
+    section.m-spell.flex-column
+        .tab.ui-swipe-tab
+            ul
+                each lv,index in tab
+                    li(data-min=lv.minPrice, data-max=lv.maxPrice,class=selectedIndex == index ? 'active' : '')
+                        em #{lv.title}
+
+
+        .goods.flex.ui-swipe
+            .ui-swipe-wrap
+                each lv,index in tab
+                    .ui-swipe-item(class=index == selectedIndex ? 'current active' : '')
+                        ul.u-goods-one(class='list-' + index,data-params='{"minPrice": ' + lv.minPrice + ',"maxPrice":' + lv.maxPrice + '}')
+                            if(index == selectedIndex)
+                                each goods in data
+                                    li(data-template-id=goods.styleNumId)
+                                        a(href='/goods/detail/?inlet=6&templateId=' + goods.styleNumId)
+                                            .pic
+                                                img(src=goods.mainPic + '@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
+                                            .desc
+                                                h3 #{goods.styleName}
+                                                .price
+                                                    strong ￥#{goods.price}
+                                                        if goods.proTag.length > 1
+                                                            em 多重优惠
+                                                        else
+                                                            case goods.proTag[0]
+                                                                when 1
+                                                                    em 直降
+                                                                when 3
+                                                                    //- em 满赠
+                                                                when 4
+                                                                    em 套餐
+                                                                when 5
+                                                                    em 满减
+                                                                when 6
+                                                                    //- em 赠品
+                                                .pin 已售#{goods.totalSale}件
+                                        button.cart.js-add-cart 加入购物车
+
+
+
+        .u-go-cart
+            dl
+                dt 合计：
+                    strong ￥#{params.totalPrice}
+                dd 还差￥#{params.priceSpread}享免运费服务
+            a(href="/cart#/") 去购物车
+
+    section.u-fixed.bottom.u-sku
+        .mask
+        .content
+

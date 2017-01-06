@@ -1,0 +1,60 @@
+extends ../../layouts/layout.pug
+block title
+    title 妈妈好商城
+block js
+    script seajs.run('app/goods_gifts');
+block content
+    section.m-gifts.flex-column
+        .header
+            .item.main-product.selected(data-template-id=mainProduct.styleNumId, data-item-id=mainProduct.singleItem && mainProduct.singleItem.itemId, data-count=mainProduct.count)
+                .box
+                    // 图片
+                    a.pic(href='/goods/detail/?inlet=6&templateId=' + mainProduct.styleNumId)
+                        img(src= mainProduct.singleItem && mainProduct.singleItem.itemPic || mainProduct.stylePic)
+                    .info
+                        // 基本信息
+                        .desc
+                            h3 #{mainProduct.singleItem && mainProduct.singleItem.itemName || mainProduct.styleTitle}
+                            .price
+                                strong ￥#{mainProduct.price}
+                                sub x#{mainProduct.count}
+                        // 已经选sku
+                        if(mainProduct.singleItem)
+                            .sku-ok #{mainProduct.singleItem.skus}
+                        else
+                            .tools
+                                .sku-edit.js-sku(data-template-id=mainProduct.styleNumId,data-no=mainProduct.reservedNo,) 请选择商品规格
+
+        .content.flex.gift-product
+            h2 以下赠品任选一件
+
+            each item, index in giftGoodsList
+                .item(data-template-id=item.styleNumId,data-item-id=item.singleItem && item.singleItem.itemId, data-count=item.count, class={selected: index === 0})
+                    .box
+                        // 选择
+                        label
+                            input.u-checkbox(type='radio', name='gift', checked= index === 0 )
+                        // 图片
+                        a.pic(href='/goods/detail/?inlet=6&templateId=' + item.styleNumId)
+                            img(src= item.singleItem && item.singleItem.itemPic || item.stylePic)
+                        .info
+                            // 基本信息
+                            .desc
+                                h3 #{item.singleItem && item.singleItem.itemName || item.styleTitle}
+                                .price
+                                    //strong ￥#{item.price}
+                                    sub x#{item.count}
+                            // 已经选sku
+                            if(item.singleItem)
+                                .sku-ok #{item.singleItem.skus}
+                            else
+                                .tools
+                                    .sku-edit.js-sku(data-template-id=item.styleNumId,data-no=item.reservedNo,) 请选择商品规格
+
+        .u-go-cart
+            dl
+            a.js-addToCart(href="javascript:;") 加入购物车
+
+        section.u-fixed.bottom.u-sku
+            .mask
+            .content

@@ -1,6 +1,0 @@
-if rows && rows.length
-    each item in rows
-        li(data-json=JSON.stringify(item))
-            label(for='add-' + item.deliveryAddrId)
-                input.u-radio(id='add-' + item.deliveryAddrId, type='radio', name='address')
-                span #{item.gpsAddr + item.addrDetail}

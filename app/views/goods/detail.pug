@@ -1,247 +1,269 @@
-//- 商品详情
-//- inlet(入口): 1.门店 2.妈豆尊享  3.预售  4.订单  5.口碑  6.类目 7.条形码
-//- jsonTerm: {"templateId":"182972","itemId":"326588"}
+extends ../layouts/layout.pug
+block title
+    title 商品详情
+block js
+    script seajs.run('app/goods_detail');
+block content
+    .spa
+        //- 商品详情
+        //- inlet(入口): 1.门店 2.妈豆尊享  3.预售  4.订单  5.口碑  6.类目 7.条形码
+        //- jsonTerm: {"templateId":"182972","itemId":"326588"}
+        //- 是否为妈豆商品;
+        -var isBeanGoods = mBeanPay && (request.inlet == 2) ? true : false;
+        include ../includes/let.pug
+        section.m-goods-detail.flex
+            //- 商品主图
+            if pic && pic.length
+                #swipe-banner.ui-swipe(data-tab='#swipe-tab-banner')
+                    ol.ui-swipe-wrap
+                        each pic_url in pic
+                            li.ui-swipe-item
+                                //img(src= pic_url + '@640w_640h_1e_100q.jpg', data-share=pic_url)
+                                img(data-original= pic_url + '@640w_640h_1e_100q.jpg', src=placeholderPic, data-share=pic_url)
+                    // 点点点
+                    .ui-swipe-tab#swipe-tab-banner(data-target='#swipe-banner')
+                        ul
+                            each pic_circle, i in pic
+                                li(class={active: i === 0})
+                    // 渐变蒙板
+                    .mask
+            if isBeanGoods
+                // 妈豆商品价格;
+                dl.bean
+                    dt
+                        strong #{mBeanPay}
+                        em 妈豆+￥#{price}
+                        del ￥#{originalPrice}
+                    dd
+                        .time.js-bean-time(data-start=buyBeginTime, data-end=buyEndTime, data-current=currentTime)
+                            s.hour -
+                            | :
+                            s.minute -
+                            | :
+                            s.second -
+                        span 还剩#{stock}份
+            else
+                // 普通商品价格
+                dl.price.flex-center
+                    dt.flex
+                        span ￥
+                        strong #{price}
+                        if price < originalPrice
+                            del ￥#{originalPrice}
+                            em 直降
+                    if totalSaleCount
+                        dd
+                            span
+                                | 已售
+                                b #{totalSaleCount}
+                                | 件
 
-// 是否为妈豆商品;
--var isBeanGoods = mBeanPay > 0 && (request.inlet == 2) ? true : false;
-include ../includes/let.pug
-section.m-goods-detail.flex
+            // 标题
+            dl.title
+                dt
+                    sup 自营
+                    if shop
+                        sub 实体店
+                    strong.js-share-title #{title}
+                dd.js-share-desc #{subtitle}
 
-    //- 商品主图
-    if pic && pic.length
-        #swipe-banner.ui-swipe(data-tab='#swipe-tab-banner')
-            ol.ui-swipe-wrap
-                each pic_url in pic
-                    li.ui-swipe-item
-                        img(data-original= pic_url + '@640w_640h_1e_100q.jpg', src=placeholderPic, data-share=pic_url)
+            // 促销
+            .sale
+                //每月购福利包
+                .monthly
 
-            // 点点点
-            .ui-swipe-tab#swipe-tab-banner(data-target='#swipe-banner')
-                ul
-                    each pic_circle, i in pic
-                        li(class={active: i === 0})
+                if !request.vip && !isBeanGoods
+                    // 优惠劵
+                    .coupon
 
-            // 渐变蒙板
-            .mask
-
-    if isBeanGoods
-        // 妈豆商品价格;
-        dl.bean
-            dt
-                strong #{mBeanPay}
-                em 妈豆+￥#{price}
-                del ￥#{originalPrice}
-            dd
-                .time.js-bean-time(data-start=buyBeginTime, data-end=buyEndTime, data-current=currentTime)
-                    s.hour -
-                    |:
-                    s.minute -
-                    |:
-                    s.second -
-                span 还剩#{stock}份
-
-    else
-        // 普通商品价格
-        dl.price
-            dt
-                strong ￥#{price}
-                if price < originalPrice
-                    del ￥#{originalPrice}
-                    em 直降
-            dd
-                if totalSaleCount
-                    span 已售#{totalSaleCount}件
-                a(href='http://h5.mamahao.com/help/beans/')
-                    | 购买后可获得
-                    em #{getmBean}
-                    | 个妈豆
-    // 标题
-    dl.title
-        dt
-            strong.js-share-title #{title}
-            sup 自营
-            if shop
-                sub 实体店
-        dd.js-share-desc #{subtitle}
-
-    if !isBeanGoods
-        // 促销
-        .sale
-            // 优惠劵
-            .coupon
+                    // 满减、赠品、套餐
+                    .promote
 
 
-            // 满减、赠品、套餐
-            .promote
-
-
-    // 好妈妈说
-    .guide
-        dl
-            dd
-                img(src='http://type-images.oss-cn-hangzhou.aliyuncs.com/' + specialistPhoto, alt='')
-            dt #{specialistName}
-        article.ellipsis
-            strong 好妈妈说：
-            | #{mamCare}
-    // 配送信息
-    .delivery
-
-        if paramsLocation.gpsAddr || paramsLocation.street
-            dl.address.js-address
-                dt 送至
-                dd
-                    if paramsLocation.gpsAddr
-                        p #{paramsLocation.gpsAddr}
-                    else
-                        p #{paramsLocation.street}
-
-                    if !isBeanGoods
-                        if isInStock
-                            time
-                                | 现在下单，预计
-                                em
-                                    case deliveryTime.arriveType
-                                        when 0
-                                            | 今日
-                                        when 1
-                                            | 次日
-                                    if deliveryTime.arriveTime
-                                        | #{deliveryTime.arriveTime}前
-                                if deliveryTime.isKuaidi
-                                    | 发货
+            // 配送信息
+            .delivery
+                if paramsLocation
+                    dl.address.js-modal(data-target='.m-select-address')
+                        dt 送至
+                        dd
+                            p #{paramsLocation.gpsAddr || paramsLocation.street || paramsLocation.city}
+                            if !request.vip && !isBeanGoods
+                                if isInStock
+                                    time
+                                        | 现在下单，预计
+                                        em
+                                            case deliveryTime.arriveType
+                                                when 0
+                                                    | 今日
+                                                when 1
+                                                    | 次日
+                                            if deliveryTime.arriveTime
+                                                | #{deliveryTime.arriveTime}前
+                                        if deliveryTime.isKuaidi
+                                            | 发货
+                                        else
+                                            | 送达
                                 else
-                                    | 送达
-                        else
-                            time 所在区域缺货
+                                    time 所在区域缺货
+                if !request.vip && !isBeanGoods
+                    dl
+                        dt 运费
+                        dd
+                            p 订单总额不满#{mailPriceTerm}元收取运费#{mailPrice}元
+                dl
+                    dt 服务
+                    dd
+                        p
+                            | 由&nbsp;
+                            span #{shop || '妈妈好'}
+                            | &nbsp;发货并提供售后服务
 
-        if !isBeanGoods
-            dl
-                dt 运费
-                dd
-                    p 订单总额不满#{formatPrice(mailPriceTerm)}元收取运费#{formatPrice(mailPrice)}元
-
-
-        dl
-            dt 服务
-            dd
-                p
-                    | 由&nbsp;
-                    span #{shop || '妈妈好'}
-                    | &nbsp;发货并提供售后服务
-                if goodsTag && goodsTag.length
-                    ol
+            if goodsTag && goodsTag.length
+                .goods-tag.js-modal.flex-center(data-target='.m-goods-tag')
+                    ol.flex
                         each tag in goodsTag
                             li
                                 img(src= tag.pic, alt= tag.view)
                                 | #{tag.view}
 
 
-    //- 质检担保
-    if qualityPic && qualityPic.length
-        .quality(data-pic=qualityPic)
-            a.u-arrow.right(href='/goods#/quality/' + templateId) 质检担保
-
-    // 门店
-    if shop
-        .shop
-            a.u-arrow.right.flex-center(href='/store#/detail/' + shopInfo.shopId)
-                .pic
-                    img(src='http://bgo.mamhao.cn/' + shopInfo.shopPic + '@200w_100q.jpg', alt=shopInfo.shopName)
+            // 妈妈好专家团
+            .guide
                 dl
-                    dt #{shop}
-                    if shopInfo.distance
-                        dd 距您#{formatDistance(shopInfo.distance)}
+                    dd
+                        img(src=specialistPhoto, alt='')
+                    dt #{specialistName}
+                article.ellipsis
+                    strong 妈妈好专家团:
+                    | &nbsp;&nbsp;#{mamCare}
 
-    // 商品详情
-    .u-tab.max.ui-swipe-tab#swipe-tab-detail(data-target='#swipe-detail')
-        ul
-            li.active
-                a(href='javascript:;') 图文详情
-            li
-                a(href='javascript:;') 商品参数
-            li
-                a(href='javascript:;') 商品口碑
-        .f-space
+            //-  质检证书
+            if qualityPic && qualityPic.length
+                .quality(data-pic=qualityPic)
+                    a.u-arrow.right(href='/goods/quality_report/?styleNumId=' + templateId) 质检证书
+
+            // 门店
+            if !request.vip
+                if shopInfo && shopInfo.shopId
+                    .shop
+                        a.u-arrow.right.flex-center(href='/store#/detail/' + shopInfo.shopId)
+                            .pic
+                                if shopInfo.shopPic
+                                    img(src=shopInfo.shopPic + '@200w_100q.jpg', alt=shopInfo.shopName)
+                                else
+                                    img(src='//img.mamhao.cn/s/common/images/icon-114-2.png')
+                            dl
+                                dt.flex-center
+                                    | #{shop}
+                                    em 集团自营
+                                if shopInfo.distance
+                                    dd #{shopInfo.addr}
+                            .distance #{formatDistance(shopInfo.distance)}
 
 
-    .ui-swipe#swipe-detail(data-tab='#swipe-tab-detail')
-        .ui-swipe-wrap
-            .ui-swipe-item
-                // 图文详情
-                .photo !{styleHtml}
+            // 商品详情
+            .u-tab.max.ui-swipe-tab#swipe-tab-detail(data-target='#swipe-detail')
+                ul
+                    li.active
+                        a(href='javascript:;') 图文详情
+                    li
+                        a(href='javascript:;') 商品参数
+                    li
+                        a(href='javascript:;') 商品口碑
+                .f-space
+            .ui-swipe#swipe-detail(data-tab='#swipe-tab-detail')
+                .ui-swipe-wrap
+                    .ui-swipe-item
+                        // 图文详情
+                        .photo !{styleHtml}
+                    .ui-swipe-item
+                        // 商品参数
+                        .config
 
-            .ui-swipe-item
-                // 商品参数
-                .config
+                    .ui-swipe-item
+                        // 商品口碑
+                        .u-score
+
+        // []字符替换;
+        - function formatTextReplace(text){return text.replace(/\[/g, '<em>').replace(/\]/g, '</em>')}
+        // 加入购物车
+        .u-cart
+            // 会员商品;
+            if vipDiscount && vipDiscount.discountDes
+                .vip(class="type-" + vipDiscount.type)
+                    p !{formatTextReplace(vipDiscount.discountDes)}
+            // 妈豆商品
+            if isBeanGoods && stock <= 0
+                .bean 不好意思，您来晚了，商品已经被抢光了!
+            .content.flex-center
+                a.cart.js-goods-cart(href= request.vip ? '/sale/?fixed=3' : '/cart#/') 购物车
+                .tools.flex-box
+                    if isBeanGoods
+                        // 妈豆商品;
+                        if stock > 0
+                            button.u-btn.success.js-buy 立即购买
+                        else
+                            button.u-btn.ban 立即购买
+                    else
+                        // 普通商品;
+                        if isInStock
+                            if(request.vip)
+                                button.u-btn.success.js-addToCart 加入购物车
+                            else
+                                button.u-btn.addToCart.js-addToCart 加入购物车
+                                button.u-btn.success.js-buy 立即购买
+                        else
+                            button.u-btn.ban 所在区域缺货
+        // SKU
+        section.u-fixed.bottom.u-sku
+            .mask
+            .content
+        // 领取优惠劵
+        section.u-fixed.bottom.m-goods-coupon
+            .mask
+            .content
+                h3 领取优惠劵
+                ul.list
+                .footer
+                    button.u-btn.success.max.alone.js-close 关闭
+        // 促销列表
+        section.u-fixed.bottom.m-sale-pop
+            .mask
+            .content
+                h3 促销
+                ul.list
+                .footer
+                    button.u-btn.success.max.alone.js-close 关闭
+
+        // 每月购礼包商品列表 .show显示
+        section.u-fixed.bottom.u-stores-service.m-monthly-pop
+            .mask
+            .content
 
 
-            .ui-swipe-item
-                // 商品口碑
-                .u-score
-                    // 评分合计
-                    .out
+        // 选择地址 .show显示
+        section.u-fixed.m-select-address.bottom
+            .mask
+            .content
+                .title
+                    | 选择地址
+                    del.js-close
+                .gps 定位到当前位置
+                ul.list
+                .u-footer-button
+                    button.u-btn.max.success.alone.js-select-gps 选择其他地址
+        // 服务说明;
+        section.u-fixed.bottom.u-stores-service.m-goods-tag
+            .mask
+            .content
+                h2 服务说明
+                ul.list
+                    each tag in goodsTag
+                        li
+                            .icon
+                                img(src= tag.pic, alt= tag.view)
+                            dl
+                                dt #{tag.view}
+                                dd #{tag.data}
 
-                    // 口碑列表
-                    .list
-
-// []字符替换;
-- function formatTextReplace(text){return text.replace(/\[/g, '<em>').replace(/\]/g, '</em>')}
-// 加入购物车
-.u-cart
-    // 会员商品;
-    if vipDiscount && vipDiscount.discountDes
-        .vip(class="type-" + vipDiscount.type)
-            p !{formatTextReplace(vipDiscount.discountDes)}
-    // 妈豆商品
-    if isBeanGoods && stock <= 0
-        .bean 不好意思，您来晚了，商品已经被抢光了!
-    .content
-        a.cart.js-goods-cart(href='/cart#/') 购物车
-        .tools
-            if isBeanGoods
-                // 妈豆商品;
-                if stock > 0
-                    button.u-btn.success.js-buy 立即购买
-                else
-                    button.u-btn.ban 立即购买
-            else
-                // 普通商品;
-                if isInStock
-                    button.u-btn.js-addToCart 加入购物车
-                    button.u-btn.success.js-buy 立即购买
-                else
-                    button.u-btn.ban 所在区域缺货
-
-// SKU
-section.u-fixed.bottom.u-sku
-    .mask
-    .content
-
-// 领取优惠劵
-section.u-fixed.bottom.m-goods-coupon
-    .mask
-    .content
-        h3 领取优惠劵
-        ul.list
-        .footer
-            button.u-btn.success.max.alone.js-close 关闭
-
-// 促销列表
-section.u-fixed.bottom.m-sale-pop
-    .mask
-    .content
-        h3 促销
-        ul.list
-        .footer
-            button.u-btn.success.max.alone.js-close 关闭
-
-// 选择地址 .show显示
-section.u-fixed.m-select-address.bottom
-    .mask
-    .content
-        .title
-            | 选择地址
-            del.js-close
-        .gps 定位到当前位置
-        ul.list
+                button.u-btn.success.max.js-close 关闭

@@ -1,180 +1,48 @@
-include ../../includes/let.pug
-include ../../includes/mixin.pug
+//- 顶部工具菜单
+section.m-cart-tools
+    .field
+        button.edit.js-edit 编辑
+section.m-cart-v2.m-cart-content.js-cart-content
+    //- 购物车内商品列表
+    section.cart-goods-module
 
-if wholeItems && wholeItems.length
-    section.m-cart.flex
-        // 头部公告
-        dl.notice
-            dt #{deliveDesc}
-            if cartTopDesc.length > 0
-                dd
-                    each promotion in cartTopDesc
-                        //- 0 无 1商品详情 2三级类目列表 3 H5链接 4 品牌列表
-                        case promotion.landingType
-                            when 3
-                                a.right.u-arrow(href=promotion.landingDetail) #{promotion.desc}
-                            when 4
-                                a.right.u-arrow(href='/goods#/list/entry=0&brandIds=' + promotion.landingDetail) #{promotion.desc}
-                            when 2
-                                a.right.u-arrow(href='/goods#/list/entry=1&categoryId=' + promotion.landingDetail) #{promotion.desc}
-                            default
-                                a.right(href='javascript:;') #{promotion.desc}
-        .content
-            each item in wholeItems
-                if item.pmtType == 6
-                    //- 赠品类促销
-                    .item.full(class=item.invalid ? 'fail' : '',data-compoent-id=item.compoentId, data-compoent-type=item.compoentType)
-                        .header
-                            ol
-                                li.li-1
-                                    if item.selected
-                                        input.u-checkbox(type='checkbox',checked='checked')
-                                    else
-                                        input.u-checkbox(type='checkbox')
-                                    li.li-2
-                                        strong #{item.pmtDesc}
-                        .body
-                            each goods in item.cartCompoents
-                                ul.js-jump(url='/goods#/detail/inlet=6&templateId=' + goods.templateId + '&itemId=' + goods.itemId)
-                                    if goods.isGift
-                                        li.li-1(data-compoent-id=goods.compoentId || '')
-                                    else
-                                        li.li-1(data-compoent-id=goods.compoentId || '')
-                                            if goods.selected
-                                                input.u-checkbox(type='checkbox',checked='checked')
-                                            else
-                                                input.u-checkbox(type='checkbox')
-                                    li.li-2
-                                        .pic
-                                            img(src= goods.itemPic + '@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
-                                            if goods.vipDesc
-                                                .vip 会员#{goods.vipDesc}折
-                                    li.li-3
-                                        h3 #{goods.itemName}
-                                        p
-                                            each sp, index in goods.spec
-                                                if index > 0
-                                                    | ,
-                                                | #{sp.value}
-                                        if goods.isGift
-                                            p #{goods.compoentCount}件
-                                        else
-                                            .u-quantity
-                                                a.decrement.js-update(href='javascript:;',data-count=goods.compoentCount - 1,class=item.compoentCount == 1 || item.invalid ? 'disabled' : '') -
-                                                .number #{goods.compoentCount}
-                                                a.increment.js-update(href='javascript:;',data-count=goods.compoentCount + 1,data-max=1,class=item.invalid ? 'disabled' : '') +
-                                    if goods.isGift
-                                        li.li-4
-                                            .price
-                                                em 赠品
-                                    else
-                                        li.li-4
-                                            .price
-                                                strong ￥#{goods.pmtPrice}
-                                                if goods.pmtPrice < goods.price
-                                                    del ￥#{goods.price}
-                                            .delete.js-del 删除
-                        dl.footer
-                            dt 小计：￥#{item.pmtPrice}
-                else if item.pmtType == 4
-                    //- 套餐
-                    .item.group(class=item.invalid ? 'fail' : '',data-compoent-id=item.compoentId, data-compoent-type=item.compoentType)
-                        .header
-                            ol
-                                li.li-1
-                                    unless item.invalid
-                                        if item.selected
-                                            input.u-checkbox(type='checkbox',checked='checked')
-                                        else
-                                            input.u-checkbox(type='checkbox')
-                                li.li-2
-                                    strong #{item.pmtDesc}
-                                li.li-3
-                                    .u-quantity
-                                        a.decrement.js-update(href='javascript:;',class=item.compoentCount == 1 || item.invalid ? 'disabled' : '',data-count=item.compoentCount - 1,data-max-count=item.maxCount) -
-                                        .number #{item.compoentCount}
-                                        a.increment.js-update(href='javascript:;',class=item.compoentCount == item.maxCount || item.invalid ? 'disabled' : '',data-count=item.compoentCount + 1,data-max=item.maxCount,data-tips=item.comboTip) +
-                                li.li-4
-                                    .delete.js-del 删除
-                        .body
-                            each goods in item.cartCompoents
-                                ul.js-jump(url='/goods#/detail/inlet=6&templateId=' + goods.templateId + '&itemId=' + goods.itemId)
-                                    li.li-1(data-compoent-id=goods.compoentId || '')
-                                    li.li-2
-                                        .pic
-                                            img(src= goods.itemPic + '@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
-                                            if goods.vipDesc
-                                                .vip 会员#{goods.vipDesc}折
-                                    li.li-3
-                                        h3 #{goods.itemName}
-                                        p
-                                            each sp, index in goods.spec
-                                                if index > 0
-                                                    | ,
-                                                | #{sp.value}
-                                        p #{goods.compoentCount}件
-                                    li.li-4
-                                        .price
-                                            strong ￥#{goods.pmtPrice}
-                                            if goods.pmtPrice < goods.price
-                                                del ￥#{goods.price}
-                        dl.footer
-                            dd 已优惠 ￥#{item.discountPrice}
-                            dt 小计：￥#{item.pmtPrice}
-                else
-                    //- 单品
-                    .item.single(class=item.invalid ? 'fail' : '',class=item.invalid && item.invalidStatus == 1 ? 'under' : '' ,data-compoent-id=item.compoentId, data-compoent-type=item.compoentType)
-                        .body
-                            ul.js-jump(url=item.invalid && item.invalidStatus == 1 ? '' : '/goods#/detail/inlet=6&templateId=' + item.templateId + '&itemId=' + item.itemId)
-                                li.li-1
-                                    unless item.invalid
-                                        if item.selected
-                                            input.u-checkbox(type='checkbox',checked='checked')
-                                        else
-                                            input.u-checkbox(type='checkbox')
-                                li.li-2
-                                    .pic
-                                        img(src= item.itemPic + '@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
-                                        if item.vipDesc
-                                            .vip 会员#{item.vipDesc}折
-                                li.li-3
-                                    h3 #{item.itemName}
-                                    p
-                                        each sp, index in item.spec
-                                            if index > 0
-                                                | ,
-                                            | #{sp.value}
-                                    .u-quantity(class=item.invalid ? 'disabled' : '')
-                                        a.decrement.js-update(href='javascript:;',data-count=item.compoentCount - 1,class=(item.compoentCount == 1 || item.invalid) ? 'disabled' : '') -
-                                        .number #{item.compoentCount}
-                                        a.increment.js-update(href='javascript:;',data-count=item.compoentCount + 1,class=item.invalid ? 'disabled' : '') +
-                                li.li-4
-                                    .price
-                                        strong ￥#{item.pmtPrice}
-                                        if item.pmtPrice < item.price
-                                            del ￥#{item.price}
-                                    .delete.js-del 删除
-        // 底部合计
-    .m-cart-footer
-        ul.field
-            li.li-1()
-                label
-                    if allSelected
-                        input.u-checkbox(type='checkbox',checked='checked',id='selectAll')
-                    else
-                        input.u-checkbox(type='checkbox',id='selectAll')
-                    |  全选
-            li.li-2
-                dl
-                    dt
-                        | 合计：
-                        strong ￥#{totalPrice}
-                    dd
-                        | 为您节省
-                        span ￥#{disPrice}
-            li.li-3
-                a.u-btn.success(href=goodsCount ? '#/settlement' : 'javascript:;',class=goodsCount ? '' : 'ban') 结算
-                    span (#{goodsCount})
-else
-    +blank('06','您还没有为您可爱的宝宝挑选商品哦')
-        a.u-btn.checked(href='/') 随便逛逛
+    //- 为您推荐商品列表
+    section.random-list
+        .title
+            em 为您推荐
+        ul.u-goods-list.clearfix.cart-recommend-module
+
+//- 购物车底部合计结算bar
+#js-cart-footer
+    section.m-cart-footer
+        .info
+            ul.field
+                li.li-1
+                    label
+                        input.u-checkbox.selectAll(type='checkbox')
+                        em 全选
+                li.li-2
+                    dl
+                        dt
+                            | 合计：
+                            strong
+                        dd
+                            | 为您节省
+                            span
+                li.li-3
+                    a.u-btn.ban(href=goodsCount ? '/settlement' : 'javascript:;') 结算
+                        span ()
+        .delete(hidden)
+            ul.field
+                li.li-1
+                    label
+                        input.u-checkbox.js-edit-checkAll(type='checkbox')
+                        em 全选
+                li.li-2
+                li.li-3.u-go-cart
+                    a.u-btn.ban.js-edit-del(href="javascript:;") 删除
+
+//- sku选择弹出
+section.u-fixed.bottom.u-sku
+    .mask
+    .content

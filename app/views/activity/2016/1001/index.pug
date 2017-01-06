@@ -1,0 +1,97 @@
+extends ../../../layouts/initial.pug
+block title
+    title 国庆奇遇 快乐出发
+block meta
+    script(type='text/javascript').
+        var sw = window.screen.width > 414 ? 414 : window.screen.width;
+        /ucbrowser/gi.test(navigator.userAgent) && (sw = window.screen.width);
+        var phoneScale = parseInt(sw) / 750;
+        document.write('<meta name="viewport" content="width=750, minimum-scale=' + phoneScale + ', maximum-scale=' + phoneScale + ', target-densitydpi=device-dpi">');
+block css
+    link(rel='stylesheet', href='http://s.mamhao.cn/m/activity/2016/1001/style/style.css')
+block js
+    script seajs.run('activity/2016/1001/js/a');
+block content
+    section.m-activity-gamer.js-activity-1001
+        .none(style="display:none;")
+            img(src="http://img.mamhao.cn/s/m/activity/2016/1001/images/bg-main.png")
+            img(src="http://img.mamhao.cn/s/m/activity/2016/1001/images/dice-val.png")
+            img(src="http://img.mamhao.cn/s/m/activity/2016/1001/images/dice-ac.png")
+            img(src="http://img.mamhao.cn/s/m/activity/2016/1001/images/bg-11.png")
+            img(src="http://img.mamhao.cn/s/m/activity/2016/1001/images/bg-14.png")
+            img(src="http://img.mamhao.cn/s/m/activity/2016/1001/images/bg-15.png")
+        .bg
+            img(src="http://img.mamhao.cn/s/m/activity/2016/1001/images/bg-81.jpg")
+            img(src="http://img.mamhao.cn/s/m/activity/2016/1001/images/bg-82.jpg")
+            img(src="http://img.mamhao.cn/s/m/activity/2016/1001/images/bg-83.jpg")
+            img(src="http://img.mamhao.cn/s/m/activity/2016/1001/images/bg-84.jpg")
+            img(src="http://img.mamhao.cn/s/m/activity/2016/1001/images/bg-85.jpg")
+            img(src="http://img.mamhao.cn/s/m/activity/2016/1001/images/bg-86.jpg")
+            img(src="http://img.mamhao.cn/s/m/activity/2016/1001/images/bg-87.jpg")
+            img(src="http://img.mamhao.cn/s/m/activity/2016/1001/images/bg-88.jpg")
+        .kangaroo.js-kangaroo(class="step-" + speedNum) 袋鼠
+        ul.left-button
+            li.li-1
+                button.js-prize  战利品
+            li.li-2
+                button.js-rule 游戏规则
+        ul.right-button
+            li.li-1
+                button#js-dice 骰子
+            li.li-2
+                span
+                    | 剩余
+                    em.js-count #{diceCount}
+                    | 次
+                button.js-share 增加次数
+        .logo.sprite 妈妈好
+    section.m-activity-rule
+        h3 游戏规则
+        .content
+            p
+                | 1、活动时间：
+                br
+                | 　　开始：2016年10月1日 00:00:00
+                br
+                | 　　结束：2016年10月7日 23:59:59
+            p 2、游戏伊始，每位玩家总共只有7次掷骰机会，邀请好友一起玩可增加投掷机会；
+            p 3、每到达一个主题场馆即可获赠相应的妈妈好专属优惠券，领完即止，每位玩家每个场馆仅有1次领券机会；
+            p 4、吉祥物停留在文字功能格里，会根据场景提示做出相应动作（如：前进/后退）；
+            p 5、投掷点数超出抵达终点的剩余步数，即视为后退步数；
+            p 6、凡在活动期间参与的玩家，有且仅有1次抵达终点抽取壕礼机会；
+            p 7、本次活动最终解释权归妈妈好所有。
+            .button
+                button.u-btn 朕知道了
+    .pop-share.js-show-share
+        span
+        .button
+            button.u-btn 朕知道了
+    //if prizes && prizes.length
+    //    ul.none.js-prize-list
+    //        each data, index in prizeList
+    //            li
+    //                .pic
+    //                    if data.prizeType == 2
+    //                        img(src='http://img.mamhao.cn/s/m/activity/2016/1001/images/60.jpg', alt='')
+    //                    else
+    //                        img(src='http://img.mamhao.cn/s/m/activity/2016/1001/images/'+ data.prizeCode +'.jpg', alt='')
+    //                dl
+    //                    dt #{data.prizeName}
+    //                    dd 数量：1
+
+
+
+    // JS脚本;
+    script.
+        var VM = {
+            user: {
+                status: Number("#{speedStatus}"),
+                index: Number("#{speedNum}"),
+                count: Number("#{diceCount}"),
+                isInfo: Number("#{infoStatus}"),
+                openId: "#{openId}",
+                nickName: "#{nickName}",
+                prizeList: '!{prizeList}'
+            },
+            isWeChat: "#{isWeChat}"
+        };

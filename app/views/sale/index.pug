@@ -1,0 +1,231 @@
+extends ../layouts/initial.pug
+block title
+    title 妈妈好·每月购
+block meta
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+    meta(itemprop='name', content='每月一购 轻松无忧 专家优选 一站购齐')
+    meta(itemprop='description', name='description', content='妈妈好|每月购是GB（好孩子集团）旗下会员服务品牌，专注为集团内部会员和妈妈好粉丝用户提供个性化、专业化、高品质、相互信赖的管家式服务。')
+    meta(itemprop='image', content='//img.mamhao.cn/s/m/v2/images/message.png')
+block css
+    //- 加CDN
+    link(rel='stylesheet', href='//img.mamhao.cn/s/m/v2/style/common.css')
+    link(rel='stylesheet', href='//img.mamhao.cn/s/m/v2/style/module.css')
+    link(rel='stylesheet', href='//img.mamhao.cn/s/m/v2/style/sale.css')
+    //- 不加CDN
+    //-link(rel='stylesheet', href='/style/common.css')
+    //-link(rel='stylesheet', href='/style/module.css')
+    //-link(rel='stylesheet', href='/style/sale.css')
+block js
+    script seajs.run(['jquery/iscroll-lite', 'jquery/jquery.hash', 'app/sale']);
+block content
+    //-公用代码块
+    include ../includes/mixin.pug
+    //- 校验用户是否已登录;
+    if isLogin
+        //-宝宝性别;
+        - var Gender = ["", "王子", "公主"];
+        - var Area = (userLocation && userLocation.areaName) || (data.monDeliveryAddrInfo && data.monDeliveryAddrInfo.area) || (data.location && data.location.district) || "选择收货地址";
+        - var Avatar = user.headPic ? user.headPic : weChatUser.headimgurl;
+        - var nickName = user.memberNickName || weChatUser.nickname;
+        - var vipLevel = user.vipLevel || 0;
+        - var vipName = user.vipLevelName || "新人妈妈";
+        section.m-sale-all
+            //-第一区块
+            section.m-sale-block.m-sale-one(class=fixed == 2 ? "flex-column page-2" : "")
+                .one-flex#js-goods
+                    .i-scroll
+                        //-头部公共
+                        .header
+                            //-用户信息
+                            .user
+                                //-头像
+                                .avatar
+                                    a.js-avatar(href="/center/#/profile")
+                                        img(src=Avatar)
+                                //-用户资料
+                                dl.info
+                                    dt
+                                        strong #{nickName}
+                                        span.vip(class="vip-" + vipLevel) #{vipName}
+                                    dd
+                                        if user.babies && user.babies.length
+                                            each baby in user.babies
+                                                em #{Gender[baby.babyGender]} #{baby.babyAgeDes}
+                                        if breedName
+                                            em #{breedName}
+                                //-更多
+                                .more
+                                    dl.menu#js-more
+                                        dt
+                                            a(href='javascript:;') 用户中心
+                                        dd
+                                            a.a-1(href="javascript:;" class="js-open-im") 在线客服
+                                            a.a-2(href="tel:4000-123-990") 电话客服
+                                            a.a-3(href="/center#/index/vip=1") 个人中心
+                                            a.a-4(href="http://h5.mamahao.com/about/") 关于妈妈好
+                                    //-定位
+                                    a.gps.js-user-gps(href='javascript:;') #{Area}
+                            .boon
+                                li
+                                    strong #{data.monspType == 1 ? data.welfareTitle : "新生儿福利"}
+                                li.time
+                                    if data.currentServerTime > 0 && data.welfareFinishTime > 0
+                                        dl
+                                            dt 福利剩余：
+                                            dd.js-welfare-time(data-current=data.currentServerTime data-end=data.welfareFinishTime)
+                                                em
+                                                time
+                                li.exp.js-exp
+                                    a(href='javascript:;') 展开
+                        //-承诺
+                        .promise#js-promise
+                            .i-scroll
+                                .promise-content
+                                    .service
+                                        if data.servicePromiseList
+                                            each promise in data.servicePromiseList
+                                                dl
+                                                    dt
+                                                        span.icon
+                                                            img(src=promise.icon)
+                                                        | #{promise.title}
+                                                    dd
+                                                        | #{promise.content}
+                                                        if promise.serviceCityAreaList && promise.serviceCityAreaList.length
+                                                            a(href='javascript:;', class="js-show-city" data-json=promise.serviceCityAreaList) 查看开通城市>>
+                                    .footer
+                                        img(src="//img.mamhao.cn/s/m/v2/images/bg-promise-footer.jpg")
+                            .u-scroll-tip.up
+                                em 上拉查看清单
+                        //-商品清单
+                        .goods.js-goods
+                            //-商品类型
+                            .items(id="js-group-list-" + data.monGoodsGroupInfo.groupType, data-json=data.monGoodsGroupInfo.pageConfig)
+                                .title
+                                    strong
+                                        span #{data.monGoodsGroupInfo.groupName}
+                                ul.items-content
+                                    +saleList(data.monGoodsGroupInfo)
+                        .u-scroll-tip.up.js-page-tip
+                            em 上拉加载更多
+                //-工具栏
+                .tools#js-goods-tools
+                    ul
+                        li.li-1
+                            p 已选：
+                                del -
+                            p 折后：
+                                strong -
+                        li.li-2.js-tip
+                        li.li-3
+                            a.js-go-cart(href='javascript:;')
+
+            //-第二区块-购物车
+            section.m-sale-block.m-sale-two.flex-column
+                .two-flex#js-cart
+                    .i-scroll
+                        .u-scroll-tip.down
+                            em 下拉返回清单
+                        .cart-content.js-cart-content#js-cart-content
+                .tools.js-cart-content#js-cart-tools
+                    section.m-cart-footer
+                        .info
+                            ul.field
+                                li.li-1
+                                    label
+                                        input.u-checkbox.selectAll(type='checkbox')
+                                        em 全选
+                                li.li-2
+                                    dl
+                                        dt
+                                            | 合计：
+                                            strong
+                                        dd
+                                            | 为您节省
+                                            span
+                                li.li-3
+                                    a.u-btn.ban(href='/settlement')
+                                        | 结算
+                                        span ()
+                        .delete(hidden='hidden')
+                            ul.field
+                                li.li-1
+                                    label
+                                        input.u-checkbox.js-edit-checkAll(type='checkbox')
+                                        em 全选
+                                li.li-2
+                                li.li-3.u-go-cart
+                                    a.u-btn.ban.js-edit-del(href='javascript:;') 删除
+                    //- sku选择弹出
+                    section.u-fixed.bottom.u-sku
+                        .mask
+                        .content
+
+        //- 详情页预留;
+        //-section#m-sale-pop-details
+        //-    iframe(width="100%" height="100%" scrolling="yes")
+
+        //- 是否显示本月封面
+        if isCover
+            //- 已登录封面;
+            section.m-sale-cover#js-sale-cover
+                .pic(style="background-image: url(" + data.coverInfo.backgroundImg + "@750w);")
+                    .logo
+                    .info
+                        dl.user
+                            dt
+                                .avatar
+                                    img(src=Avatar)
+                                strong #{nickName}
+                            dd
+                                span.vip(class="vip-" + vipLevel) #{vipName}
+                        .title
+                            ul
+                                li.li-0
+                                    img(src=data.coverInfo.longImg + "@540w.png")
+                                li.li-1.js-text
+                                    img(src=data.coverInfo.titleText + "@310w.png")
+                                li.li-2.js-move
+                                    img(src=data.coverInfo.circleImg + "@110w.png")
+                        if data.monspType == 1 && data.currentServerTime > 0 && data.welfareFinishTime > 0
+                            .time(data-current=data.currentServerTime data-end=data.welfareFinishTime style="color:#" + data.coverInfo.countDownColor)
+    else
+        //- 显示未登录封面
+        section.m-sale-login-cover
+            section.m-sale-cover#js-sale-cover
+                .pic(style="background-image: url("+ data.coverInfo.backgroundImg + "@750w);")
+                .logo
+                .info
+                    .title
+                        ul
+                            li.li-0
+                                img(src=data.coverInfo.longImg + "@540w.png")
+                            li.li-1.js-text
+                                img(src=data.coverInfo.titleText + "@310w.png")
+                            li.li-2.js-move
+                                img(src=data.coverInfo.circleImg + "@110w.png")
+    // 每月购礼包商品列表 .show显示
+    section.u-fixed.bottom.u-stores-service.m-monthly-pop
+        .mask
+        .content
+    // 选择切换地址弹出层
+    section.u-fixed.bottom.m-select-address
+        .mask
+        .content
+            .title
+                | 选择地址
+                del.js-close
+            .gps.js-gps-address 定位到当前位置
+            ul.list
+            .u-footer-button
+                button.u-btn.max.success.alone.js-select-gps 选择其他地址
+
+    script.
+        var VM = {
+            id: '#{user && user.memberId}',
+            nickName: '#{nickName}', //- 用户昵称
+            fixed: #{fixed} || 1, //- 当前定位哪一页
+            groupType: '#{data.monGoodsGroupInfo && data.monGoodsGroupInfo.groupType}', //- 当前清单类型
+            popupWords: '#{data.popupWords}',   //- 新生儿弹出文案
+            endTime: '#{data.welfareFinishTime}'  //- 礼包结束时间
+        };

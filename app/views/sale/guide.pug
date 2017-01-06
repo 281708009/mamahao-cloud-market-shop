@@ -1,0 +1,50 @@
+extends ../layouts/layout
+block title
+    title #{title || '每月购为您推荐'}
+block meta
+    //-自定义分享信息;
+    meta(itemprop='name', content=title)
+block js
+    script seajs.run('app/sale_guide');
+block content
+    .m-shopping-all.flex
+        //-标题
+        .title
+            h1 #{title}
+        //-文章内容
+        article.content !{content}
+        if reports && reports.length
+            //-质检报告
+            dl.quality.js-quality(style='display: block;', data-json=reports)
+                dt
+                    em 质检报告
+                dd
+                    p
+                        img(src=reports[0] + '@60p_90q')
+        //-商品占位
+        .goods.js-goods
+        //-查看同类商品占位
+        .similar.js-similar
+    //-底部工具
+    .m-shopping-tools.js-tools
+        ul
+            li
+                a.js-single-artificial(href="javascript:;")
+                    em 联系客服
+            li.js-item
+                em 商品详情
+
+    // SKU
+    section.u-fixed.bottom.u-sku
+        .mask
+        .content
+
+
+    script.
+        var VM = {
+            share: {
+                title: "#{share.title}",
+                subTitle: "#{share.subTitle}",
+                icon: "#{share.icon}"
+            }
+        };

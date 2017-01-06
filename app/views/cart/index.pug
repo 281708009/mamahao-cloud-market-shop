@@ -1,3 +1,4 @@
+//- 购物车模块
 extends ../layouts/layout.pug
 block js
     script seajs.run('app/cart');
@@ -5,8 +6,8 @@ block js
 block extra
     // 定位空白页
     script#tpl_null(type='text/html')
-        +blank('06','您还没有为您可爱的宝宝挑选商品哦')
-            a.u-btn.checked(href='/') 随便逛逛
+        +blank('06','还没给心爱的宝贝挑选几件中意的商品')
+            a.u-btn.checked(href='/') 逛逛首页
 
 
 

@@ -1,24 +1,29 @@
-if vouchers.length
+if goodsCouponList.vouchers.length
     .nav-list.js-nav-list
         //-按照优惠金额排序
-        - var vouchersList = vouchers.concat().sort(function(a,b){return b.amount-a.amount});
+        - var vouchersList = goodsCouponList.vouchers.concat().sort(function(a,b){return a.amount-b.amount});
         p
             em 领劵
             | #{vouchersList[0].des}
-
     // 优惠劵列表 .show显示
     ul.none(data-pop="m-goods-coupon")
-        each item in vouchers
+        each item in goodsCouponList.vouchers
             li(data-id=item.voucherId)
                 dl
                     dt
                         strong
-                            sub ￥
-                            | #{item.amount}
+                            if item.decreaseType == 1
+                                | #{item.amount}
+                                sub 折
+                            else
+                                sub ￥
+                                | #{item.amount}
+
                         p #{item.des}
                     dd
                         p 适用范围：#{item.applyDes}
-                        p 有效期至：#{item.timeDes}
+                        if item.timeDes
+                            p #{item.timeDes}
                 .button
                     if !item.isReceive
                         button.u-btn.mini.success.ban 已领取

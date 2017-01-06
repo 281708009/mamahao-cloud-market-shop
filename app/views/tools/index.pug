@@ -1,0 +1,32 @@
+extends ../layouts/layout.pug
+block title
+    title 工具
+block meta
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+block css
+    style.
+        .tools {
+            padding: 10px;
+            counter-reset: ul
+        }
+
+        .tools dl dt:before {
+            content: counter(ul) '. ';
+            counter-increment: ul;
+        }
+
+        .tools dl dt, .tools dl dd {
+            margin-bottom: 10px
+        }
+block content
+    ul.tools
+        li
+            dl
+                dt 解除用户绑定关系
+                dd
+                    a.u-btn.success.alone(href='/tools/unbind') 点我解绑
+        li
+            dl
+                dt 清除用户缓存
+                dd
+                    a.u-btn.success.alone(href='/tools/cleanCache') 点我清除

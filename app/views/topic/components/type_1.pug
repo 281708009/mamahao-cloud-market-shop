@@ -1,0 +1,12 @@
+//头图模块
+section.header
+    .pic
+        img(src=rows.pic)
+    if rows.data
+        ul
+            each data, i in rows.data
+                li(class="li-" + i data-type=data.type data-to=data.to)
+                    if data.pic
+                        img(src=data.pic)
+                    if data.text
+                        span #{data.text}

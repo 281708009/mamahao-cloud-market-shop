@@ -12,7 +12,10 @@ var testCtrl = require('../controller/test');
  */
 testRouter
     .get("/",testCtrl.index)
-    .get("/:id/:pid", testCtrl.info)
+    .get("/mongodb", testCtrl.mongodb)
+    .get("/remove/cookie", testCtrl.remove.cookie)
+    .get("/sdk", testCtrl.sdk)
+
 
     .post("/request",testCtrl.request)
     .post("/ali-oss", testCtrl.aliOSS)

@@ -5,7 +5,7 @@ define(function (require, exports, module) {
             href: window.location.href
         };
         M.ajax({
-            location: true,  //获取地理位置作为参数
+            //location: true,  //获取地理位置作为参数(注释掉，通过node在cookie中获取)
             loadingDelay: typeof callback.loadingDelay === 'number' ? callback.loadingDelay : 300,
             url: api_url,
             data: params ? {data: JSON.stringify(params)} : {},
@@ -17,19 +17,23 @@ define(function (require, exports, module) {
             },
             error: function (res) {
                 if (/^(-1|1001)$/.test(res.error_code)) {
+
+                    var isWeixin = /micromessenger/gi.test(navigator.userAgent);
                     //未登录
-                    return M.tips({
+                    if(isWeixin){
+                        return location.reload();
+                    }
+                    return MMH.tips({
                         body: "您还未登录，请登录后再试！",
                         callback: function () {
-                            var isWeixin = /micromessenger/gi.test(navigator.userAgent);
-                            location.href = (isWeixin ? '/account/bind' : '/login') + '?origin=' + location.href;
+                            location.href = '/login?origin=' + location.href;
                         }
                     });
                 }
                 var tips = res.statusText || res.msg || res.status + ' error';
                 var arr = ['<div class="u-null-all"><div class="u-null"><dl><dt class="n-01"></dt>'];
                 arr.push('<dd><p>' + tips + '</p>');
-                arr.push('<a class="u-btn checked" href="javascript:location.reload();">刷新试试</a>');
+                arr.push('<a class="u-btn checked" href="javascript:M.reload();">刷新试试</a>');
                 arr.push('</dd></dl></div></div>');
                 callback(null, arr.join(''), info);
             }

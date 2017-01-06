@@ -9,7 +9,7 @@ var HttpClient = require("../utils/http_client"),
 var store = {
     // 门店列表
     index: function (req, res, next) {
-        res.render('store/index');
+        res.render('store/index', req.query);
     },
     //门店列表
     storeList: function (req, res, next) {
@@ -18,14 +18,25 @@ var store = {
             page: 1
         };
         var data = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        //log.info(JSON.stringify(data));
         var params = $.extend({}, defaults, data);
         // 本地缓存的城市与当前定位的城市是否相同;
-        var querystring = require("querystring");
-        var locationInfo = querystring.parse(req.get('location')) || {};  //header中的定位信息
-        if (params.city && params.city != locationInfo.city) {
-            params.isLocal = 0; // 非当前定位地址;
+        var location = req.cookies && req.cookies['mmh_app_location'];
+        if(location){
+            location = JSON.parse(new Buffer(location, "base64").toString());
+            if(location.nolocal){
+                params.isLocal = 0; // 非当前定位地址;
+            }else{
+                params.isLocal = 1; // 当前定位地址;
+            }
         }else{
-            params.isLocal = 1; // 当前定位地址;
+            location = {};
+        }
+        log.info("mmh_location--------------->", JSON.stringify(location));
+
+        // 校验门店类型参数;
+        if(!(params.shopType && Number(params.shopType))){
+            delete params.shopType;
         }
         //来源为ajax翻页请求
         if (data.ajax) {
@@ -41,12 +52,27 @@ var store = {
                     });
                 }
             });
-        } else {
+        }else if(params.shopType){
+            // mothercare门店列表
+            //log.info("shopType------>", data.shopType);
             HttpClient.request(arguments, {
                 url: API.queryMemberShopIndex,
                 data: params,
                 success: function (data) {
+                    res.render('store/components/mothercare', data, function (err, html) {
+                        res.json({template: html});
+                    });
+                }
+            });
+        }else {
+            // 门店列表;
+            HttpClient.request(arguments, {
+                url: API.queryMemberShopIndex,
+                data: params,
+                success: function (data) {
+                    //log.info('store/components/home------------->', JSON.stringify(data));
                     res.render('store/components/home', data, function (err, html) {
+                        log.info(err);
                         res.json({template: html});
                     });
                 }
@@ -58,12 +84,14 @@ var store = {
     storeDetail: function (req, res, next) {
         var data = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
         // 本地缓存的城市与当前定位的城市是否相同;
-        var querystring = require("querystring");
-        var locationInfo = querystring.parse(req.get('location')) || {};  //header中的定位信息
-        if (data.city && data.city != locationInfo.city) {
-            data.isLocal = 0; // 非当前定位地址;
-        }else{
-            data.isLocal = 1; // 当前定位地址;
+        var location = req.cookies && req.cookies['mmh_app_location'];
+        if(location){
+            location = JSON.parse(new Buffer(location, "base64").toString());
+            if(location.nolocal){
+                data.isLocal = 0; // 非当前定位地址;
+            }else{
+                data.isLocal = 1; // 当前定位地址;
+            }
         }
         //console.info(data)
         if (data.ajax) {
@@ -104,15 +132,15 @@ var store = {
                     pageSize: 10
                 };
             }
-            bigPipe.prototype.succeed = function () {
-                var me = this;
-                res.render('store/components/detail', {data: me.data}, function (err, html) {
-                    var template = html + me.scripts.join('');
-                    res.json({template: template});
-                });
-            };
-
-            new bigPipe(task, arguments);
+            new bigPipe(task, arguments, {
+                succeed: function () {
+                    var me = this;
+                    res.render('store/components/detail', {}, function (err, html) {
+                        var template = html + me.scripts.join('');
+                        res.json({template: template});
+                    });
+                }
+            });
         }
     },
     // 我的服务店

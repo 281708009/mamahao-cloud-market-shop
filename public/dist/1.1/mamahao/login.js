@@ -1,0 +1,1 @@
+define(function(require,exports,module){var i={config:{},init:function(){SDK.tools.callpush.push({i:2,f:"login"})}};i.init()});

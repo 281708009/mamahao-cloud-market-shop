@@ -1,0 +1,30 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset='utf-8')
+        block title
+            title 妈妈好商城
+        link(rel='dns-prefetch', href='//s.mamhao.cn')
+        link(rel='dns-prefetch', href='//m.mamahao.com')
+        link(rel='dns-prefetch', href='//img.mamhao.cn')
+        link(rel='dns-prefetch', href='//api.mamahao.com')
+        meta(name='format-detection', content='telephone=no,email=no')
+        meta(name='apple-mobile-web-app-status-bar-style', content='white')
+        meta(name='apple-mobile-web-app-capable', content='yes')
+        meta(name='format-detection', content='telephone=no; email=no')
+        block meta
+        //- 加CDN
+        link(rel='stylesheet', href='//img.mamhao.cn/s/m/v2/style/reset.css')
+        link(rel='stylesheet', href='//img.mamhao.cn/s/m/v2/style/unit.css')
+        //- 不加CDN
+        //-link(rel='stylesheet', href='/style/reset.css')
+        //-link(rel='stylesheet', href='/style/unit.css')
+        block css
+        //- 阿里的可伸缩布局方案 flexible.js
+        script(src='//g.tbcdn.cn/mtb/lib-flexible/0.3.4/??flexible_css.js,flexible.js')
+        //- artTemplate-3.0 javascript 模板引擎
+        script(src='//img.mamhao.cn/s/common/js/template.js')
+    body(ontouchstart)
+        block content
+        //- 公用页面底部元素
+        include ../includes/foot.pug

@@ -1,0 +1,235 @@
+//- 递归渲染商品列表 cartComponents:一个分组对象 prePmtType:上一级分组促销类型
+mixin renderComponentGoods(cartComponents,prePmtType)
+    if cartComponents.compoentType == 2
+        //- 分组  增加每月购类型 pmtType=8/9
+        .two(class=cartComponents.isAllSingle ? '' : 'many',class=(cartComponents.pmtType == 4 || cartComponents.pmtType == 6) ? 'unmodifiable' : '',class=cartComponents.pmtType == 4 ? 'js-item' : '',data-compoent-id=cartComponents.compoentId,data-compoent-type=cartComponents.compoentType,class=(cartComponents.pmtType==8||cartComponents.pmtType==9)?'vip':'')
+
+            if cartComponents.pmtType == 4
+                .h2
+                    // 促销类型:套餐
+                    p
+                        label.js-checkbox
+                            if cartComponents.selected
+                                input.u-checkbox(type='checkbox', checked='checked')
+                            else
+                                input.u-checkbox(type='checkbox')
+                            input.u-checkbox.u-edit-checkbox(type='checkbox',hidden)
+
+                        each desc in cartComponents.compoentDesc
+                            em #{desc.tagName}
+                            | #{desc.desc}
+            else if cartComponents.pmtType == 6 || cartComponents.pmtType == 7
+                // 促销类型: 6买赠  7多买
+                .h2
+                    each desc in cartComponents.compoentDesc
+                        p
+                            em #{desc.tagName}
+                            | #{desc.desc}
+            else
+                .h2
+                    each desc in cartComponents.compoentDesc
+                        //- 无落地页时a标签没有箭头处理
+                        -var link = 'javascript:;', className = '';
+                        if desc.landingType == 5 && vip == 1
+                            -var link = 'javascript:Sale.go(2);';
+                            -var className = 'u-arrow right';
+                        else if desc.landingType == 5
+                            -var link = '/sale'
+                            -var className = 'u-arrow right';
+                        a(class=className href=link)
+                            em #{desc.tagName}
+                            strong #{desc.desc}
+                            sup #{desc.leadDesc}
+            .body
+                each item in cartComponents.cartCompoents
+                    +renderComponentGoods(item,cartComponents.pmtType)
+            if cartComponents.pmtType == 6
+                .h5
+                    .count 小计：￥#{cartComponents.pmtPrice}
+            else if cartComponents.pmtType == 4
+                .h5
+                    .count 套餐价：￥#{cartComponents.pmtPrice}
+                    .u-quantity
+                        a.decrement.js-update(href="javascript:;",data-count=cartComponents.compoentCount - 1,class=cartComponents.compoentCount==1?'disabled':'') -
+                        .number #{cartComponents.compoentCount}
+                        a.increment.js-update(href="javascript:;",data-count=cartComponents.compoentCount + 1) +
+    else
+        - var item = cartComponents
+        .item.js-item(data-compoent-id=item.compoentId,data-compoent-type=item.compoentType,data-template-id=item.templateId,data-item-id=item.itemId)
+            .box
+                if !item.isGift && prePmtType != 4
+                    label.js-checkbox
+                        if(item.selected)
+                            input.u-checkbox(type="checkbox" checked='checked')
+                        else
+                            input.u-checkbox(type="checkbox")
+                        input.u-checkbox.u-edit-checkbox(type='checkbox')
+                .pic
+                    img(src=item.itemPic + '@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
+                    if item.stockDesc
+                        em.stock #{item.stockDesc}
+                .info
+                    .desc
+                        h3 #{item.itemName}
+                        .price
+                            if item.isGift
+                                p
+                                    em 赠品
+                                sub x#{item.compoentCount}
+                            else if prePmtType == 4
+                                strong ￥#{item.pmtPrice}
+                                if(item.pmtPrice < item.price)
+                                    del ￥#{item.price}
+                                sub x#{item.compoentCount}
+                            else
+                                strong ￥#{item.pmtPrice}
+                                if(item.pmtPrice < item.price)
+                                    del ￥#{item.price}
+                    .sku-ok
+                        each sp in item.spec
+                            | #{sp.value}&nbsp;
+                    .sale
+                        if item.singleComboDesc
+                            em.lees #{item.singleComboDesc}
+                        if item.vipLevel && item.vipDesc
+                            em.vip(class='vip-' + item.vipLevel) #{item.vipDesc}
+                    if !item.isGift && prePmtType != 4
+                        .tools
+                            .sku-edit
+                                each sp in item.spec
+                                    | #{sp.value}&nbsp;
+                            .u-quantity
+                                a.decrement.js-update(href="javascript:;",data-count=item.compoentCount - 1,class=item.compoentCount==1?'disabled':'') -
+                                .number #{item.compoentCount}
+                                a.increment.js-update(href="javascript:;",data-count=item.compoentCount + 1) +
+
+// 渲染商城购物车商品列表
+mixin renderGoodsList()
+    //- 全局促销
+    if !vip && cartTopDesc && cartTopDesc.length
+        section.sale
+            each topDesc in cartTopDesc
+                p
+                    if topDesc.landingType == 0
+                        a.flex-center(href="javascript:;")
+                            em #{topDesc.tagName}
+                            span.flex #{topDesc.desc}
+                    else
+                        a.flex-center(href="javascript:;")
+                            em #{topDesc.tagName}
+                            span.flex #{topDesc.desc}
+
+    if wholePlatformItems && wholePlatformItems.length
+        -var hasMonsItem = 0;
+        section.valid-list(class=isEdit?'edit':'')
+            each wholePlatformItem in wholePlatformItems
+                if wholePlatformItem.hasMonsItem
+                    - hasMonsItem = 1;
+                .goods-block
+                    //- 平台抬头标题
+                    .header
+                        label.js-select-all
+                            if wholePlatformItem.allSelected
+                                input.u-checkbox(type="checkbox" checked='checked')
+                            else
+                                input.u-checkbox(type="checkbox" )
+                            input.u-checkbox.u-edit-checkbox.js-edit-checkAll(type='checkbox')
+                        strong #{wholePlatformItem.platformTitle}
+                        if vip && vip == 1
+                            span
+                                if isEdit
+                                    button.edit.js-save 完成
+                                else
+                                    button.edit.js-edit 编辑
+                        else
+                            if wholePlatformItem.deliveFree
+                                span(onclick='M.dialog({body:"' + wholePlatformItem.popUpDesc + '",buttons: [{"text": "知道了", "class": "alone", "onClick": null}]})')
+                                    em 已免运费
+                            else
+                                span
+                                    a.u-arrow.right(href="/goods/supplement/?totalPrice=" + wholePlatformItem.pmtPrice + "&priceSpread=" + wholePlatformItem.deliveLeavePrice) 去凑单
+                    each item in wholePlatformItem.wholeItems
+                        +renderComponentGoods(item)
+        input(type='hidden',name='allSelected',value=allSelected?1:0)
+        input(type='hidden',name='totalPrice',value=totalPrice)
+        input(type='hidden',name='disPrice',value=disPrice)
+        input(type='hidden',name='goodsCount',value=goodsCount)
+        //- hasMonthItem 用来区分是否需要跳转选择支付方式页面
+        input(type='hidden',name='hasMonthItem',value=hasMonsItem?1:0)
+        //- frVIP 用来区分是否每月购来源
+        input(type='hidden',name='frVIP',value=vip?1:0)
+
+    //- 失效商品显示 判断非每月购来源并有失效商品则显示
+    if invalidItems && invalidItems.length
+        section.invalid-list
+            .goods-block
+                each item in invalidItems
+                    if item.compoentType == 1
+                        .item.js-item(data-compoent-id=item.compoentId,data-compoent-type=item.compoentType)
+                            .box
+                                label.fail
+                                    del 失效
+                                .pic
+                                    img(src=item.itemPic)
+                                .info
+                                    .desc
+                                        h3 #{item.itemName}
+                                        .price
+                                            strong ￥#{item.pmtPrice}
+                                            if(item.pmtPrice < item.price)
+                                                del ￥#{item.price}
+                                    .sku-ok
+                                        each sp in item.spec
+                                            | #{sp.value}&nbsp;
+                                    .tools
+                                        span #{item.invalidReason}
+                                        del.js-del(data-tips='确定到删除该失效商品吗？') 删除
+                    else
+                        .two.js-item(data-compoent-id=item.compoentId,data-compoent-type=item.compoentType,data-template-id=item.templateId,data-item-id=item.itemId)
+                            .h2
+                                p
+                                    each desc in item.compoentDesc
+                                        em #{desc.tagName}
+                                        | #{desc.desc}&nbsp;
+                            .body
+                                each single in item.cartCompoents
+                                    .item(data-compoent-id=single.compoentId,data-compoent-type=single.compoentType,data-template-id=single.templateId,data-item-id=single.itemId)
+                                        .box
+                                            label.fail
+                                                del 失效
+                                            .pic
+                                                img(src=single.itemPic)
+                                            .info
+                                                .desc
+                                                    h3 #{single.itemName}
+                                                    .price
+                                                        strong ￥#{single.pmtPrice}
+                                                        if(single.pmtPrice < single.price)
+                                                            del ￥#{single.price}
+                                                .sku-ok
+                                                    each sp in single.spec
+                                                        | #{sp.value}&nbsp;
+                                                .tools
+                                                    span #{single.invalidReason}
+                                                    del.js-del(data-tips='确定到删除该失效商品吗？') 删除
+                .clear-fail
+                    button.u-btn.mini.js-clear(data-tips='确定要清空所有失效商品吗？') 清空失效商品
+
+include ../../includes/mixin.pug
+if error_code && error_code == 3119
+    //- 购物车为空
+    if vip && vip == 1
+        +blank('06','还没给心爱的宝贝挑选几件中意的商品')
+            //-a.u-btn.checked(href='javascript:Sale.go(2);') 逛逛首页
+    else
+        +blank('06','还没给心爱的宝贝挑选几件中意的商品')
+            a.u-btn.checked(href='/') 逛逛首页
+else
+    if vip && vip == 1
+        //script seajs.run('app/cart');
+        //- 购物车内商品列表
+        section.m-cart-v2.cart-goods-module
+            +renderGoodsList
+    else
+        +renderGoodsList
+

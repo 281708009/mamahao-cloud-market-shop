@@ -82,7 +82,7 @@ define(function (require, exports, module) {
             //清除更新本地存储的筛选参数
             localStorage.removeItem(CONST.local_search_params);
 
-            window.location.href = '#/list/keywords=' + keywords;
+            window.location.href = '#/list/keywords=' + encodeURIComponent(keywords);
         }
     };
 

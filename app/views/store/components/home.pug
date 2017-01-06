@@ -1,4 +1,4 @@
-//- 首页模板
+//- 门店首页模板
 include ../../includes/mixin.pug
 if location.areaId
     section.m-stores.flex
@@ -42,7 +42,7 @@ if location.areaId
         else
             .u-null-all.m-stores-null
                 .null
-                    img(src='http://s.mamhao.cn/m/v1/images/bg-stores-null.png')
+                    img(src='//img.mamhao.cn/s/m/v2/images/bg-stores-null.png')
                     p 当前城市暂未开通实体店，敬请期待
     // 门店服务标签弹出层;
     section.u-fixed.bottom.u-stores-service
@@ -60,15 +60,17 @@ if location.areaId
                 del.js-close
             .gps.js-gps-address 定位到当前位置
             ul.list
-    -var formattedAddress = request.formattedAddress || location.formattedAddress;
-    if formattedAddress
+            .u-footer-button
+                button.u-btn.max.success.alone.js-select-gps 选择其他地址
+    -var gpsAddr = location && location.gpsAddr || location.formattedAddress;
+    if gpsAddr
         .u-gps
             .field
-                a.js-change-address(href='javascript:;') #{formattedAddress}
+                a.js-change-address(href='javascript:;') #{gpsAddr}
 else
     section.u-null-all.m-stores-null
         .null
-            img(src='http://s.mamhao.cn/m/v1/images/bg-stores-null.png', alt='')
+            img(src='//img.mamhao.cn/s/m/v2/images/bg-stores-null.png', alt='')
             p 定位未开启，请在系统设置中开启定位
 
 +footer_nav('store')

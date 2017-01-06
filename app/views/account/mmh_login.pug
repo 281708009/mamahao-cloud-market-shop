@@ -1,0 +1,30 @@
+extends ../layouts/initial.pug
+block title
+    title 立即登录
+block meta
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+block css
+    style.
+        html,body{ background: #F6F6F6;}
+        .mamahao-login{ padding: 0 15px;}
+        .mamahao-login .logo{ padding: 30px 0; text-align: center;}
+        .mamahao-login .logo span{ display: block; width: 80px; height: 80px; margin: 0 auto; border-radius: 10px; background: url('data:image/png;base64,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') no-repeat #fff; background-size: cover;}
+        .mamahao-login .logo em{ font-size: 17px; color: #111; padding-top: 10px; line-height: 1; display: block;}
+        .mamahao-login dl.tips{ padding: 30px 0; border-top: 1px solid #dcdcdc;}
+        .mamahao-login dl.tips dt{ color: #111;}
+        .mamahao-login dl.tips dd{ font-size: 13px;}
+        .mamahao-login dl.tips dd p{ text-indent: 1em; position: relative; padding: 5px 0;}
+        .mamahao-login dl.tips dd p:before{ width: 3px; height: 3px; border-radius: 50%; background: #666; left: 3px; top: 15px; content: ""; position: absolute;}
+block js
+    script seajs.run("mamahao/login");
+block content
+    .mamahao-login
+        .logo
+            span
+            em 妈妈好APP
+        dl.tips
+            dt 您当前未登录
+            dd
+                p 需要登录才能使用妈妈好相关业务功能
+        .button
+            button.u-btn.success.alone.max(onclick='APP.open("login");') 立即登录

@@ -1,25 +1,42 @@
 extends ../layouts/layout
 block title
-    title 登录
+    title 妈妈好商城登录绑定
 block js
     //- 入口文件
     script seajs.run('app/login');
 
 block content
     section.m-binding
-        .tip
-            p 为了您的帐户安全请及时绑定手机
-        form.fm-login
-            ul.u-form.gap
-                li
-                    em 手机号
-                    .field
-                        input.js-mobile(name='mobile',type='tel',data-type='mobile', placeholder='请输入手机号码',maxlength='11')
-                li
-                    em 验证码
-                    .field
-                        input(name='vcode',type='tel',data-type='integer', placeholder='请输入验证码',maxlength='6')
-                    .codes.js-bindVcode 获取验证码
+        .before
+            img(src='//img.mamhao.cn/s/m/v2/images/bg-account-1.jpg')
+        .content
+            dl.user
+                dd
+                    img(src=weChatHead)
+                    em #{nickName}
+                dt 为了您的账户安全请及时绑定手机号
+            //- 表单
+            form.form.fm-login
+                ul
+                    li
+                        input.js-mobile(name='mobile',type='tel',data-name='手机号', data-type='mobile', placeholder='请输入手机号码',maxlength='11')
+                    li
+                        input(name='vcode',type='tel',data-name='验证码', data-type='integer', placeholder='请输入验证码',maxlength='6')
+                        .codes.js-bindVcode 获取验证码
 
-            .u-submit
-                button.u-btn.max.success.alone.js-bind(type='button') 绑定
+                .u-submit
+                    button.u-btn.max.success.alone.js-bind(type='button') 立刻绑定
+
+            if couponInfo && couponInfo.hasCoupon
+                //- 优惠劵信息;
+                .spread
+                    h3
+                        span 登录绑定即可获得
+                    dl.coupon
+                        dt
+                            em #{couponInfo.coupon.denomination}
+                            span 元现金劵
+                        dd 仅限新用户，已获得用户不可再获得，每位用户限领一份
+
+        .after
+            img(src='//img.mamhao.cn/s/m/v2/images/bg-account-2.jpg')

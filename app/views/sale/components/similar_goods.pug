@@ -1,0 +1,16 @@
+//- 商品列表;
+include ../../includes/let.pug
+if goods && goods.length
+    each item in goods
+        li
+            -var href = '/goods/detail/?vip=1&inlet=6&templateId=' + item.styleNumId;
+            -if(extra) href += extra;
+            a(href=href)
+                .pic
+                    img(data-original=item.mainPic + itemPngSize, src=placeholderPic + itemPngSize, alt=item.styleName)
+                .desc
+                    h3 #{item.styleName}
+                    .price
+                        strong ￥#{item.price}
+                    if item.totalSale > 0
+                        p.pin 已售#{item.totalSale}件

@@ -1,0 +1,20 @@
+//混合盒子
+section.mixing(class=rows.className)
+    //-标题
+    if rows.title
+        .title
+            if isHttp(rows.title)
+                img(src=rows.title)
+            else
+                em #{rows.title}
+    .content
+        if rows.pic
+            .pic
+                img(src=rows.pic)
+        ul
+            each data, i in rows.data
+                li(class="li-" + i data-type=data.type data-to=data.to)
+                    if data.text
+                        p #{data.text}
+                    if data.pic
+                        img(src=data.pic)

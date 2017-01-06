@@ -1,0 +1,65 @@
+section.m-info
+    .user
+        .avatar
+            .pic
+                img(src=headPic, alt=memberNickName)
+        ul.u-form
+            li
+                em 昵称
+                .field
+                    input.js-nickname(type='text', maxlength='9',  placeholder='请输入昵称',data-val=memberNickName, value=memberNickName)
+            li
+                em 居住城市
+                .field
+                    if defaultGeo
+                        input.js-district(type='text', readonly, placeholder='请完善居住城市', value=defaultGeo.provinceName + '-' + defaultGeo.cityName + '-' + defaultGeo.areaName, data-pro-id=defaultGeo.provinceId, data-city-id=defaultGeo.cityId, data-area-id=defaultGeo.areaId)
+                    else
+                        input.js-district(type='text', readonly, placeholder='请完善居住城市')
+
+            li
+                em 手机号码
+                .field #{phone.replace(/(\d{3})\d{4}(\d{3})/g, '$1****$2')}
+    .baby
+        h2 我的状态/宝宝信息
+        ul.m-profile-babies
+            //-用户状态 ：0=未选择，1=怀孕，2=宝妈，3=备孕
+            case +breedStatus
+                when 1
+                    li.js-babies
+                        a.u-arrow.right(href='#/profileEdit/status=' + breedStatus)
+                            .pic
+                                img(src='//img.mamhao.cn/s/common/images/avatar-02.png')
+                            em 预产期
+
+                            - var today = new Date(), dawn = +new Date(today.getFullYear(),today.getMonth(),today.getDate())
+                            if duoDate <= dawn
+                                span 宝宝已出生，更新状态有惊喜哟
+                            else
+                                span #{duoDateStr}
+                        button.delete 删除
+                when 3
+                    li.js-babies
+                        a.u-arrow.right(href='#/profileEdit/status=' + breedStatus)
+                            .pic
+                                img(src='img.mamhao.cn/s/common/images/avatar-01.png')
+                            em 备孕
+                            span 备孕成功，更新状态有惊喜哟
+                        button.delete 删除
+
+            if babies && babies.length
+                each baby in babies
+                    li.js-babies
+                        a.u-arrow.right(href='#/profileEdit/status=2&id=' + baby.babyId)
+                            .pic
+                                img(src='//img.mamhao.cn/s/common/images/' + (baby.babyGender === 1 ? 'avatar-04.png' : 'avatar-05.png'))
+                            em #{baby.babyName}
+                            span #{baby.babyAgeDes}
+                        button.delete(data-id=baby.babyId) 删除
+
+            if !babies || !babies.length || (babies.length === 1 && breedStatus == 2)
+                li
+                    a(href='#/profileEdit/status=0')
+                        .add
+                        em 添加
+
+        .tip 亲，请认真填写信息，我们会根据信息精准推荐。

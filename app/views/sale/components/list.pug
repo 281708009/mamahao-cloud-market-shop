@@ -1,0 +1,17 @@
+if rows.monGoodsInfoList && rows.monGoodsInfoList.length
+    each goods in rows.monGoodsInfoList
+        li.u-arrow.right.js-goods-item(data-id=goods.monspGoodsId)
+            .item
+                .pic
+                    img(src=goods.monStylePic alt=goods.monStyleTitle)
+                dl
+                    dt #{goods.monStyleTitle}
+                    if goods.startAge && goods.endAge
+                        dd #{goods.suitableAgeScope}
+            .item-delete
+                p
+                    button.js-delete 不再需要
+                p
+                    button.js-hide 以后再说
+            a(href= goods.topicOrGuideUrl ? goods.topicOrGuideUrl : "/goods/detail/?vip=1&inlet=6&templateId="+ goods.styleNumId)
+            button.but-delete

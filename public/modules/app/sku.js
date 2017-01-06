@@ -177,11 +177,17 @@ define(function (require, exports, module) {
         });
 
         //只有一组sku的话，直接选中
-        if ($.map(data, function (v, k) {
-                return k;
-            }).length === 1) {
-            sku.container.find('.' + className.sku).trigger('click');
-        }
+        /*if ($.map(data, function (v, k) {
+         return k;
+         }).length === 1) {
+         sku.container.find('.' + className.sku).trigger('click');
+         }*/
+        $.each($('.sku dl dd'), function () {
+            var $sku_key = $(this).find('.' + className.sku);
+            if ($sku_key.length === 1) {
+                $sku_key.trigger('click');
+            }
+        })
 
     };
 

@@ -1,5 +1,6 @@
 //- 首页-单行;
-.grid(style="margin-bottom: "+ (rows.bottomPx / 2) +"px;")
-    each d in rows.data
-        a(href=formatHomeLink(d))
-            img(data-original=d.pic + pngSize, src=placeholderPicMin, alt=d.name)
+if rows.data[0].title != "会员优选特价"
+    .grid(style="margin-bottom: "+ (rows.bottomPx / 2) +"px;")
+        each d in rows.data
+            a(href=formatHomeLink(d))
+                img(data-original=d.pic + pngSize, src=placeholderPicMin, alt=d.name)

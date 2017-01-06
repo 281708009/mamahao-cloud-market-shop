@@ -15,9 +15,12 @@ var logConfig = require("../config/log4js");
 var appenders = logConfig.appenders;
 if (appenders) {
     for (var i in appenders) {
-        var item = appenders[i], filename = item["filename"] + item['pattern'];
-        var dir = path.dirname(filename);
-        checkAndCreateDir(dir);
+        var item = appenders[i];
+        if(item.filename){
+            var filename = item["filename"] + item['pattern'];
+            var dir = path.dirname(filename);
+            checkAndCreateDir(dir);
+        }
     }
 }
 
@@ -55,6 +58,17 @@ logger.error = function () {
     console.error(message);
     logErr.error(message);
 };
+
+logger.time = function () {
+    var message = Array.prototype.slice.call(arguments).join('');
+    console.time(message);
+};
+
+logger.timeEnd = function () {
+    var message = Array.prototype.slice.call(arguments).join('');
+    console.timeEnd(message);
+};
+
 
 
 logger.use = function (app) {

@@ -90,7 +90,7 @@ aliOSS.prototype.uploadFile = function (args, options) {
                 var json = {
                     success: true,
                     msg: '上传成功',
-                    name: result.name,
+                    name: newName,
                     url: result.url
                 };
                 res.json(json);
@@ -115,7 +115,7 @@ aliOSS.prototype.uploadImage = function (args) {
     var session = req && req.session || {};  //session
     if (session.user) {
         //已登录，设置oss目录
-        me.config.ossDir = '/mmh-images/comment-images/' + session.user.id + '/';
+        me.config.ossDir = AppConfig.ali_oss.dir + session.user.memberId + '/';
 
         me.uploadFile(args, {
             fileTypes: ['jpg', 'jpeg', 'png']  //限制类型

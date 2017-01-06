@@ -1,0 +1,1 @@
+define(function(require,exports,module){function n(){var n=$.Deferred();return require.async("app/location",function(o){o.getLocation({success:function(o){n.resolve({location:o})},fail:function(){n.reject()}})}),n.promise()}$.when(n()).always(function(n){require.async("cookie",function(){console.log("cookie",n.location)})})});

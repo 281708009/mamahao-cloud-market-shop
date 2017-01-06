@@ -1,0 +1,13 @@
+each goods in data
+    li(data-template-id=goods.styleNumId)
+        button.cart.js-add-cart 加入购物车
+        a(href='/goods/detail/?inlet=6&templateId=' + goods.styleNumId)
+            .pic
+                img(src=goods.mainPic + '@300w_300h_4e_255-255-255bgc')
+            .info
+                h3 #{goods.styleName}
+                .tools
+                    strong ￥#{goods.price}
+                .sales 已售#{goods.totalSale}件
+
+

@@ -1,0 +1,42 @@
+extends ../../../../layouts/topic.pug
+block title
+    title 嗨购妈豆日
+block meta
+    meta(itemprop='name', content='嗨购妈豆日')
+    meta(itemprop='description', name='description', content='周四妈豆3倍返，买1000元东西？快赚妈豆抵200元！更有量贩好货直降千元，等你来抢！')
+    meta(itemprop='image', content='http://s.mamhao.cn/topic/2016/111501/images/share.jpg')
+block css
+    link(rel='stylesheet', href='http://s.mamhao.cn/m/topic/common/style/topic.css')
+block content
+    // tab
+    .u-topic-tab.fixed
+        ul
+            li.active 萌宝服饰
+            li 餐椅餐具
+            li 轻松哺育
+            li 宝宝洗护
+            li 安全出行
+            li 寝具床品
+        .f-space
+    //header
+    header.m-header
+        //banner
+        .banner
+            img(src='http://s.mamhao.cn/topic/2016/111501/images/head.jpg')
+    //container
+    main.m-container
+
+
+    // 以下为楼层HTML模板，根据需要自定义
+    script(id='tpl-item' type='text/html').
+        <div class="floor">
+            <h1>{{title}}</h1>
+            <ul>
+            {{each list as value i}}
+                <li>索引 {{i + 1}} ：{{value}}</li>
+            {{/each}}
+            </ul>
+        </div>
+
+block js
+    script seajs.run('topic/opt/2016/1116/js/index.js');

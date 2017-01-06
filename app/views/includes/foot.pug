@@ -5,9 +5,13 @@ footer
             s
 
 
+//- 放在CDN上面的静态资源地址 script元素
+script(src='http://img.mamhao.cn/s/m/v1/js/modules/seajs/sea.js', id='seajsnode')
+//script(src='http://img.mamhao.cn/s/m/v1/js/modules/seajs/config.js')
+
 //- script元素
-script(src='http://s.mamhao.cn/m/v1/js/modules/seajs/sea.js', id='seajsnode')
-script(src='http://s.mamhao.cn/m/v1/js/modules/seajs/config.js')
+//script(src='http://s.mamhao.cn/m/v1/js/modules/seajs/config.js')
+script(src='/modules/seajs/config.js')
 
 block js
 //- 统计代码;

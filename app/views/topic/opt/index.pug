@@ -1,0 +1,37 @@
+extends ../../layouts/topic.pug
+block title
+    title #{config.title}
+block meta
+    //- 自定义分享信息;
+    meta(itemprop='name', content=config.share.name)
+    meta(itemprop='description', name='description', content=config.share.desc)
+    meta(itemprop='image', content=config.share.image)
+    //- 引入meta
+    if config.meta && config.meta.length
+        each meta in config.meta
+            meta(name=meta.name content=meta.content)
+block css
+    link(rel='stylesheet', href='http://s.mamhao.cn/m/topic/common/style/topic.css')
+    //- 引入外部css文件
+    if config.style && config.style.link && config.style.link.length
+        each href in config.style.link
+            link(rel='stylesheet', href=href)
+    //- 引入内联css样式
+    if config.style && config.style.content
+        style(type="text/css").
+            #{config.style.content}
+block js
+    //- 引入外部script文件
+    if config.scriptLink && config.scriptLink.length
+        each src in config.scriptLink
+            script(src=src)
+    script seajs.run(['topic/common/js/topic.js']);
+block content
+    //-公用代码块 mixin
+    include ../components/module.pug
+    //-公用方法块 js
+    include ../../includes/let.pug
+
+    section.m-topic-all(class=config.style && config.style.className)
+        each rows, i in body
+            +Module(rows)

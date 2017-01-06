@@ -1,0 +1,27 @@
+//- 凑单商品列表
+each goods in data
+    li(data-template-id=goods.styleNumId)
+        a(href='/goods/detail/?inlet=6&templateId=' + goods.styleNumId)
+            .pic
+                img(src=goods.mainPic + '@1e_200w_200h_0c_0i_0o_100q_1x.jpg')
+            .desc
+                h3 #{goods.styleName}
+                .price
+                    strong ￥#{goods.price}
+                        if goods.proTag.length > 1
+                            em 多重优惠
+                        else
+                            case goods.proTag[0]
+                                when 1
+                                    em 直降
+                                when 3
+                                    //- em 满赠
+                                when 4
+                                    em 套餐
+                                when 5
+                                    em 满减
+                                when 6
+                                    //- em 赠品
+                .pin 已售#{goods.totalSale}件
+        button.cart.js-add-cart 加入购物车
+

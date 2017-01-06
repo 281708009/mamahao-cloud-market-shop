@@ -71,7 +71,7 @@ define(function (require, exports, module) {
                 }
                 // 页面跳转;
                 var location = window.location;
-                var param = M.url.params;
+                var param = M.url.params();
                 param.vcode = code.val();
                 window.location.href = [location.origin, location.pathname, "?", $.param(param)].join("");
 

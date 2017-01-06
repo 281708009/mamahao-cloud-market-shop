@@ -9,22 +9,17 @@ define(function(require, exports, module) {
         },
         init: function () {
 
-
-
-
-            // 首页顶部banner滚动;
-            if($("#js-swiper-home li").length > 1){
-                var swiper = new Swiper('#js-swiper-home', {
-                    autoplay: 3000,
-                    loop: true,
-                    pagination: '.swiper-pagination',
-                    paginationClickable: true
+            if($(".ui-swipe li").length > 1){
+                // 首页顶部banner滚动;
+                M.swipe.init({
+                    continuous: true,
+                    auto: 3000
                 });
             }
             //懒加载
             M.lazyLoad.init({
-                threshold: 100, // 灵敏度;
-                failure_limit: 200, // 容差范围;
+                threshold: 400, // 灵敏度;
+                failure_limit: 300, // 容差范围;
                 container: $("main.main, .m-home .hang ol")
             });
             page.bindEvents();
@@ -49,7 +44,7 @@ define(function(require, exports, module) {
                     api: '/test/request',
                     container: '.container .floor-list',
                     fnSuccess: function (res, ele) {
-                        console.log(JSON.stringify(res))
+                        console.log(JSON.stringify(res));
                         ele.data('locked', true);
                     }
                 });

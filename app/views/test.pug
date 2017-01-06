@@ -8,6 +8,7 @@ block js
 
 block css
     style.
+        html{user-select: initial; -webkit-user-select: initial;}
         .ali-oss .opts {
             padding: 10px;
         }
@@ -31,6 +32,8 @@ block css
         .ali-oss .images img {
             width: 80px;
         }
+        .cookie{ overflow: auto; white-space: pre-wrap; word-wrap: break-word;}
+        select{ height: 60px;}
 
 block content
 
@@ -39,16 +42,51 @@ block content
     div.ali-oss
         p.opts
             button.u-btn.success.js-ali-oss 点击测试 ali-oss
+        p
+            //-button.u-btn.js-add-cookie 写入cookie
+            button.u-btn.js-location-cookie 读取mmh_app_location
+            button.u-btn.js-get-cookie 读取mmh_app_location并解密
+
         p.opts
             input.js-upload(type='file',value='请选择文件',multiple)
         dl.images
         dl.buckets
         dl.files
+        .js-select-gps 选择地址
+        dl
+            dt isMamahao：
+            dd #{isMamahao}
+        dl
+            dt node-mmh_app_user_info：
+            dd.cookie #{userInfo}
+        dl
+            dt node-mmh_app_location：
+            dd.cookie #{location}
+        dl
+            dt js-mmh_app_location：
+            dd.cookie.js-location
+        dl
+            dt query d：
+            dd.query #{d}
+        dl
+            dt query b：
+            dd.query #{b}
 
-        ul
-            li memberId: #{memberId}
-            li token: #{token}
-            li isMamahao: #{isMamahao}
+        dl
+            dt cookie
+            dd
+                each val, key in cookies
+                    p.cookie #{key}: #{val}
+
+        select.babyGender(multiple="multiple" size="1")
+            option(value=-1) 请选择宝宝性别
+            option(value=1) 王子
+            option(value=2) 公主
+            option(value=1) 王子
+            option(value=2) 公主
+            option(value=1) 王子
+            option(value=2) 公主
+
 
 
 

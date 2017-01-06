@@ -5,7 +5,7 @@
 define(function (require, exports, module) {
     var page = {
         config: {
-            params: M.url.params,
+            params: M.url.params(),
             hashParams: function () {
                 return M.url.getParams((location.hash.match(/(\w+=)([^\&]*)/gi) || []).join('&'));  //json params
             },
@@ -14,39 +14,28 @@ define(function (require, exports, module) {
                 "extra": "/api/goods_detail_extra"
             }
         },
-        init: function (container, params) {
-            var c = page.config;
-            c.$container = container;
-
-            M.ajax({
-                location: true,  //获取地理位置作为参数
-                showLoading: false,
-                url: c.api.extra,
-                data: params ? {data: JSON.stringify(params)} : {},
-                success: function (res) {
-                    //console.log('success--->', res);
-                    var template = res.template;
-                    $('.spa').append(template);
-                }
-            });
-
-            // 购物车内是否有新商品;
-            if (localStorage.getItem(CONST.local_cart_newGoods)) {
-                $(".js-goods-cart").addClass("new");
-            }
-            //加载swipe
-            require.async('swipe', function () {
-                M.swipe.init(); //初始化Swipe
-            });
-
+        init: function () {
+            var self = this, c = self.config, params = c.params;
+            c.$container = $(".spa");
             //懒加载，定时器不要删除
             setTimeout(function () {
                 M.lazyLoad.init();
             }, 250);
-            // history为空或者history.length <= 0的时候，显示返回首页链接;
-            if(!history.length || history.length == 1){
-                $(".m-goods-detail").prepend('<div class="history-back"><a href="http://m.mamhao.com/">商城首页</a><div');
+
+            //加载swipe
+            M.swipe.init(); //初始化Swipe
+            // 购物车内是否有新商品;
+            if (localStorage.getItem(CONST.local_cart_newGoods)) {
+                $(".js-goods-cart").addClass("new");
             }
+
+            // 因目前从H5活动页面去详情页较多，故暂时默认都显示;
+            if (c.params.vip) {
+                $(".m-goods-detail").prepend('<div class="history-back"><a href="//' + location.host + '/sale/">妈妈好 - 每月购</a><div');
+            } else {
+                $(".m-goods-detail").prepend('<div class="history-back"><a href="//' + location.host + '/">商城首页</a><div');
+            }
+
             // 详情页微信定义分享
             require.async('weixin', function (wx) {
                 M.wx.share(wx, {
@@ -57,12 +46,21 @@ define(function (require, exports, module) {
                 });
             });
 
-            $(function () {
-                page.bindEvents();
+            page.bindEvents();
+
+            M.ajax({
+                showLoading: true,
+                url: c.api.extra,
+                data: params ? {data: JSON.stringify(params)} : {},
+                success: function (res) {
+                    //console.log('success--->', res);
+                    var template = res.template;
+                    c.$container.append(template);
+                }
             });
         },
         bindEvents: function () {
-            var c = page.config, hashParams = c.hashParams();
+            var c = page.config, hashParams = c.params;
             var $module = c.$container;
 
             /*质检报告，数据缓存到本地*/
@@ -92,16 +90,53 @@ define(function (require, exports, module) {
                 $(this).toggleClass('collapse');
             });
 
+            //呼出模态框
+            $module.on('click', '.js-modal', function () {
+                var modal = $($(this).data("target"));
+                modal.addClass("show");
+                if (modal.hasClass('m-select-address')) {
+                    // 定位地址模态框，单独事件;
+                    var location = JSON.parse(new M.Base64().decode($.cookie(CONST.local_cookie_location))) || {};
+                    if (location.deliveryAddrId) {
+                        $("#add-" + location.deliveryAddrId).attr("checked", "checked");
+                    }
+                    // 引用其他地址选择;
+                    require.async('app/choose_pcd', function (pcd) {
+                        c.PCD = new pcd({
+                            trigger: $('.js-select-gps'),
+                            //className: "bottom",
+                            confirmed: function (data) {
+                                var storageGPS = JSON.parse(new M.Base64().decode(localStorage.getItem(CONST.local_store_gps))) || {};
+                                var info = {
+                                    lat: storageGPS.lat, // 当前定位的lat
+                                    lng: storageGPS.lng, // 当前定位的lng
+                                    areaId: data.areaID,
+                                    district: data.areaName,
+                                    city: data.cityName,
+                                    province: data.proName,
+                                    formattedAddress: data.proName + data.cityName + data.areaName,
+                                    timestamp: +new Date()
+                                };
+                                if (storageGPS.city != data.cityName) info.nolocal = true;
+                                //console.log(info);
+                                $.cookie(CONST.local_cookie_location, new M.Base64().encode(JSON.stringify(info)), {
+                                    expires: 365,
+                                    path: '/'
+                                });
+                                M.reload();
+                            }
+                        }).init();
+                    });
+                }
+            });
+
             //点击优惠券或促销列表
             $module.on('click', '.js-nav-list', function () {
                 var next = $(this).next(), pop = $("." + next.data("pop"));
                 pop.addClass("show");
-                if(!pop.find(".list").text()){
+                if (!pop.find(".list").text()) {
                     pop.find(".list").html(next.html());
                 }
-                //$(".m-goods-coupon").addClass("show").find(".list");
-                //js-goods-coupon-list
-                //$(this).siblings('.u-fixed').addClass('show');
             });
 
             //点击领券优惠券
@@ -132,25 +167,32 @@ define(function (require, exports, module) {
                 });
             });
 
-            //点击门店地址
-            $module.on('click', '.js-address', function () {
-                $('.m-select-address').addClass('show');
-            });
 
+            // 切换定位地址
             $module.on('click', '.m-select-address .list li', function () {
-                var $this = $(this), info = $this.data('json');
-                localStorage.setItem(CONST.local_detail_location, JSON.stringify(info));
-                location.reload();
+                var $this = $(this), info = $this.data('json'),
+                    storageGPS = JSON.parse(new M.Base64().decode(localStorage.getItem(CONST.local_store_gps))) || {};
+                // 记录当前用户操作的时间;
+                info.timestamp = +new Date();
+                // 校验切换后的地址是否为当前城市内；
+                if (storageGPS.city && storageGPS.city != info.city) {
+                    info.nolocal = true;
+                }
+                $.cookie(CONST.local_cookie_location, new M.Base64().encode(JSON.stringify(info)), {
+                    expires: 365,
+                    path: '/'
+                });
+                M.reload();
             });
 
             $module.on('click', '.m-select-address .gps', function () {
-                localStorage.removeItem(CONST.local_detail_location);
-                location.reload();
+                $.removeCookie(CONST.local_cookie_location, {path: '/'});
+                M.reload();
             });
 
 
             //点击遮罩或关闭按钮
-            $module.on('click', '.mask, .js-close', function () {
+            $module.on('click', '.mask, .js-close, .js-select-gps', function () {
                 $(this).closest('.u-fixed').removeClass('show');
             });
 
@@ -162,8 +204,15 @@ define(function (require, exports, module) {
                     sku.init($module.find('.sku'));
                     $module.find('.u-quantity .number').spinner();  //改变数量控制
                     $module.find('.js-sku-confirm').data('action', action);
+                    $('.sku-sales')[hashParams.vip ? 'hide' : 'show']();
                     $module.find('.u-sku').addClass('show');
                 });
+            });
+
+            //点击sku的促销选择
+            $module.on('click', '.sku-sales dd a', function () {
+                var $this = $(this);
+                $this.addClass('active').siblings().removeClass('active');
             });
 
             //选完sku，点击确定
@@ -192,10 +241,10 @@ define(function (require, exports, module) {
 
             // 妈豆商品计时;
             var beanTime = $(".js-bean-time");
-            if(beanTime.length){
+            if (beanTime.length) {
                 var thas = beanTime, start = Number(thas.data("start")), end = Number(thas.data("end")), current = Number(thas.data("current"));
                 console.log(start, end, current);
-                if(start > current){
+                if (start > current) {
                     // 未开始;
                     $(".js-buy").addClass("ban");
                     thas.timeCountDown({
@@ -209,12 +258,12 @@ define(function (require, exports, module) {
                                 callback: function () {
                                     // 已结束
                                     $(".js-buy").addClass("ban");
-                                    window.location.reload();
+                                    M.reload();
                                 }
                             });
                         }
                     });
-                }else if(start <= current && current <= end){
+                } else if (start <= current && current <= end) {
                     // 进行中;
                     $(".js-buy").removeClass("ban");
                     thas.timeCountDown({
@@ -223,10 +272,10 @@ define(function (require, exports, module) {
                         callback: function () {
                             // 已结束
                             $(".js-buy").addClass("ban");
-                            window.location.reload();
+                            M.reload();
                         }
                     });
-                }else{
+                } else {
                     $(".js-buy").addClass("ban");
                     thas.html("已结束");
                 }
@@ -236,7 +285,7 @@ define(function (require, exports, module) {
         },
         //添加商品到购物车
         addToCart: function () {
-            var c = page.config, hashParams = c.hashParams();
+            var c = page.config, hashParams = c.params;
             //获取当前选中的sku信息
             require.async('app/sku', function (sku) {
                 var skuInfo = sku.selected();
@@ -259,7 +308,8 @@ define(function (require, exports, module) {
                         "shopId": hashParams.shopId,
                         "templateId": hashParams.templateId,
                         "companyId": hashParams.companyId,
-                        "count": +$('.u-sku .u-quantity .number').text()
+                        "count": +$('.u-sku .u-quantity .number').text(),
+                        "pmtCode": c.params.vip ? 1 : ($('.sku-sales')[0] ? +$('.sku-sales dd a.active').data('value') : 0)
                     }]),
                     pmtType: 0
                 };
@@ -270,7 +320,7 @@ define(function (require, exports, module) {
                     success: function (res) {
                         if (res.success_code == 200) {
                             localStorage.setItem(CONST.local_cartId, res.cartId);  //更新本地购物车ID
-                            M.tips('商品已成功添加到购物车');
+                            M.tips({class: 'true', body: '加入购物车成功'});
                             $('.u-sku .js-close').trigger('click');
                             // 标记购物车图标加红点;
                             localStorage.setItem(CONST.local_cart_newGoods, 1);
@@ -284,7 +334,7 @@ define(function (require, exports, module) {
         },
         //立即购买
         buyNow: function () {
-            var c = page.config, hashParams = c.hashParams();
+            var c = page.config, hashParams = c.params;
             //获取当前选中的sku信息
             require.async('app/sku', function (sku) {
                 var skuInfo = sku.selected();
@@ -298,6 +348,7 @@ define(function (require, exports, module) {
                     return M.tips('请选择' + specTips);
                 }
 
+                var pmtCode = c.params.vip ? 1 : (!$('.sku-sales')[0] ? ($('.monthly .nav-list')[0] ? 1 : 0) : +$('.sku-sales dd a.active').data('value'));
                 var params = {
                     inlet: hashParams.inlet == 2 ? 4 : 2,  //1 购物车  2 商品详情 4 麻豆尊享
                     jsonTerm: JSON.stringify({
@@ -306,14 +357,20 @@ define(function (require, exports, module) {
                         "count": +$('.u-sku .u-quantity .number').text(),
                         "shopId": hashParams.shopId,
                         "companyId": hashParams.companyId,
-                        "isBindShop": hashParams.shopId ? 1 : 0
+                        "isBindShop": hashParams.shopId ? 1 : 0,
+                        "pmtCode": pmtCode
                     })
                 };
-                location.href = '/cart#/settlement/' + $.param(params);
+
+                var checkoutURL = '/settlement#/checkout/' + $.param(params);
+                if (pmtCode === 1) {
+                    params.vip = 1;
+                    checkoutURL = '/settlement#/selection/' + $.param(params);
+                }
+                location.href = checkoutURL;
 
             });
         }
     };
-
-    module.exports = page;
+    page.init();
 });

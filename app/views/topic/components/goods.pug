@@ -1,0 +1,33 @@
+//商品结构拼接
+.goods(class=(rows.views.type == 51 && "alone"))
+    //- 组装商品
+    each id, index in rows.id
+        .item
+            a.details(href="javascript:;" data-id=id data-sale=rows.views.sale data-vip=rows.views.vip)
+                .pic
+                    img(src=placeholderPic)
+                    //- 上标
+                    if rows.views.sup && rows.views.sup.length
+                        .sup
+                            each sup in rows.views.sup
+                                sup
+                                    if isHttp(sup)
+                                        img(src=sup)
+                                    else
+                                        | #{sup}
+                .info
+                    h3 -
+                    .normal
+                        .price
+                            dl.new
+                                dt #{rows.views.priceText || '现价：'}
+                                dd
+                                    span ￥
+                                    strong #{rows.views.price ? rows.price[index] : "-"}
+                            dl.old
+                                dt 原价：
+                                dd
+                                    span ￥
+                                    del -
+                        .button
+                            button #{rows.views.btn || '查看详情'}

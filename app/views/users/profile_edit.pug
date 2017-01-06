@@ -1,0 +1,100 @@
+//-用户状态 ：0=未选择，1=怀孕，2=宝妈，3=备孕
+mixin status_block(status, checked)
+    case +status
+        when 1
+            li
+                label
+                    .pic
+                        img(src='//img.mamhao.cn/s/common/images/avatar-02.png', alt='')
+                    p
+                        input.u-checkbox.datetime-picker.datetime-picker-mother(type='radio', name='baby', data-status=status, data-section='.mother', checked=checked, value=duoDateStr)
+                        em 孕妈
+        when 2
+            li
+                label
+                    .pic
+                        img(src='//img.mamhao.cn/s/common/images/avatar-03.png', alt='')
+                    p
+                        input.u-checkbox(type='radio', name='baby', data-status=status, data-section='.baby', checked=checked)
+                        em 已有宝宝
+        when 3
+            li
+                label
+                    .pic
+                        img(src='//img.mamhao.cn/s/common/images/avatar-01.png', alt='')
+                    p
+                        input.u-checkbox(type='radio', name='baby', data-status=status, data-section='.prepare', checked=checked)
+                        em 备孕
+
+mixin baby_block(info)
+    // 宝宝信息
+    .baby.flex.flex-column.section&attributes(attributes)
+        ul.flex.form
+            li
+                input.babyName.readonly.val(type='text', maxlength='9', placeholder='请输入宝宝昵称', value=info && info.babyName)
+            li
+                input.babyGenderShow.readonly.val(value=info && info.babyGender ? (info.babyGender == 1 ? '王子' : '公主') : '', placeholder='请选择宝宝性别')
+            li
+                if info && info.babyBirthday
+                    span.babyBirthday.datetime-picker.datetime-picker-baby.readonly.val(data-val=info.babyBirthday) #{info.babyBirthday}
+                else
+                   span.babyBirthday.datetime-picker.datetime-picker-baby.readonly 请选择宝宝生日
+
+        +footer_btn(info)
+
+
+mixin breed_block()
+    // 孕妈
+    .mother.section&attributes(attributes)
+        .tip
+            | 亲，填写正确的预产期，宝宝生日当天会获得妈豆奖励哦！
+
+
+mixin prepare_block()
+    //备孕
+    .prepare.flex.flex-column.section&attributes(attributes)
+        .form.flex
+        +footer_btn()
+
+
+//底部按钮
+mixin footer_btn(info)
+    section.u-footer-button
+        ul(data-id=request.id)
+            if info
+                li
+                    button.u-btn.max.alone.js-delete 删除
+            li
+                button.u-btn.max.success.alone.js-submit 保存
+
+
+section.m-info-edit.flex.flex-column
+    //-用户状态 ：0=未选择，1=怀孕，2=宝妈，3=备孕
+    case +request.status
+        when 0
+            if breedStatus == 0 || breedStatus == 2
+                ul.type
+                    +status_block(3, true)
+                    +status_block(1)
+                    +status_block(2)
+                +prepare_block()
+                +breed_block()(class='none')
+                +baby_block()(class='none')
+            else
+                ul.type
+                    +status_block(2, true)
+                +baby_block()
+        when 1
+        when 3
+            ul.type
+                +status_block(1, true)
+                +status_block(2)
+            +breed_block()
+            +baby_block()(class='none')
+        when 2
+            ul.type
+                +status_block(2, true)
+            - var info;
+            - babies && babies.forEach(function(v,i){if(v.babyId==request.id){info=v;}})
+            +baby_block(info)
+

@@ -58,7 +58,7 @@ define(function (require, exports, module) {
                 fnSuccess: function (res, ele) {
                     var data = res.data;
                     if (!data.template) {
-                        return ele.data('locked', true)
+                        return ele.data('locked', true);
                     }
                     ele.append(data.template);
                     //懒加载

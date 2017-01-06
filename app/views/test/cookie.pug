@@ -1,0 +1,9 @@
+extends ../layouts/initial.pug
+block title
+    title 清除cookie
+block meta
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+block content
+    p 已清除以下cookie内容：
+    each val, key in cookies
+        p #{key} ：#{val}

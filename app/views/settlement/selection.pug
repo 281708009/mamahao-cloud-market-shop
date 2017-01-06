@@ -1,0 +1,22 @@
+li
+    label
+        input.u-checkbox(type="radio",name="dealingType",value=1)
+        em 在线付款
+li(class=inspect.isSupport?'':'ban')
+    label
+        if inspect.isSupport
+            input.u-checkbox(type="radio",name="dealingType",value=2)
+        else
+            input.u-checkbox(type="radio",name="dealingType",value=2, disabled)
+
+        em 验货付款
+    .prompt
+        if inspect.isSupport
+            .tip
+                each a in inspect.supportDes
+                    p #{a}
+        else if inspect.noSupportDes
+            .tip
+                dl
+                    dt #{inspect.noSupportDes.title}
+                    dd #{inspect.noSupportDes.content}

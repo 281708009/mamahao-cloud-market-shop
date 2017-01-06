@@ -27,15 +27,16 @@ section.m-order-detail
                 em 门店名称：
                 p #{detail.distributionInfo.shopName}
             li
-                em 门店地址：
-                p #{detail.distributionInfo.addr}
+                em 配送人：
+                p #{detail.distributionInfo.deliveryStaff}
+                //-p #{detail.distributionInfo.addr}
             li
-                em 送货人员：
-                p #{detail.distributionInfo.deliveryStaff}&nbsp;
+                em 预计送达时间：
+                p #{detail.distributionInfo.text}
+            li
+                em 联系方式：
+                p
                     a(href='tel:#{detail.distributionInfo.phone}') #{detail.distributionInfo.phone}
-            li
-                em 送达时间：
-                p 预计#{detail.distributionInfo.arriveTime}前送达
     // 收货人信息
     if detail.deliveryInfo
         .u-send
@@ -51,6 +52,8 @@ section.m-order-detail
                 if item.shopName
                     .header #{item.shopName}
                         em 集团自营
+                else if item.warehouseName
+                    .header #{item.warehouseName}
                 else
                     .header 妈妈好平台
                 each goods in item.goodsList
@@ -62,6 +65,8 @@ section.m-order-detail
                     })
                         .pic
                             img(src=goods.itemPic)
+                            if goods.refuseTitle
+                                em #{goods.refuseTitle}
                         figure
                             figcaption #{goods.itemName}
                             if goods.spec.length
@@ -82,9 +87,9 @@ section.m-order-detail
                             if goods.allowBuy
                                 dd
                                     button.u-btn.checked.js-single-rebuy 再次购买
-                            //- if(detail.allowRefund && !goods.isRefunded)
+                            if(detail.orderStatus == 4 && detail.dealingType == 2 && goods.allowRefundMoney)
                                 dd
-                                    button.u-btn 退款退货
+                                    button.u-btn.js-btn-intercept(data-id=detail.orderNo,data-line-id=goods.orderLineId) 取消发货
     // 付款信息
     .info
         ul.sale
@@ -102,7 +107,10 @@ section.m-order-detail
                                 | ￥#{p.price}
 
         dl.finally
-            dt 实付款
+            if (detail.orderStatus == 0 || detail.orderStatus == 6) && detail.dealingType == 2
+                dt 实付款
+            else
+                dt 应付款
             dd ￥#{detail.payPrice}
         ol.number
             li 订单编号：#{detail.orderNo}
@@ -118,9 +126,15 @@ section.m-order-detail
                     when 3
                         em 待付款
                     when 4
-                        em 待发货
+                        if detail.dealingType == 2
+                            em 待发货(未付款)
+                        else
+                            em 待发货
                     when 5
-                        em 待收货
+                        if detail.dealingType == 2
+                            em 待收货(未付款)
+                        else
+                            em 待收货
                     when 6
                         em 待评价
                     when 8
@@ -155,7 +169,7 @@ section.m-order-detail
                 dd
                 case detail.orderStatus
                     when 0
-                        unless detail.deliveryId == 2
+                        if detail.isShowLogistics
                             a.u-btn(href='#/order/express/' + detail.orderNo) 查看物流
                     when 1
                         button.u-btn.js-btn-del(data-id=detail.orderNo) 删除订单
@@ -168,22 +182,28 @@ section.m-order-detail
                             button.u-btn.js-btn-cancel(data-id=detail.orderNo) 取消订单
                             button.u-btn.success.js-topay(data-order-no=detail.orderNo) 立即付款
                     when 4
-                        if detail.deliveryId == 3
+                        if detail.deliveryId != 2
                             button.u-btn.js-btn-remind(data-id=detail.orderNo) 提醒发货
                     when 5
-                        if detail.deliveryId == 3
+                        if detail.isShowLogistics
                             a.u-btn(href='#/order/express/' + detail.orderNo) 查看物流
-                        a.u-btn.success.js-btn-receive(data-id=detail.orderNo) 确认收货
-                    when 6
-                        if detail.deliveryId == 3
-                            a.u-btn(href='#/order/express/' + detail.orderNo) 查看物流
-                        if detail.data[0].goodsList.length > 1
-                            a.u-btn.checked(href='#/order/review/' + detail.orderNo) 评价晒单
+                        if detail.dealingType == 2
+                            if detail.payLockType
+                                button.u-btn.success.js-btn-inspect(data-id=detail.orderNo) 重新付款
+                            else
+                                button.u-btn.success.js-btn-inspect(data-id=detail.orderNo) 验货付款
                         else
-                            a.u-btn.checked(href='#/order/reviewDetail/' + detail.orderNo) 评价晒单
+                            button.u-btn.success.js-btn-receive(data-id=detail.orderNo) 确认收货
+                    when 6
+                        if detail.isShowLogistics
+                            a.u-btn(href='#/order/express/' + detail.orderNo) 查看物流
+                        a.u-btn.checked(href='#/order/review/' + detail.orderNo) 评价晒单
                     when 8
                     default
                         | &nbsp;
                 if detail.allowBuy
-                    a.u-btn.success(href='#/order/rebuy/' + detail.orderNo) 再次购买
+                    a.u-btn.success.js-footer-rebuy(href='javascript:;', data-order=detail.orderNo, data-number=detail.data.length) 再次购买
         .f-space
+
+//- 取消原因弹窗
+section.js-pop-causes

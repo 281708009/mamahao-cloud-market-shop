@@ -5,6 +5,8 @@ each order, index in rows
             dt.flex
                 if order.shopName
                     | #{order.shopName}
+                else if order.warehouseId
+                    | #{order.warehouseName}
                 else
                     | 妈妈好平台
                 if order.deliveryId == 1
@@ -56,7 +58,10 @@ each order, index in rows
 
         .footer.flex-center
             dl.flex
-                dt 实付：￥#{order.payPrice}
+                if (order.orderStatus == 0 || order.orderStatus == 6) && order.dealingType == 2
+                    dt 实付：￥#{order.payPrice}
+                else
+                    dt 应付：￥#{order.payPrice}
                 if(order.orderStatus === 3)
                     dd.js-countdown(data-seconds=order.remainMinutes,data-page-type=1)
                         time.minute 15
@@ -66,9 +71,6 @@ each order, index in rows
             ul.js-option
                 case order.orderStatus
                     when 0
-                        if(order.deliveryId == 3)
-                            li
-                                a.u-btn(href='#/order/express/' + order.orderNo) 查看物流
                         if(order.allowBuy)
                             li
                                 a.u-btn.checked(href='#/order/rebuy/' + order.orderNo + '/' + (request.queryType ? request.queryType : '')) 再次购买
@@ -102,13 +104,22 @@ each order, index in rows
                             else
                                 a.u-btn(href='#/order/express/' + order.orderNo) 查看物流
                         li
-                            button.u-btn.checked.js-btn-receive(data-id=order.orderNo) 确认收货
+                            if(order.dealingType == 2)
+                                if order.payLockType
+                                    button.u-btn.checked.js-btn-inspect(data-id=order.orderNo) 重新付款
+                                else
+                                    button.u-btn.checked.js-btn-inspect(data-id=order.orderNo) 验货付款
+
+                            else
+                                button.u-btn.checked.js-btn-receive(data-id=order.orderNo) 确认收货
                     when 6
                         li
-                            if(order.goodsList.length > 1)
-                                a.u-btn.checked(href='#/order/review/' + order.orderNo) 评价晒单
-                            else
-                                a.u-btn.checked(href='#/order/reviewDetail/' + order.orderNo) 评价晒单
+                            a.u-btn.checked(href='#/order/review/' + order.orderNo) 评价晒单
+                            //-
+                                if(order.goodsList.length > 1)
+                                    a.u-btn.checked(href='#/order/review/' + order.orderNo) 评价晒单
+                                else
+                                    a.u-btn.checked(href='#/order/reviewDetail/' + order.orderNo) 评价晒单
 
 
 

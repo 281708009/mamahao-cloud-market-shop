@@ -1,0 +1,8 @@
+extends ../layouts/layout.pug
+block title
+    title 质检报告
+block content
+    section.m-goods-query
+        if pic && pic.length
+            each pic_url in pic
+                img(src= pic_url + '@640w_1e_100q.jpg')

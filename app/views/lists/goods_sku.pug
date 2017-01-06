@@ -1,14 +1,15 @@
 //- 商品SKU
 include ../includes/let.pug
-if isInStock
-    .info
-        .pic
-            img.sku-pic(src= def.itemPic + '@100w_100q.png')
-        dl
-            dt.sku-price #{def.price}
-            dd.sku-desc
 
-        del.js-close x
+.info
+    .pic
+        img.sku-pic(src= def.itemPic + '@100w_100q.png')
+    dl
+        dt.sku-price #{def.price}
+        dd.sku-desc
+
+    del.js-close x
+.sku-content
     .sku(data-sku-map=skuInfo)
         if skuView && skuView.length
             each views, index in skuView
@@ -17,15 +18,24 @@ if isInStock
                         dt #{key}
                         dd
                             each v,i in val
-                                a.sku-key(href='javascript:;', data-value=v) #{skuMap[v]}
+                                a.sku-key(href='javascript:;', data-value=v, class={ban: !isInStock}) #{skuMap[v]}
 
     .quantity
         dl
-            dt 选择数量
+            dt 购买数量
             dd
                 .u-quantity
                     a.decrement.disabled(href='javascript:;') -
                     .number 1
                     a.increment(href='javascript:;') +
-    .button
-        button.u-btn.success.max.alone.js-sku-confirm 确定
+
+    if pmtChose
+        .sku-sales
+            dl
+                dt #{pmtChose.title}
+                    em.desc #{pmtChose.subTitle}
+                dd
+                    each v, i in pmtChose.pmtChoseList
+                        a(class={active: i === 0}, href='javascript:;', data-value=v.code) #{v.name}
+.button
+    button.u-btn.success.max.alone.js-sku-confirm 确定

@@ -6,15 +6,126 @@ var HttpClient = require("../utils/http_client"),
 /*到个人主页*/
 var center = {
     index: function (req, res, next) {
-        
+        res.render('users/index');
+    },
+    center: function (req, res, next) {
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
         HttpClient.request(arguments, {
             url: API.center,
+            data: params,
             success: function (data) {
                 var session_user = req.session.user || {};  // 用户基本信息数据;
-                data.avatar = session_user.avatar; //头像
-                data.nickName = session_user.nickname; // 用户名
+                data = $.extend({}, data, session_user);
+                res.render('users/components/center', data, function (err, html) {
+                    err && log.error(err);
+                    res.json({template: html});
+                });
+            }
+        });
+    },
+    //个人信息相关
+    profile: function (req, res, next) {
+        var session_user = req.session.user;  // 用户基本信息数据;
+        if (session_user) {
+            res.render('users/profile', session_user, function (err, html) {
+                err && log.error(err);
+                res.json({template: html});
+            });
+        } else {
+            res.json({error_code: -1, msg: '用户未登录或登录已过期'});
+        }
+    },
+    profileEdit: function (req, res, next) {
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        var session_user = req.session.user;  // 用户基本信息数据;
+        if (session_user) {
+            session_user.request = params;
+            res.render('users/profile_edit', session_user, function (err, html) {
+                err && log.error(err);
+                res.json({template: html});
+            });
+        } else {
+            res.json({error_code: -1, msg: '用户未登录或登录已过期'});
+        }
 
-                res.render('users/index', data);
+    },
+    //更新个人信息缓存
+    updateProfileCache: function (req, res, next) {
+        HttpClient.request(arguments, {
+            url: API.profile,
+            success: function (data) {
+                var updateData = {
+                    phone: data.mobile,
+                    memberNickName: data.nickname,
+                    headPic: data.avatar,
+                    defaultGeo: data.defaultGeo,
+                    defaultCityId: data.defaultCityId,
+                    defaultAreaId: data.defaultAreaId,
+                    babyCnt: data.babyCnt,
+                    breedStatus: data.breedStatus,
+                    perfectInfo: data.perfectInfo,
+                    vip: data.vip,
+                    vipLevel: data.vipLevel,
+                    vipLevelLogo: data.vipLevelLogo,
+                    vipLevelName: data.vipLevelName,
+                    vipLevelSmallLogo: data.vipLevelSmallLogo,
+                    babies: data.babies,
+                    duoDate: data.duoDate,
+                    duoDateStr: data.duoDateStr,
+                    memberType: data.memberType,
+                };
+                req.session.user = $.extend(req.session.user, updateData);
+                res.json({success: true});
+            }
+        });
+    },
+    profileUpdate: function (req, res, next) {
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        HttpClient.request(arguments, {
+            url: API.profile_update,
+            data: params,
+            success: function (data) {
+                res.json(data);
+            }
+        });
+    },
+    profileGeoUpdate: function (req, res, next) {
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        HttpClient.request(arguments, {
+            url: API.profile_geo_update,
+            data: params,
+            success: function (data) {
+                res.json(data);
+            }
+        });
+    },
+    breedAdd: function (req, res, next) {
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        HttpClient.request(arguments, {
+            url: API.breed_add,
+            data: params,
+            success: function (data) {
+                res.json(data);
+            }
+        });
+    },
+    breedUpdate: function (req, res, next) {
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        HttpClient.request(arguments, {
+            url: API.breed_update,
+            data: params,
+            success: function (data) {
+                res.json(data);
+            }
+        });
+    },
+    breedDelete: function (req, res, next) {
+        var params = req.body.data && JSON.parse(req.body.data) || {}; // 请求参数值;
+        HttpClient.request(arguments, {
+            url: API.breed_delete,
+            data: params,
+            success: function (data) {
+                res.json(data);
             }
         });
     },
@@ -140,16 +251,15 @@ var center = {
         } else {
             /*bigPipe方案加载第一页数据*/
             var task = bigPipeTask.integral;
-
-            bigPipe.prototype.succeed = function () {
-                var me = this;
-                res.render('users/components/integral', {data: me.data}, function (err, html) {
-                    var template = html + me.scripts.join('');
-                    res.json({template: template});
-                });
-            };
-
-            new bigPipe(task, arguments);
+            new bigPipe(task, arguments, {
+                succeed: function () {
+                    var me = this;
+                    res.render('users/components/integral', {data: me.data}, function (err, html) {
+                        var template = html + me.scripts.join('');
+                        res.json({template: template});
+                    });
+                }
+            });
         }
     },
     // 我的优惠券;
@@ -169,16 +279,15 @@ var center = {
         } else {
             /*bigPipe方案加载第一页数据*/
             var task = bigPipeTask.coupons;
-
-            bigPipe.prototype.succeed = function () {
-                var me = this;
-                res.render('users/components/coupons', {}, function (err, html) {
-                    var template = html + me.scripts.join('');
-                    res.json({template: template});
-                });
-            };
-
-            new bigPipe(task, arguments);
+            new bigPipe(task, arguments, {
+                succeed: function () {
+                    var me = this;
+                    res.render('users/components/coupons', {}, function (err, html) {
+                        var template = html + me.scripts.join('');
+                        res.json({template: template});
+                    });
+                }
+            });
         }
     },
     //领券
@@ -202,6 +311,10 @@ var center = {
                 res.json(data);
             }
         });
+    },
+    // 用户选择身份
+    identity: function (req, res, next) {
+        res.render('users/identity');
     }
 
 };

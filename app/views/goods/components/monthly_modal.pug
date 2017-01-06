@@ -1,0 +1,13 @@
+//- 每月购礼包商品列表
+if monspPmtList.data.length
+    h2 #{monspPmtList.title}
+    ul.list
+        each item in monspPmtList.data
+            li
+                .icon
+                    img(src= item.icon, alt= item.title)
+                dl
+                    dt #{item.title}:
+                        span  #{item.content}
+
+    button.u-btn.success.max.js-close 关闭

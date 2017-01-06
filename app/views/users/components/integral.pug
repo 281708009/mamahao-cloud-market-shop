@@ -1,20 +1,14 @@
 //- 我的分员积分;
 .u-tab.double.fixed.ui-swipe-tab
     ul
-        //-这里需要独立循环两次，不是bug，别改，不明白可问我，by xqs
-        each item in data
-            if item.request.type == 0
-                li.active
-                    a(href='javascript:;')
-                        | #{item.totalPoint}分
-                        em Goodbady积分
-
-        each item in data
-            if item.request.type == 1
-                li
-                    a(href='javascript:;')
-                        | #{item.totalPoint}分
-                        em Mothercare积分
+        li.active
+            a(href='javascript:;')
+                | #{data[0].totalPoint}分
+                em Goodbady积分
+        li
+            a(href='javascript:;')
+                | #{data[1].totalPoint}分
+                em Mothercare积分
 
     .f-space
 
@@ -27,10 +21,10 @@
                 .title
                     strong GB积分交易明细
                     a(href='http://h5.mamahao.com/help/integral/') 积分说明
-                ul.list.flex(data-params='{"type": 0}')
+                ul.list.flex.list-0(data-params='{"type": 0}')
 
             .ui-swipe-item.flex-column
                 .title
                     strong MC积分交易明细
                     a(href='http://h5.mamahao.com/help/integral/') 积分说明
-                ul.list.flex(data-params='{"type": 1}')
+                ul.list.flex.list-1(data-params='{"type": 1}')

@@ -1,0 +1,34 @@
+extends ../layouts/initial.pug
+block title
+    title 妈妈好商城
+block meta
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+block css
+    style.
+        html, body {height: 100%; overflow: hidden;}
+        body {background: #f0f0f0;color: #333;}
+        .prompt {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            top: 50%;
+            -webkit-transform: translate3d(0, -70%, 0);
+            transform: translate3d(0, -70%, 0);
+        }
+        .prompt span {
+            width: 105px;
+            height: 105px;
+            display: block;
+            margin: 0 auto;
+            background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANIAAADSCAMAAAAIR25wAAAA/1BMVEUAAAA7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJw7vJz/////8oZIwKNiybDl9vKN2MY+vZ7d9O7q+PVRxKf1/Pq659xpzLOY3Mvw+vjS8Olcx635/fzB6uCx5dj/845MwqVBv5/s+fbW8et+076t49aK18RwzrdGwKLa8uzL7uWD1cBVxam359ud3s6S2sh40bt10Lql4NJly7JBjvrmAAAAK3RSTlMA/CkF+HsezJHU2hD04hddgqZXCcfDsncvA4jwnKpCG+qfIrtoSzXe3FQ98bal0wAACKRJREFUeNrc11l24jAUBNCSJTwG23gCg+MmhJCTU/vfX3928hGw8aCnvjuoo6eSHpajL322CXfvQbw9GZI0p20cvO/CTdZfNNyiD9mxiQ3vMHFzzA5uBEu/wspwIFOFXykkS4q3T472+VYkEOmwrxSfpKrNAcJ4ecSJotyDGOk+4iyivYiL1X40hrMxzUcLu5L9ljPb7hPY44cvXMBL6MMOb6e4ELXz8JBLgeyE8jvFhanOx3rK3HAFJi+xkuLMlZwLrMGruaLaw9J0brgqk2ss6hZxddENy9G5ogVquYPyAlpSX7CI7IXWnDLMT3e0qisxMz+gZYGPWfVnWnfuMaOrogDqitkcKcQR8yhfKcZriRkkNQWpE0yWWq+6n4J0cqKIwkQTM/kxxYl9TJAKTETGf/6nqZs6e4mwZvgnSPCUUlR7/1SVeELbULCmxXghRQsx2pXCXTFSL+LvfY/qMYovYD965OxjBC22vr8LNIbr6IQOg2V0RIaBLic64nTBIG1FZ1QthsjpkBwD3MS/SN+pGx7SQheK30Qaj2zomA0e8AwdYzzcJ3hH+k2Nuwo6qMAd5ZYO+sutvfakEQVhAD6rqFWgxl681DTEGFP1nay6CJZ7FrWACAL2//+WVvaYFeTE+u6YSJ+P84WEHebMvpzs5/9pNrw4IXIZzKVMbt4X8Fes5AseCL16UbSctkDxXIN8AwT/XDQNQNnQfEglUVUOwPAW9B4S+qIrhAPxmJY9MO5EVTEAxVvWiyILZdFUAsERVaYz4JxURE25FICUSZtpW6A1fS1IYMtM2ZnL7e6p7KKZdIC5d2AmvaO7DaxNM+GjB55fPdFS9UHzclrDYXQlmipDsJbMU6sgBQ3R1m+Cs2qe2AbrQvTVQdrWuMo1kEfvYB3HNxM7BKdQk7dQDEE5VOi7X/I27sHZTpyiNIsyVjvVUkv01oSlxHnkUCLX0HIrkREoX42V9sCpy9gV9OTtIAfFS5vIETidmmtA8Up2QDRBOTKRPTDiLgmhp5Csl/dM5Ac4tu+60FRJdNxmbegAjm/7rgVNZ3aI+qAsE1cCHB+uJkz2Ra0TOYqjRfR07UYOhk1VvsCJ/yHzriVSAGPF/LWYAiHpuH15JSmBkXpIIBZAiQ9FbTa/zYOywP+X2ZNIG9pGEumB8Ym/jFKKF0xlQZnvvOi6yiYoNnFoQF+DXx2jnGgNjELcd+raSWbemjE7KTAGan3n7rwBCKkdkwOlHs87ff0ky2POHIMRFNXOWfdpW2uCcExueL8l4kNf/CL2E4R1MncoORYxJZUEY3yJXFrtT+kO04LRYBjguWDorI+e1+9l7AKED2YDjLwj9fAfjqubEDPrVz6mhTcP9Y4jp7kB4bvZB6Ps2FkajjnYd9QvZp/XVRm7BGHfrIAhkSamRIOwiIR1X2ydsEIuD3YkdTCpKY664yvoOOq+neIgrJksGLbxqo713FXvzWowd70MQtbsgmGX1pYjBjubHVNIy1G/xaRWgsV112TAaMw+l7oyu16x9e7r6g0QMgaU65nZdVsetRPVR4liDQNKp2jHbAGx8FwenYf/UC+46pd24HXAMOA0JJL/Q8697aYNBGEANm05iIBSIpWmjSIaRZWqzNZgYyPZ2FBwMGCC3LR5/2dp5UpdEtZlNLuVMuS7HPnCv+QL2J0ZmcnPhJRp1IeC8N3pR9rG4o/QcYuCe5eIXcndoXp4oB5vgaJltYDmp/xoUmexTD0hHaovF05ZferpXgVeWBdAM8/E/5XNgeST1QYi3xMq4UpdT1aJUPFWobruA03bagJV5KnevA9RonrDCCJPXe+XPE/UtOpA5o/FU7f+v+q3e/VxeZ2qbl0DnRuMxK5R4Bqrk11bHdBh5wP5reQzWQ88ZX2W79QDW1kf5DZouNRfGBA56WQzmTp9Fx7pO1NV3f1bB1U9dSLQ0+A6DFOuymfSGevUuoEjc2P1QI/7I1/aYMr2e/4AenrymJ9mvhFChA9gxiKWv+2I3nyQlzE0gbyE1GeP9C94mvLKjGj89Dzk6x6QDjyzEIUUNHS1p+yH8kBeP5Ijz43J3uKvn7lEOsM3CXCJ9ArfysEkUtHKgft7wSVSHd8WxSVSA9+8xiXSKb7FkEukGqERlBAJTT9SG92uyybSFbqpmk2kM3TrO5dIlRPsgAKbSO/QYyRsIlXRwz5sIp2jR7K4RPqCHpxjE+kjeryRTaRz9BAql0hN9Kgwm0hV9EA3l0iVnvVIF8qwidQ1sxzBfCR6D/BnQyssxqKwNBJpqnOO136NXTSCe4vB2kCkKBYFByjem1kHI3u7hvczu/Btj43jL0NF6xta68TU0p71SJiWAUXj2a5W+u0eCCo1cwuw5kNh1gQoOgbXlEEUCpOGayAo2yZ3CSTRQJgzngFFB7XyD2+dxsKMUUDdJWd8MaMfbBKhKfYmzhporo5vfWbtJS05PcZVtL/au5MkBYEgCsOvCgoZZRQUhG5wjrz//XrRW8OwbWqg9LtBLoBkk7+FB4NtPOts4/Ht5b0hxDsesrcwN2BjFAKOfekOTIvZi+LpfTM4i7mVvn/vpJSF4S8b82w2RvQMCj7f1+IZSzqL3OMVpcFbRFV+4q72JniBL+tCyWbmrK/eJzpufxrexoA/UBr0ze1L3LPg3ajFbI5G7OXsiBkNBvw/fQ+Ylaf9xbfyMLNyT1rtS8wv7UibOIUUU0WaVBMkcTJGGrDMgTzngJQLzpDKES4p5QoHsvENKbThUKFISJGkgCKliEmBWJRQxxsZScZGD2rxXupQrOdQj+fShmI5hx6eH5MEse9Bn6hJaGZJE0Gv3al2aTZufdrBAOsmoFkEzRrG4FlI/xRmWxhmKypGL2KVMG6eX1ExXujPLmMRwWTrm1+59CS38m8GPT4POLxo6yujB9i1bgvuYFmcaUiFnx9WYdIxIoq77hKuDrkv0mGSOMwPk5PpeMbQ0O8AAAAASUVORK5CYII=) no-repeat;
+            background-size: cover;
+        }
+        .prompt p {
+            line-height: 1.6;
+            padding: 15px 40px;
+        }
+
+block content
+    .prompt
+        span
+        p 十分抱歉，妈妈好微商城商品目前仅支持在微信中支付，如需购买请关注微信公众号“妈妈好服务平台”或下载妈妈好APP中购买，带来不便，敬请谅解！

@@ -1,0 +1,22 @@
+.group
+    h2 为您优选这#{$data.length}件
+    each item in $data
+        .item.js-open-item(data-itemid=item.itemId, data-templateid=item.templateId)
+            .pic
+                img(src=item.pic)
+            dl
+                dt #{item.title}
+                dd
+                    strong ￥#{item.oprice}
+                    if item.vipDiscount || item.mbeanMultiple
+                        p
+                            span #{item.levelName}
+                                if item.vipDiscount
+                                    | 价
+                                    em #{item.vipDiscount}元
+                            if item.mbeanMultiple
+                                span
+                                    | 送
+                                    em #{item.mbeanMultiple}倍
+                                    | 妈豆
+            button.u-btn.success.js-sku 购买

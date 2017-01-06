@@ -84,7 +84,7 @@ define(function (require, exports, module) {
                         api: '/beans',
                         container: '.dropload',
                         fnSuccess: function (res, ele) {
-                            console.log(JSON.stringify(res))
+                            console.log(JSON.stringify(res));
                         },
                         fnFailed: function (res,ele) {
                             ele.data('locked',false);

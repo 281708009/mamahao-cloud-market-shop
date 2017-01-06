@@ -1,0 +1,51 @@
+//- 待评价商品列表
+if rows && rows.length > 0
+    section.m-assess-v2
+        .platform
+            dl.assess
+                dt 服务评价
+                dd
+                    .star.star-0#serveStar(data-star=0)
+                    ol.js-star
+                        li 1
+                        li 2
+                        li 3
+                        li 4
+                        li 5
+            dl.assess
+                dt 发货速度
+                dd
+                    .star.star-0#deliverySpeedStar(data-star=0)
+                    ol.js-star
+                        li 1
+                        li 2
+                        li 3
+                        li 4
+                        li 5
+        each item in rows
+            .goods
+                .items.js-item(data-template-id=item.templateId, data-item-num-id=item.itemId, data-order-no=item.orderNo, data-warehouse-id=item.warehouseId, data-shop-id=item.shopId)
+                    .info
+                        .pic
+                            img(src=item.itemPic + "@1e_400w_400h_0c_0i_0o_100q_1x.jpg", alt="")
+                        dl.assess
+                            dt 商品评价
+                            dd
+                                .star.star-5(data-star=5)
+                                ol.js-star
+                                    li 1
+                                    li 2
+                                    li 3
+                                    li 4
+                                    li 5
+                    .text
+                        textarea.js-review-ctn(placeholder="长度在1-140个字之间写下购买体会或使用过程中带来的帮助，可以为其他小伙伴提供参考，也可以获得妈豆奖励哟！")
+                    ul.file
+                        li
+                            .add.js-upload
+                                input(class="js-oss-file", type='file', accept="image/*")
+                                span 添加晒单图片
+
+        section.m-assess-footer.flex-center
+            p.flex 评价赚妈豆，成长值翻倍！
+            button.u-btn.mini.success.js-review-submit 发表评价

@@ -1,26 +1,32 @@
-
+var crypto = require('../utils/crypto');
 var test = {
     index: function (req, res, next) {
-        var isMamahao = /mamhao/gi.test(req.header("user-agent")),
-            memberId = req.cookies && req.cookies['memberId'],
-            token = req.cookies && req.cookies['token'];
-        var defaults = $.extend({}, {token: token, memberId: memberId, isMamahao: isMamahao});
+        var isMamahao = /mamhao|mamahao/gi.test(req.header("user-agent")),
+            userInfo = req.cookies && req.cookies['mmh_app_user_info'],
+            location = req.cookies && req.cookies['mmh_app_location'],
+            d = req.query.d,
+            b = req.query.b;
+
+        if (userInfo) userInfo = crypto.newDecipher(userInfo);
+        if (location) location = new Buffer(decodeURIComponent(location), "base64").toString();
+        //log.info(location);
+        if (d) d = crypto.newDecipher(d);
+        if (b) b = new Buffer(decodeURIComponent(b), "base64").toString();
+
+        log.info("test-------> userInfo", JSON.stringify(req.cookies));
+        var defaults = $.extend({}, {location: location, isMamahao: isMamahao, userInfo: userInfo, d: d, b: b, cookies: req.cookies});
         res.render('test', defaults);
     },
-    info: function (req, res, next) {
-        console.log('id------>',req.params.id)
-        var data = {
-            id: req.params.id,
-            pid: req.params.pid
-        };
-        res.render('test',data, function (err,html) {
-            res.write(html);
-            res.write('<script>function showInfo(info){console.log(info)}</script>');
-            res.write('<script>showInfo("bigPipe test......")</script>');
-            res.write('<script>console.log("bigPipe test2...")</script>');
-            res.write('<script>console.log("bigPipe test3...")</script>');
-            res.write('<script>console.log("bigPipe test4...")</script>');
-            res.end();
+    mongodb: function (req, res, next) {
+
+        var useModel = require('../model/user')
+        useModel.Find({
+            "where": {
+                "name": "jack"
+            }
+        }, function (err, data) {
+            console.log('xxx--->', data)
+            res.render('tools/result', {msg: JSON.stringify(data)});
         });
     },
     request: function (req, res, next) {
@@ -37,6 +43,21 @@ var test = {
     uploadImage: function (req, res, next) {
         var aliOSS = require('../utils/ali-oss');
         new aliOSS().uploadImage(arguments);
+    },
+    // 方便删除阶段清除相关数据
+    remove: {
+        cookie: function (req, res, next) {
+            var cookies = req.cookies;
+            for( key in cookies){
+                res.clearCookie(key);
+            }
+            res.render('test/cookie', {cookies: cookies});
+        }
+
+
+    },
+    sdk: function (req, res, next) {
+        res.render('test/sdk');
     }
 };
 

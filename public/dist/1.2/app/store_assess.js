@@ -1,0 +1,1 @@
+define(function(require,exports,module){var n={config:{params:M.url.query(),api:{}},init:function(){n.bindEvents()},bindEvents:function(){$.pagination({keys:{count:"count"},scrollBox:"#app",api:"/store/assess/"+$(".m-stores-assess").data("id"),fnSuccess:function(n,t){var a=n.data;return a.template?void t.append(a.template):t.data("locked",!0)}})}};n.init()});

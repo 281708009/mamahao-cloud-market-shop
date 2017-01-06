@@ -1,0 +1,13 @@
+extends ../layouts/layout
+block title
+    title
+        if keyword
+            | #{keyword}
+        else
+            | 妈妈好
+block js
+    script seajs.run('app/sale_similar');
+block content
+    section.m-sale-with
+        ul.u-goods-one.pagination
+            +similarList(goods)

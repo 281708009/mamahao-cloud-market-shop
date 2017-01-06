@@ -5,7 +5,7 @@
 define(function (require, exports, module) {
     var page = {
         config: {
-            params: M.url.params,
+            params: M.url.params(),
             hashParams: function () {
                 return M.url.getParams((location.hash.match(/(\w+=)([^\&]*)/gi) || []).join('&'));  //json params
             }
@@ -113,7 +113,7 @@ define(function (require, exports, module) {
                     "templateId": $(item).data('template-id'),
                     "itemId": $(item).data('item-id'),
                     "count": +$(item).data('count')
-                }
+                };
             });
 
             var params = {

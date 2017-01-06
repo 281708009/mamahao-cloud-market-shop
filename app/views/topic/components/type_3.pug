@@ -1,0 +1,15 @@
+//优惠劵模块
+section.coupon
+    //- 整体背景图片
+    if rows.pic
+        .pic
+            img(src=rows.pic)
+    dl
+        if rows.title
+            dt #{rows.title}
+        dd
+            ul
+                each data, i in rows.data
+                    li(class="li-" + i data-id=data.id)
+                        if data.pic
+                            img(src=data.pic)

@@ -1,0 +1,7 @@
+extends ../layouts/layout
+block content
+    +blank('10', msg)
+        a.u-btn.checked(href='javascript:history.go(-1);') 返回
+    // 删除所有localStorage数据;
+    script.
+        localStorage.clear();

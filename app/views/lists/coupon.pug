@@ -6,7 +6,7 @@ each item, index in list
         when 0
             - landingLink = 'javascript:;';
         when 1
-            - landingLink = '/goods#/detail/inlet=6&templateId=' + item.landingDetail;
+            - landingLink = '/goods/detail/?inlet=6&templateId=' + item.landingDetail;
         when 2
             - landingLink = '/goods#/list/entry=1&categoryId='+ item.landingDetail;
         when 3
@@ -24,8 +24,13 @@ each item, index in list
         a.content(href= landingLink)
             dl
                 dt
-                    span ￥
-                    | #{item.denominationAmount}
+                    if item.decreaseType == 1
+                        | #{item.denominationAmount}
+                        span 折
+                    else
+                        span ￥
+                        | #{item.denominationAmount}
+
                 dd 满#{item.consumptionAmount}元可用
 
             if request.status == 1

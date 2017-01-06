@@ -1,0 +1,12 @@
+//选项卡盒子
+section.tab-block
+    .tab
+        ul
+            each val, i in rows.tab
+                li(class="li-" + i)
+                    if isHttp(val)
+                        img(src=val)
+                    else
+                        em #{val}
+    each data, i in rows.data
+        +Goods(data)

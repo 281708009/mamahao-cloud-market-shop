@@ -1,0 +1,9 @@
+//倒计时模块
+section.time
+    if rows.pic
+        .pic
+            img(src=rows.pic)
+        dl
+            if rows.title
+                dt #{rows.title}
+            dd(data-start=(+new Date(rows.start)) data-end=(+new Date(rows.end)) data-current=(+new Date()))

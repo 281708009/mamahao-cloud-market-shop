@@ -3,7 +3,7 @@
  */
 
 var router = express.Router();
-var auth = require("../middleware/auth");
+var OAuth = require("../middleware/oauth");
 
 var indexCtrl = require("../controller/index"),           //首页
     storeCtrl = require("../controller/store"),           //门店
@@ -13,7 +13,9 @@ var indexCtrl = require("../controller/index"),           //首页
     centerCtrl = require("../controller/center"),         //个人中心
     orderCtrl = require("../controller/order"),           //订单
     payCodeCtrl = require("../controller/pay_code"),      //扫码支付
-    weChatCtrl = require("../controller/wechat");         //微信相关
+    weChatCtrl = require("../controller/wechat"),         //微信相关
+    saleCtrl = require("../controller/sale"),             //会员购
+    settlementCtrl = require("../controller/settlement"); //结算
 
 var ossCtrl = require("../controller/aliOSS");    //ali oss
 
@@ -23,8 +25,7 @@ var ossCtrl = require("../controller/aliOSS");    //ali oss
  * 备注：不需要微信授权
  * */
 router
-    .get("/pay/code.html", payCodeCtrl.index)
-    .get("/pay/codeOrder.html", payCodeCtrl.order)
+    .get("/pay/code.html", payCodeCtrl.oauth, payCodeCtrl.index)
     .get("/pay/codeSuccess.html", payCodeCtrl.success)
     .post("/pay/codeImageVcode.html", payCodeCtrl.imageCode)
     .post("/pay/codeSMS.html", payCodeCtrl.sms)
@@ -34,13 +35,13 @@ router
 
 
 /**
- * 账户登录绑定相关
- * 备注：不需要微信授权
+ * 账户登录相关
+ * 备注：绑定界面需要先微信授权
  */
 router
-    .get('/wxOauth', accountCtrl.wxOauth)
     .get("/login", accountCtrl.toLogin)
-    .get("/account/bind", accountCtrl.toBind)
+    .get("/account/bind", OAuth.authentication, accountCtrl.toBind)
+    .get("/login/mamahao", accountCtrl.toMamahao)
     .get("/logout", accountCtrl.logout)
     .post("/api/login", accountCtrl.doLogin)
     .post("/api/bind", accountCtrl.doBind)
@@ -49,11 +50,10 @@ router
 ;
 
 
-
 /* ===================================================
-* 所有路由先经过微信授权，优先级教高，放在路由的最前面
-* ====================================================
-* */
+ * 所有路由先经过微信授权，优先级教高，放在路由的最前面
+ * ====================================================
+ * */
 
 
 /**
@@ -61,16 +61,61 @@ router
  */
 router
     .get("/demo", indexCtrl.demo)  //demo
-    .get("/", weChatCtrl.auth, indexCtrl.index)
-    .get("/index", weChatCtrl.auth, indexCtrl.index)
+    .get("/", OAuth.authentication, indexCtrl.index)
+    .get("/index", OAuth.authentication, indexCtrl.index)
+    .get("/beans", OAuth.authentication, indexCtrl.beans)
+    .get("/im/im.html", OAuth.authentication, indexCtrl.im)
+    .get("/routes/", indexCtrl.routes) //js sdk空页面
+
+    .post("/api/shakeBeans", indexCtrl.shakeBeans)
 ;
 
+
+/**
+ * 购物车
+ */
+router
+    .get("/cart", OAuth.authentication, cartCtrl.index)
+    .get("/pay/", OAuth.authentication, cartCtrl.pay)
+    .get("/pay/alipay/pay.htm", OAuth.authentication, cartCtrl.payTips)
+    .get("/pay/result", OAuth.authentication, cartCtrl.payResult)
+    .post("/api/pay/invoice", cartCtrl.submitInvoice)
+    .post("/api/pay", cartCtrl.check)
+    .post("/api/cart", cartCtrl.list)
+    .post('/api/cart/opt/:option', cartCtrl.cartOption)
+    .post('/api/cart/changeSKU', cartCtrl.changeSKU)
+    .post('/api/cart/getRecommendList', cartCtrl.getRecommendList)
+    .post("/api/aliPay", cartCtrl.aliPay)
+    .post("/api/wxPrePay", cartCtrl.wxPrePay)
+    .post("/api/wxPay", cartCtrl.wxPay)
+    .post('/api/coupon', cartCtrl.coupon)
+    .post("/api/queryOrderState", cartCtrl.queryOrderState)
+    .post('/api/checkpay', cartCtrl.checkPay)
+    .post("/api/order/pay", cartCtrl.checkByInspect)
+;
+
+/**
+ * 结算页
+ */
+router
+    .get("/settlement/", OAuth.authentication, OAuth.login, settlementCtrl.index)
+    .post("/api/inspectSettlement", settlementCtrl.inspect)
+    .post("/api/settlement", settlementCtrl.settlement)
+    .post("/api/isSupportInspect", settlementCtrl.isSupportInspect)
+    .post("/api/checkoutByInspect", settlementCtrl.checkout)
+    .post("/api/order_cart", settlementCtrl.getOrderCart)
+    .post("/api/order_cart/opt/:option", settlementCtrl.cartOption)
+    .post("/api/getTobeCommentList", settlementCtrl.getTobeCommentList)
+    .post("/api/commentGoodsTemplate", settlementCtrl.commentGoodsTemplate)
+    .post("/api/queryStlOrderVouchers", settlementCtrl.queryStlOrderVouchers)
+
+;
 
 /**
  * 门店
  */
 router
-    .get("/store", weChatCtrl.auth, storeCtrl.index)
+    .get("/store", OAuth.authentication, storeCtrl.index)
     .post("/api/storeList", storeCtrl.storeList)
     .post("/api/storeDetail", storeCtrl.storeDetail)
     .post("/api/myServerStore", storeCtrl.myServerStore)
@@ -79,15 +124,22 @@ router
     .post("/api/addCollect", storeCtrl.addCollect)
     .post("/api/delCollect", storeCtrl.delCollect)
     .post("/api/delServiceShop", storeCtrl.delServiceShop)
-    .all("/store/assess/:shopId", weChatCtrl.auth, storeCtrl.storeAssess)
+    .all("/store/assess/:shopId", OAuth.authentication, storeCtrl.storeAssess)
 ;
 
 /**
  * 商品相关
  */
 router
-    .get("/goods", weChatCtrl.auth, goodsCtrl.index)
-    .get("/goods/brand", weChatCtrl.auth, goodsCtrl.brand)
+    .get("/goods", OAuth.authentication, goodsCtrl.index)
+    .get("/goods/brand", OAuth.authentication, goodsCtrl.brand)
+    .get("/goods/group", goodsCtrl.group)
+    .get("/goods/detail", OAuth.authentication, goodsCtrl.detail)
+    .get("/goods/quality_report", goodsCtrl.qualityReport)
+    .get("/goods/gifts", goodsCtrl.gifts)
+    .get("/goods/supplement", goodsCtrl.supplement)
+
+    .post("/api/goods_supplement", goodsCtrl.getSupplementList)
     .post("/api/goods_type", goodsCtrl.goodsType)
     .post("/api/goods_list", goodsCtrl.list)
     .post("/api/goodsTypeTree", goodsCtrl.getGoodsTypeTree)
@@ -100,28 +152,8 @@ router
     .post("/api/goods_promoteGroup", goodsCtrl.promoteGroup)
     .post("/api/goods_sku", goodsCtrl.sku)
     .post("/api/addToCart", goodsCtrl.addToCart)
+    .post("/api/goods_guessYouLike", goodsCtrl.guessYouLike)
 
-;
-
-/**
- * 购物车
- */
-router
-    .get("/cart", weChatCtrl.auth, cartCtrl.index)
-    .get("/pay/", weChatCtrl.auth, cartCtrl.pay)
-    .get("/pay/alipay/pay.htm", weChatCtrl.auth, cartCtrl.payTips)
-    .get("/pay/result", weChatCtrl.auth, cartCtrl.payResult)
-    .post("/api/pay/invoice", cartCtrl.submitInvoice)
-    .post("/api/pay", cartCtrl.check)
-    .post("/api/settlement", cartCtrl.settlement)
-    .post("/api/cart", cartCtrl.list)
-    .post("/api/aliPay", cartCtrl.aliPay)
-    .post("/api/wxPrePay", cartCtrl.wxPrePay)
-    .post("/api/wxPay", cartCtrl.wxPay)
-    .post("/api/queryOrderState", cartCtrl.queryOrderState)
-    .post('/api/cart/:option', cartCtrl.cartOption)
-    .post('/api/coupon', cartCtrl.coupon)
-    .post('/api/checkpay', cartCtrl.checkPay)
 ;
 
 
@@ -129,14 +161,27 @@ router
  * 微信相关
  */
 router
-    .get("/wechat", weChatCtrl.toWechat)
-    .get("/weixin/callback", weChatCtrl.wechatCallBack)
+    .get("/weixin/callback", weChatCtrl.callback)
 ;
 
 
 /*用户个人中心*/
 router
-    .get('/center', weChatCtrl.auth, auth.requiredAuthentication, centerCtrl.index)
+    .get('/center', OAuth.authentication, OAuth.login, centerCtrl.index)
+    .get('/center/identity', OAuth.authentication, OAuth.login, centerCtrl.identity)
+
+    .post('/api/center', centerCtrl.center)
+    .post('/api/profile', centerCtrl.profile)
+    .post('/api/profile_edit', centerCtrl.profileEdit)
+
+    .post('/api/update_profile_cache', centerCtrl.updateProfileCache)
+    .post('/api/profile_update', centerCtrl.profileUpdate)
+    .post('/api/profile_geo_update', centerCtrl.profileGeoUpdate)
+    .post('/api/breed_add', centerCtrl.breedAdd)
+    .post('/api/breed_update', centerCtrl.breedUpdate)
+    .post('/api/breed_delete', centerCtrl.breedDelete)
+
+
     .post('/api/address', centerCtrl.address)
     .post('/api/address_edit', centerCtrl.addressEdit)
     .post('/api/address_gps', centerCtrl.addressGPS)
@@ -163,6 +208,10 @@ router
     .post('/api/order_result', orderCtrl.orderResult)
     .post('/api/order/:option', orderCtrl.orderOption)
     .post('/api/order_rebuy', orderCtrl.orderRebuy)
+    //.get("/order/result.htm", OAuth.authentication, orderCtrl.result)
+    .get("/order/settlement.htm", OAuth.authentication, OAuth.login, orderCtrl.settlement)
+    .post('/api/order_query_causes', orderCtrl.getCauses)
+
 ;
 
 
@@ -174,5 +223,22 @@ router
     .post('/oss/uploadImage', ossCtrl.uploadImage)
 ;
 
+
+/*
+ * 会员购
+ * */
+router
+    .get('/sale/', OAuth.authentication, saleCtrl.index)
+    .get('/sale/guide/', OAuth.authentication, saleCtrl.guide) // 商品导购页
+    .all('/sale/similar/', saleCtrl.similar)
+    .get('/sale/cover/', saleCtrl.cover)    // 封面预览;
+
+
+    .post('/api/sale/group_page/', saleCtrl.groupPage) // 清单分页数据
+    .post('/api/sale/guide_check/', saleCtrl.guideCheck)
+    .post('/api/sale/guide_items/', saleCtrl.guideItems)
+    .post('/api/sale/goods_shield/', saleCtrl.shield) // 屏蔽内容
+    .post('/api/sale/goods_total/', saleCtrl.total)  // 清单小计
+;
 
 module.exports = router;

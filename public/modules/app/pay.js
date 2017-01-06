@@ -5,7 +5,7 @@ define(function(require, exports, module) {
         body: "订单已经支付,请勿重复发起支付",
         buttons: [
             {
-                "text": "确定", "class": "success", "onClick": function () {
+                "text": "确定", "class": "alone", "onClick": function () {
                 location.href = '/center#/orders'
             }
             }
@@ -44,7 +44,7 @@ define(function(require, exports, module) {
         }
     })(wx);
 
-    var checkPay = function(data, fn){
+    var checkPay = function(data, callback){
         M.ajax({
             url: '/api/checkPay',
             data: data,
@@ -53,13 +53,13 @@ define(function(require, exports, module) {
                     M.dialog({
                         body: "订单已经支付,请勿重复发起支付",
                         buttons: [{
-                            "text": "确定", "class": "success", "onClick": function () {
+                            "text": "确定", "class": "alone", "onClick": function () {
                                 location.href = '/center#/orders'
                             }
                         }]
                     });
                 } else {
-                    fn();
+                    callback();
                 }
             }
         });
@@ -105,11 +105,12 @@ define(function(require, exports, module) {
     $('.js-weixin').on('click',function () {
         var $this = $(this);
         var params = {orderNo: $this.data('no'), openId: $this.data('openid')};
+        var dealingType = $this.data('dealingType');
         // 调用通用支付方法;
         checkPay({orderNo: $this.data('no')},function(){
             M.pay.weixin({
                 data: params,
-                callback: '/pay/result?orderPayType=2&batchNo=' + $this.data('no')
+                callback: '/pay/result?orderPayType=2&batchNo=' + $this.data('no') + '&dealingType=' + dealingType
             });
         });
         /*M.ajax({
@@ -213,6 +214,7 @@ define(function(require, exports, module) {
         checkPay({orderNo: $this.data('no')},function(){
             var orderNo = $this.data('no');
             var openId = $this.data('openid');
+            var dealingType = $this.data('dealingType');
             //TODO 二维码地址暂时写死，回头再改
             var img = new Image(), src = M.config.api +'pay/weixin/makeWeixinScanCode.htm?batchNo='+orderNo+'&openId='+openId+'&size=240';
             img.src = src;
@@ -220,13 +222,13 @@ define(function(require, exports, module) {
                 $('.code').find('.js-code-pay-img').html(img);
             };
             // 定时器去刷新订单状态，如果为支付成功，进行跳转;
-            queryOrderState(orderNo);
+            queryOrderState(orderNo,dealingType);
             //$('.code').show().find('.js-code-pay-img img').attr('src', M.config.api +'pay/weixin/makeWeixinScanCode.htm?batchNo='+orderNo+'&openId='+openId+'&size=240');
         });
     });
 
     // 获取订单状态;
-    function queryOrderState(orderNo) {
+    function queryOrderState(orderNo,dealingType) {
         M.ajax({
             showLoading: false,
             url: '/api/queryOrderState',
@@ -234,10 +236,10 @@ define(function(require, exports, module) {
             success: function (res) {
                 if(res.success != 200){
                     setTimeout(function(){
-                        queryOrderState(orderNo);
+                        queryOrderState(orderNo,dealingType);
                     }, 1000);
                 }else{
-                   window.location.href = '/pay/result?orderPayType=2&batchNo=' + orderNo;
+                   window.location.href = '/pay/result?orderPayType=2&batchNo=' + orderNo + '&dealingType=' + dealingType;
                 }
                 //console.log(res);
             },

@@ -1,0 +1,44 @@
+extends ../layouts/layout.pug
+block title
+    title 妈妈好商城
+block js
+    script seajs.run('app/goods_group');
+block content
+    section.m-goods-group
+        each item, index in rows
+            .item(data-no=item.reservedNo, data-discount=item.promotionDiscount, class={"in": index === 0})
+                .header.u-arrow.bottom.js-collapse
+                    strong #{item.promotionName || ('套餐' + (index + 1))}
+                    em ￥#{item.priceSection}
+                    sup 立省￥#{item.promotionDiscount}
+                .content
+                    each goods in item.comboGoodsList
+                        dl.goods(data-template-id=goods.styleNumId,data-item-id= goods.singleItem && goods.singleItem.itemId ,data-count=goods.count, data-price= goods.singleItem && goods.singleItem.price, data-oprice= goods.singleItem && goods.singleItem.oprice)
+                            dt
+                                .pic
+                                    a(href='/goods/detail/?inlet=6&templateId=' + goods.styleNumId)
+                                        img(src=goods.stylePic + '@100w_100q.jpg', alt='')
+                                    if goods.count > 1
+                                        sub #{goods.count}件
+                            dd
+                                h3 #{goods.styleTitle}
+                                if goods.singleItem
+                                    p #{goods.singleItem.skus}
+                                else
+                                    p.spec.u-arrow.bottom.js-sku 请选择商品规格
+
+                .footer
+                    dl
+                        dt
+                            | 套餐价格：
+                            strong ￥#{item.priceSection}
+                        dd
+                            del 原价：￥#{item.originalPriceSection}
+                            sup 立省￥#{item.promotionDiscount}
+                    .button
+                        button.u-btn.success.js-addToCart 加入购物车
+
+    // SKU
+    section.u-fixed.bottom.u-sku
+        .mask
+        .content

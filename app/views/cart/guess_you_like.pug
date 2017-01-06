@@ -1,0 +1,8 @@
+mixin goodsList(rows)
+    include ../lists/goods_hot_sale.pug
+
+if data && data.length
+    h2 为您推荐
+        //- 以下商品列表
+        ul.u-goods-list#recommendList
+            +goodsList(data)

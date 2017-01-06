@@ -6,58 +6,42 @@
 var HttpClient = require("../utils/http_client");
 var API = require('../config/api');
 var request = require('request');
+var OAuth = require("../middleware/oauth");
 var bigPipe = require("../utils/bigPipe"),
     bigPipeTask = require('../config/bigPipeTask');
 
 var payCode = {
+    oauth: function (req, res, next) {
+        var isWeChat = /micromessenger/gi.test(req.header("user-agent"));
+        isWeChat ? OAuth.wechatBase(req, res, next) : next();
+    },
     // 扫码付;
     index: function (req, res, next) {
-        log.info('不走统一微信受权');
         var isWeChat = /micromessenger/gi.test(req.header("user-agent")),
             isAlipay = /alipayclient/gi.test(req.header("user-agent")),
-            isMamahao = /mamhao/gi.test(req.header("user-agent")),
+            isMamahao = /mamhao|mamahao/gi.test(req.header("user-agent")),
             scanCodeToken = req.cookies && req.cookies['scanCodeToken'],  // 图文验证码唯一参数
-            cryptoOpenId = req.cookies && req.cookies['scanOpenId'];
-        if(!cryptoOpenId && isWeChat){
-            // 微信端需要做一个静默受权;
-            var originalUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-            var apiURL = AppConfig.site.wechat.apiURL; //apiURL
-            var redirect_uri = encodeURIComponent(apiURL + 'V1/weixin/oauth/callback.htm?resource=3' + '&go=' + originalUrl); // resource=3  静默受权;
-            var authUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + AppConfig.site.wechat.app_id + '&redirect_uri=' + redirect_uri + '&response_type=code&scope=snsapi_base&state=12345465#wechat_redirect';
-            return res.redirect(authUrl);
+            openId = req.session.wechat_auth && req.session.wechat_auth.openid;
+
+        var defaults = $.extend({}, req.query, {openId: openId, isWeChat: isWeChat, isAlipay: isAlipay, isMamahao: isMamahao});
+        //var params = {k: decodeURIComponent(req.query.k)};
+        var params = {k: req.query.k};
+        // 如需图文验证码;
+        req.query.vcode && $.extend(params, {vcode: req.query.vcode, scanCodeToken: scanCodeToken});
+        log.info("扫码付请求的参数：" + JSON.stringify(params));
+        // 微信、支付宝调用查询接口;
+        if(isWeChat || isAlipay){
+            HttpClient.request(arguments, {
+                url: API.queryPosBarOrder,
+                data: params,
+                success: function (data) {
+                    $.extend(data, defaults, {shop: data.data[0]});
+                    res.render("pay/code", data);
+                }
+            });
         }else{
-            var crypto = require('../utils/crypto'), openId = "";
-            cryptoOpenId && (openId = crypto.decipher(cryptoOpenId)); // 如果有openId，就进行解密;
-            var defaults = $.extend({}, req.query, {openId: openId, isWeChat: isWeChat, isAlipay: isAlipay, isMamahao: isMamahao});
-            //var params = {k: decodeURIComponent(req.query.k)};
-            var params = {k: req.query.k};
-            // 如需图文验证码;
-            req.query.vcode && $.extend(params, {vcode: req.query.vcode, scanCodeToken: scanCodeToken});
-            log.info("扫码付请求的参数：" + JSON.stringify(params));
-            // 微信、支付宝调用查询接口;
-            if(isWeChat || isAlipay){
-                HttpClient.request(arguments, {
-                    url: API.queryPosBarOrder,
-                    data: params,
-                    success: function (data) {
-                        $.extend(data, defaults, {shop: data.data[0]});
-                        res.render("pay/code", data);
-                    }
-                });
-            }else{
-                res.render("pay/code", defaults);
-            }
+            res.render("pay/code", defaults);
         }
-    },
-    // 订单支付页 - 防止H5广告问题;
-    order: function (req, res, next) {
-        log.info('不走统一微信受权,扫码付中转页面');
-        var isWeChat = /micromessenger/gi.test(req.header("user-agent")),
-            isAlipay = /alipayclient/gi.test(req.header("user-agent")),
-            isMamahao = /mamhao/gi.test(req.header("user-agent")),
-            scanCodeToken = req.cookies && req.cookies['scanCodeToken'];  // 图文验证码唯一参数
-        var defaults = $.extend({}, req.query, {isWeChat: isWeChat, isAlipay: isAlipay, isMamahao: isMamahao});
-        res.render("pay/code_over", defaults);
     },
     // 获取图片验证码;
     imageCode: function (req, res, next) {
@@ -74,7 +58,7 @@ var payCode = {
     success: function (req, res, next) {
         var isWeChat = /micromessenger/gi.test(req.header("user-agent")),
             isAlipay = /alipayclient/gi.test(req.header("user-agent")),
-            isMamahao = /mamhao/gi.test(req.header("user-agent")),
+            isMamahao = /mamhao|mamahao/gi.test(req.header("user-agent")),
             openId = req.cookies && req.cookies['openId'];
         var defaults = $.extend({}, req.query, {openId: openId, isWeChat: isWeChat, isAlipay: isAlipay, isMamahao: isMamahao});
         log.info("扫码付支付成功：" + JSON.stringify(defaults));

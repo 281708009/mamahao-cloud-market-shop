@@ -1,0 +1,12 @@
+extends ../layouts/topic.pug
+block title
+    title 妈妈好运营活动
+block meta
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+block js
+    //- script seajs.run('topic/common/js/common');
+block content
+    p 您的微信openid是：
+    .u-form
+        li
+            input(type="text" value=wechat.openid)

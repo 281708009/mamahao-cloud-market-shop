@@ -1,0 +1,13 @@
+//楼层盒子模块
+section.floor
+    if rows.pic
+        .pic
+            img(src=rows.pic)
+    //-楼层标题
+    if rows.title
+        .title
+            if isHttp(rows.title)
+                img(src=rows.title)
+            else
+                em #{rows.title}
+    +Goods(rows)

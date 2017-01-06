@@ -1,0 +1,51 @@
+//- 结算-提交订单成功结果页
+//- {
+        "orderBatchNo":"123456",
+        "notice": [
+            "验货付款目前仅限APP线上确认付款，不支持现金、刷卡。",
+            "当场试穿、试用，对不满意、不合适的商品可当场任意退，只需为满意的商品进行付款。",
+            "如部分商品本地门店没有库存，需从总仓调货到齐后一并配送，请您耐心等待。"
+        ],
+        "payType":"验货付款",
+        "price":123.56
+        }
+if orderBatchNo
+    section.m-order-receipt.m-pay-success
+        .content
+            .pic
+                img(src="//img.mamhao.cn/s/m/v2/images/bg-paying.png", alt="")
+            h2 感谢您，订单提交成功
+            dl.prompt
+                dt
+                    em 重要提示
+                dd
+                    each text in notice
+                        p #{text}
+            ul
+                li
+                    a.u-btn.max.alone(href='/center#/orders') 查看订单
+                li
+                    a.u-btn.max.alone(href='/') 商城首页
+        ul.order-info
+            li 订单信息
+            li 支付方式：#{payType}
+            li 订单金额：￥#{price}
+
+else
+    section.m-order-receipt.m-assess-success
+        .content
+            .pic
+                img(src="//img.mamhao.cn/s/m/v2/images/bg-assess.png", alt="")
+            h2 评价成功啦!
+            - var rewards = [];
+            - if(madouCount) rewards.push(madouCount + '妈豆');
+            - if(gbCount) rewards.push(gbCount + 'GB积分');
+            - if(mcCount) rewards.push(mcCount + 'MC积分');
+            - var rewardsDesc = rewards.join('、');
+            p 恭喜您获得
+                em #{rewardsDesc}
+            ul
+                li
+                    a.u-btn.max.alone(href='/center#/orders') 查看订单
+                li
+                    a.u-btn.max.alone(href='/') 快去购物吧

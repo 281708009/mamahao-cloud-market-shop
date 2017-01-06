@@ -68,14 +68,39 @@ define(function (require, exports, module) {
         $result.on('click', 'li', function () {
             var $this = $(this);
             var data = $app.data('data') || {},
-                this_data = $this.data();
+                thisInfo = $this.data();
 
-            data.gpsAddr = this_data.gps;
-            data.lat = this_data.lat;
-            data.lng = this_data.lng;
+            AMap.service('AMap.Geocoder', function () {//回调函数
+                //实例化Geocoder,使用geocoder 对象完成相关功能
+                var geocoder = new AMap.Geocoder();
 
-            $app.data('data', data);
-            window.history.go(-1);
+                //逆向地理编码（坐标-地址）
+                var coordinate = [thisInfo.lng, thisInfo.lat];//坐标
+                geocoder.getAddress(coordinate, function (status, result) {
+                    //console.log(JSON.stringify(result));
+                    if (status === 'complete' && result.info === 'OK') {
+                        //获得了有效的地址信息:
+                        //即，result.regeocode.formattedAddress
+                        var regeocode = result.regeocode, detail = regeocode.addressComponent;
+                        console.log(detail);
+                        detail.province = detail.province.replace(/省$/, ''); //忽略最后一个'省'字
+
+                        var data = $app.data('data') || {};
+                        data.gpsAddr = thisInfo.gps;
+                        data.district = [detail.province, detail.city, detail.district].join('');
+                        data.areaId = detail.adcode;
+                        data.prv = detail.province;
+                        data.city = detail.city;
+                        data.area = detail.district;
+
+                        data.lat = thisInfo.lat;
+                        data.lng = thisInfo.lng;
+
+                        $app.data('data', data);
+                        window.history.go(-1);
+                    }
+                });
+            });
         });
 
         // 隐藏顶部提示语

@@ -1,16 +1,16 @@
 section.m-goods-group
     each item, index in rows
-        .item(data-no=item.reservedNo,class={"in": index === 0})
+        .item(data-no=item.reservedNo, data-discount=item.promotionDiscount,class={"in": index === 0})
             .header.u-arrow.bottom.js-collapse
                 strong #{item.promotionName || ('套餐' + (index + 1))}
                 em ￥#{item.priceSection}
                 sup 立省￥#{item.promotionDiscount}
             .content
                 each goods in item.comboGoodsList
-                    dl.goods(data-template-id=goods.styleNumId,data-item-id= goods.singleItem && goods.singleItem.itemId ,data-count=goods.count)
+                    dl.goods(data-template-id=goods.styleNumId,data-item-id= goods.singleItem && goods.singleItem.itemId ,data-count=goods.count, data-price= goods.singleItem && goods.singleItem.price, data-oprice= goods.singleItem && goods.singleItem.oprice)
                         dt
                             .pic
-                                a(href='/goods#/detail/inlet=6&templateId=' + goods.styleNumId)
+                                a(href='/goods/detail/?inlet=6&templateId=' + goods.styleNumId)
                                     img(src=goods.stylePic + '@100w_100q.jpg', alt='')
                                 if goods.count > 1
                                     sub #{goods.count}件
@@ -31,6 +31,7 @@ section.m-goods-group
                         sup 立省￥#{item.promotionDiscount}
                 .button
                     button.u-btn.success.js-addToCart 加入购物车
+
 
 // SKU
 section.u-fixed.bottom.u-sku

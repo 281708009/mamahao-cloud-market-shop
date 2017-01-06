@@ -1,0 +1,47 @@
+//- MC门店列表模板
+include ../../includes/mixin.pug
+if location.areaId
+    section.m-stores.flex
+        //- 如果附近门店列表返回空，那么直接显示 未开通门店空白提示页;
+        if nearShopList && nearShopList.length
+            // 最近的实体店
+            .u-stores
+                .title
+                    strong 最近的实体店
+                .list.pagination(data-params=request)
+                    +storeList(nearShopList, request)
+        else
+            .u-null-all.m-stores-null
+                .null
+                    img(src='//img.mamhao.cn/s/m/v2/images/bg-stores-null.png')
+                    p 当前城市暂未开通实体店，敬请期待
+    //- 门店服务标签弹出层;
+    section.u-fixed.bottom.u-stores-service
+        .mask
+        .content
+            h2 本店提供
+            ul.list
+            button.u-btn.success.max.js-close 关闭
+    //- 选择切换地址弹出层
+    section.u-fixed.bottom.m-select-address
+        .mask
+        .content
+            .title
+                | 选择地址
+                del.js-close
+            .gps.js-gps-address 定位到当前位置
+            ul.list
+    -var formattedAddress = request.formattedAddress || location.formattedAddress;
+    if formattedAddress
+        .u-gps
+            .field
+                a.js-change-address(href='javascript:;') #{formattedAddress}
+else
+    section.u-null-all.m-stores-null
+        .null
+            img(src='//img.mamhao.cn/s/m/v2/images/bg-stores-null.png', alt='')
+            p 定位未开启，请在系统设置中开启定位
+
+
+
+            

@@ -1,0 +1,9 @@
+//楼层导航
+section.nav
+    //- 整体背景图片
+    ul
+        each data, i in rows.data
+            li(class="li-" + i data-link=data.link) #{data.text}
+                if data.pic
+                    img(src=data.pic)
+    .f-space

@@ -24,13 +24,13 @@ var task = {
         },
         module: [
             {
-                selector: ".list:eq(0)",
+                selector: ".list-0",
                 data: {
                     status: 1   //未使用
                 }
             },
             {
-                selector: ".list:eq(1)",
+                selector: ".list-1",
                 data: {
                     status: 4   //已过期
                 }
@@ -50,28 +50,28 @@ var task = {
         },
         module: [
             {
-                selector: ".list:eq(0)",
+                selector: ".list-0",
             },
             {
-                selector: ".list:eq(1)",
+                selector: ".list-1",
                 data: {
                     queryType: 3   //待付款
                 }
             },
             {
-                selector: ".list:eq(2)",
+                selector: ".list-2",
                 data: {
                     queryType: 4   //待发货
                 }
             },
             {
-                selector: ".list:eq(3)",
+                selector: ".list-3",
                 data: {
                     queryType: 5   //待收货
                 }
             },
             {
-                selector: ".list:eq(4)",
+                selector: ".list-4",
                 data: {
                     queryType: 6   //待评价
                 }
@@ -91,14 +91,14 @@ var task = {
         },
         module: [
             {
-                selector: ".list:eq(0)",
+                selector: ".list-0",
                 blank: {tips: '暂未获取到您的GoodBaby积分记录哦~'},
                 data: {
                     type: 0   //GB
                 }
             },
             {
-                selector: ".list:eq(1)",
+                selector: ".list-1",
                 blank: {tips: '暂未获取到您的Mothercare积分记录哦~'},
                 data: {
                     type: 1   //MC
@@ -130,21 +130,9 @@ var task = {
     "goodsDetail": {
         common: {},
         module: [
-            //评分统计
-            {
-                selector: ".u-score .out",
-                api: API.goodsCommentChart,
-                pug: '/lists/goods_comment_chart.pug'
-            },
-            //商品参数
-            {
-                selector: "#swipe-detail .config",
-                api: API.goodsParams,
-                pug: '/lists/goods_params.pug'
-            },
             //评论列表
             {
-                selector: ".u-score .list",
+                selector: ".u-score",
                 api: API.goodsCommentList,
                 pug: '/lists/goods_comment_list.pug',
                 blank: {style: '10', tips: '暂时还没有商品评论哦~'},
@@ -159,24 +147,12 @@ var task = {
                 api: API.querySku,
                 pug: '/lists/goods_sku.pug'
             },
-            //优惠券列表
-            {
-                selector: ".sale .coupon",
-                api: API.goodsCouponList,
-                pug: '/goods/components/coupon_list.pug'
-            },
-            //促销列表
-            {
-                selector: ".sale .promote",
-                api: API.goodsPromotionList,
-                pug: '/goods/components/promote_list.pug'
-            },
             //配送地址
             {
                 selector: ".m-select-address .list",
                 api: API.addressList,
                 pug: '/lists/address.pug'
-            },
+            }
 
         ]
     },
@@ -186,8 +162,8 @@ var task = {
         module: [
             {
                 selector: ".u-goods-list",
-                api: API.goodsGuessYouLike,
-                pug: '/lists/goods.pug'
+                api: API.queryWaitToCommentItems,
+                pug: '/lists/tobe_comment.pug'
             }
         ]
     },
@@ -202,14 +178,71 @@ var task = {
             }
         ]
     },
-
+    // 结算页 优惠券列表
     "settlement":{
         common:{},
         module: [
             {
                 selector: ".more-coupon",
-                api: API.usefulCoupon,
+                api: API.queryStlOrderVouchers,
                 pug: '/cart/coupon.pug',
+            }
+        ]
+    },
+    // 购物车页面 购物车商品列表,推荐商品列表
+    "cart": {
+        common: {},
+        module: [
+            {
+                selector: ".cart-goods-module",
+                api: API.cart,
+                blank: {style: '06', tips: '还没给心爱的宝贝挑选几件中意的商品',btn:[{text:'逛逛首页',link:'/'}]},
+                pug: '/cart/components/goods_list.pug'
+            },
+            {
+                selector: ".cart-recommend-module",
+                api: API.getRecommendList,
+                pug: '/cart/components/recommend.pug',
+                data: {
+                    page: 1,
+                    pageSize: 20
+                }
+            }
+        ]
+    },
+    // 凑单页面
+    supplement:{
+        common:{
+            api: API.getSupplementGoods,
+            pug: '/lists/supplement.pug',
+            blank: {style: '02', tips: '没有商品哦~'},
+            data: {
+                page: 1,
+                pageSize: 20
+            }
+        },
+        module:[
+
+        ]
+    },
+    // 商品导购页
+    guide: {
+        common: {},
+        module:[
+            {
+                selector: ".js-goods",
+                api: API.queryItemPrice,
+                pug: '/sale/components/guide_item.pug'
+            },{
+                selector: ".js-similar",
+                api: API.monspGuideCheck,
+                pug: '/sale/components/guide_similar.pug'
+            },
+            //SKU
+            {
+                selector: ".u-sku .content",
+                api: API.querySku,
+                pug: '/lists/goods_sku.pug'
             }
         ]
     }

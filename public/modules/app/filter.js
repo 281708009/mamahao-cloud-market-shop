@@ -43,7 +43,7 @@ define(function (require, exports, module) {
                 var $this = $(this), $target = $this.closest('.item');
                 $this.toggleClass('active');
                 if (!$target.hasClass('ages')) {
-                    $this.siblings().removeClass('active')
+                    $this.siblings().removeClass('active');
                 }
             });
 
@@ -70,7 +70,7 @@ define(function (require, exports, module) {
             //将参数存储到本地
             localStorage.setItem(CONST.local_search_params, JSON.stringify($.extend(searchParams, hashParams, params)));
 
-            var hashParams = $.extend({}, c.hashParams());
+            hashParams = $.extend({}, c.hashParams());
             window.location.href = '#/list/' + $.param(hashParams);
         }
     };

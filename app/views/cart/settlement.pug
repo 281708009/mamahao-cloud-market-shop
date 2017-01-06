@@ -5,9 +5,10 @@ block content
     if stockOut
         section.m-pay#settlement(data-stockout=(stockOut || 0),data-stockout-goods=(data || []))
     else
-        section.m-pay#settlement
+        section.m-pay.flex#settlement
 
             if stockOut
+
             else
                 input(type='hidden',name='orderNo',value=orderNo)
                 input(type='hidden',name='deliveryAddrId',value=deliveryAddr ? deliveryAddr.deliveryAddrId : '')
@@ -126,11 +127,13 @@ block content
                                         em ￥#{useCouponlimit.gbMaxLimit / ratio.gbRatio}
                                     label
                                         input.u-switch(type='checkbox')
-                            if useCouponlimit.mcMaxLimit > 0
+                            if useCouponlimit.mcMaxLimit == 0
                                 li#mcPoint
                                     p 可用
-                                        - var mcMax = ~~(limit.mcMaxLimit/300)*300
-                                        - var mcUseable = ~~(useCouponlimit.mcMaxLimit/300)*300
+                                        - //var mcMax = ~~(limit.mcMaxLimit/100)*100
+                                        - //var mcUseable = ~~(useCouponlimit.mcMaxLimit/100)*100
+                                        - var mcMax = 200
+                                        - var mcUseable = 200
                                         span #{mcUseable}
                                         input(type='tel', name='mcCount', value=mcUseable, data-max=mcMax, data-ratio=ratio.mcRatio)
                                         | MC积分，抵
@@ -157,19 +160,17 @@ block content
                             else
                                 | ￥#{mailPrice}
 
-            //- 结算按钮
-            .footer
-                .field
-                    if stockOut
-                        button.u-btn.success.ban 去付款
-                    else
-                        input(type='hidden',name='payPrice',value=payPrice)
-                        input(type='hidden',name='mailPrice',value=mailPrice)
-                        p 实付
-                            em.js-finalPrice ￥#{payPrice + mailPrice}
-                        button.u-btn.success.js-pay 去付款
-                .f-space
-
+        //- 结算按钮
+        .m-pay-footer
+            .field
+                if stockOut
+                    button.u-btn.success.ban 去付款
+                else
+                    input(type='hidden',name='payPrice',value=payPrice)
+                    input(type='hidden',name='mailPrice',value=mailPrice)
+                    p 实付
+                        em.js-finalPrice ￥#{payPrice + mailPrice}
+                    button.u-btn.success.js-pay 去付款
     unless stockOut
         // 配送方式选择弹出层
         section.u-fixed.bottom.m-pay-courier#delivery-ways
